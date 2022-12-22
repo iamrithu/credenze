@@ -58,7 +58,7 @@ class _LeadScreenState extends State<LeadScreen> {
                       Tab(
                         child: Text(
                           "Leads",
-                          style: GoogleFonts.abel(
+                          style: GoogleFonts.akayaKanadaka(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
@@ -71,7 +71,7 @@ class _LeadScreenState extends State<LeadScreen> {
                       Tab(
                         child: Text(
                           "Add Leads",
-                          style: GoogleFonts.abel(
+                          style: GoogleFonts.akayaKanadaka(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
@@ -84,7 +84,7 @@ class _LeadScreenState extends State<LeadScreen> {
                       Tab(
                         child: Text(
                           "Follow Up",
-                          style: GoogleFonts.abel(
+                          style: GoogleFonts.akayaKanadaka(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),

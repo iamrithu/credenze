@@ -36,7 +36,7 @@ class _HolidayDetailsScreenState extends State<HolidayDetailsScreen> {
                 RichText(
                   text: TextSpan(
                       text: DateFormat("MMMM").format(newDate),
-                      style: GoogleFonts.abel(
+                      style: GoogleFonts.akayaKanadaka(
                           fontSize: width < 700 ? width / 16 : width / 22,
                           fontWeight: FontWeight.w400,
                           color: GlobalColors.themeColor2,
@@ -44,7 +44,7 @@ class _HolidayDetailsScreenState extends State<HolidayDetailsScreen> {
                       children: [
                         TextSpan(
                           text: " - " + newDate.year.toString(),
-                          style: GoogleFonts.abel(
+                          style: GoogleFonts.akayaKanadaka(
                             fontSize: width < 700 ? width / 22 : width / 45,
                             fontWeight: FontWeight.w400,
                             color: GlobalColors.black,
@@ -70,7 +70,7 @@ class _HolidayDetailsScreenState extends State<HolidayDetailsScreen> {
                   },
                   child: Text(
                     "Pick Date",
-                    style: GoogleFonts.abel(
+                    style: GoogleFonts.akayaKanadaka(
                         fontSize: width < 700 ? width / 28 : width / 45,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 0),

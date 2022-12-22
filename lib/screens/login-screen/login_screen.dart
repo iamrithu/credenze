@@ -267,7 +267,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           Text(
                             "LOGIN",
-                            style: GoogleFonts.abel(
+                            style: GoogleFonts.akayaKanadaka(
                                 color: GlobalColors.themeColor,
                                 fontSize: width * 0.04,
                                 fontWeight: FontWeight.bold,
@@ -275,11 +275,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                           CustomInputForm(
                             controller: _emailController,
-                            lable: "Email",
+                            label: "Email",
                           ),
                           CustomInputForm(
                             controller: _passwordController,
-                            lable: "Password",
+                            label: "Password",
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -297,7 +297,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               Text(
                                 "Stay Logged In",
-                                style: GoogleFonts.abel(
+                                style: GoogleFonts.akayaKanadaka(
                                     color: GlobalColors.themeColor2,
                                     fontSize: width * 0.028,
                                     fontWeight: FontWeight.normal,

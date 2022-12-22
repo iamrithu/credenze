@@ -7,8 +7,6 @@ import 'package:credenze/screens/login-screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../home-screen/home_screen.dart';
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -19,7 +17,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   getDatas() async {
     Timer(const Duration(seconds: 3), () {
-      Get.to(HomeScreen(),
+      Get.to(LoginScreen(),
           transition: Transition.zoom, duration: Duration(milliseconds: 600));
     });
   }

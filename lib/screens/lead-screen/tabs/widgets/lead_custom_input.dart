@@ -4,11 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../const/global_colors.dart';
 
 class LeadCustomInput extends StatefulWidget {
-  final String lable;
+  final String label;
   final TextEditingController? controller;
 
   const LeadCustomInput(
-      {Key? key, required this.lable, required this.controller})
+      {Key? key, required this.label, required this.controller})
       : super(key: key);
 
   @override
@@ -31,8 +31,8 @@ class _LeadCustomInputState extends State<LeadCustomInput> {
       child: TextFormField(
           controller: widget.controller,
           decoration: InputDecoration(
-            hintText: widget.lable,
-            hintStyle: GoogleFonts.abel(
+            hintText: widget.label,
+            hintStyle: GoogleFonts.akayaKanadaka(
                 color: GlobalColors.themeColor2,
                 fontSize: width < 700 ? width / 28 : width / 45,
                 fontWeight: FontWeight.w400,

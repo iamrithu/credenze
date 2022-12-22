@@ -24,7 +24,7 @@ class CustomAppBar extends StatelessWidget {
           child: page == 0
               ? Text(
                   "DASHBOARD",
-                  style: GoogleFonts.abel(
+                  style: GoogleFonts.akayaKanadaka(
                       fontSize: width < 700 ? width / 20 : width / 24,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0),
@@ -32,7 +32,7 @@ class CustomAppBar extends StatelessWidget {
               : page == 1
                   ? Text(
                       "INSTALLATION",
-                      style: GoogleFonts.abel(
+                      style: GoogleFonts.akayaKanadaka(
                           fontSize: width < 700 ? width / 20 : width / 24,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0),
@@ -40,7 +40,7 @@ class CustomAppBar extends StatelessWidget {
                   : page == 2
                       ? Text(
                           "ATTENDENCE",
-                          style: GoogleFonts.abel(
+                          style: GoogleFonts.akayaKanadaka(
                               fontSize: width < 700 ? width / 20 : width / 24,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0),
@@ -48,7 +48,7 @@ class CustomAppBar extends StatelessWidget {
                       : page == 3
                           ? Text(
                               "LEADS",
-                              style: GoogleFonts.abel(
+                              style: GoogleFonts.akayaKanadaka(
                                   fontSize:
                                       width < 700 ? width / 20 : width / 24,
                                   fontWeight: FontWeight.w800,
@@ -57,7 +57,7 @@ class CustomAppBar extends StatelessWidget {
                           : page == 4
                               ? Text(
                                   "PROFILE",
-                                  style: GoogleFonts.abel(
+                                  style: GoogleFonts.akayaKanadaka(
                                       fontSize:
                                           width < 700 ? width / 20 : width / 24,
                                       fontWeight: FontWeight.w800,
@@ -65,7 +65,7 @@ class CustomAppBar extends StatelessWidget {
                                 )
                               : Text(
                                   "LEADS DETAILS",
-                                  style: GoogleFonts.abel(
+                                  style: GoogleFonts.akayaKanadaka(
                                       fontSize:
                                           width < 700 ? width / 20 : width / 24,
                                       fontWeight: FontWeight.w800,

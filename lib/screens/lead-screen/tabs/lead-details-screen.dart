@@ -43,7 +43,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
         ),
         label: Text(
           " Add Follow Up",
-          style: GoogleFonts.abel(
+          style: GoogleFonts.akayaKanadaka(
               color: GlobalColors.white,
               fontSize: width < 700 ? width / 28 : width / 45,
               fontWeight: FontWeight.w400,
@@ -87,7 +87,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "PROFILE INFORMATION :  ",
-                  style: GoogleFonts.abel(
+                  style: GoogleFonts.akayaKanadaka(
                       fontSize: width < 700 ? width / 28 : width / 45,
                       fontWeight: FontWeight.w500,
                       color: GlobalColors.black,
@@ -95,19 +95,19 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 ),
               ),
               CustomInformationScreen(
-                  lable: "Lead Name", text: "Mr Rithi Mahesh Kumar"),
+                  label: "Lead Name", text: "Mr Rithi Mahesh Kumar"),
               CustomInformationScreen(
-                  lable: "Lead Email", text: "ritimahesh29@gmail.com"),
+                  label: "Lead Email", text: "ritimahesh29@gmail.com"),
               CustomInformationScreen(
-                  lable: "Company Name", text: "ThemeParrot"),
+                  label: "Company Name", text: "ThemeParrot"),
               CustomInformationScreen(
-                  lable: "Website", text: "www.themeparrot.com"),
-              CustomInformationScreen(lable: "Mobile", text: "7708708978"),
-              CustomInformationScreen(lable: "Ofice Phone", text: "--"),
-              CustomInformationScreen(lable: "Country", text: "India"),
-              CustomInformationScreen(lable: "State", text: "Tamil Nadu"),
-              CustomInformationScreen(lable: "City", text: "Coimbatore"),
-              CustomInformationScreen(lable: "Postal Code", text: "641004"),
+                  label: "Website", text: "www.themeparrot.com"),
+              CustomInformationScreen(label: "Mobile", text: "7708708978"),
+              CustomInformationScreen(label: "Ofice Phone", text: "--"),
+              CustomInformationScreen(label: "Country", text: "India"),
+              CustomInformationScreen(label: "State", text: "Tamil Nadu"),
+              CustomInformationScreen(label: "City", text: "Coimbatore"),
+              CustomInformationScreen(label: "Postal Code", text: "641004"),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 width: width,
@@ -119,7 +119,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       width: width * 0.3,
                       child: Text(
                         "Address",
-                        style: GoogleFonts.abel(
+                        style: GoogleFonts.akayaKanadaka(
                             fontSize: width < 700 ? width / 28 : width / 47,
                             fontWeight: FontWeight.w400,
                             color: GlobalColors.themeColor,
@@ -135,7 +135,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         child: Text(
                           "436,6th Cross .Chrttiar Thaneer Pandal,Vilankurichi Rd, near Allied castings,Peelamedu,B.S. Puram Industrial Estate, Coimbatore, Tamil Nadu.",
                           softWrap: true,
-                          style: GoogleFonts.abel(
+                          style: GoogleFonts.akayaKanadaka(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               color: GlobalColors.black,
@@ -147,13 +147,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 ),
               ),
               CustomInformationScreen(
-                  lable: "Lead Agent", text: "Mrs PRabavathi"),
+                  label: "Lead Agent", text: "Mrs PRabavathi"),
               CustomInformationScreen(
-                  lable: "Lead Source", text: "Direct Visit"),
-              CustomInformationScreen(lable: "Status", text: "Pending"),
-              CustomInformationScreen(lable: "Lead Value", text: "10000"),
+                  label: "Lead Source", text: "Direct Visit"),
+              CustomInformationScreen(label: "Status", text: "Pending"),
+              CustomInformationScreen(label: "Lead Value", text: "10000"),
               CustomInformationScreen(
-                  lable: "Note",
+                  label: "Note",
                   text:
                       "Client will discuss with their team and get back to us."),
               Container(

@@ -55,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   label: Text(
                     "Log Out",
-                    style: GoogleFonts.abel(
+                    style: GoogleFonts.akayaKanadaka(
                         color: GlobalColors.white,
                         fontSize: width < 700 ? width / 28 : width / 45,
                         fontWeight: FontWeight.w400,
@@ -97,7 +97,7 @@ class ProfileScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     _data.name!,
-                                    style: GoogleFonts.abel(
+                                    style: GoogleFonts.akayaKanadaka(
                                         fontSize: width < 700
                                             ? width / 20
                                             : width / 42,
@@ -107,7 +107,7 @@ class ProfileScreen extends StatelessWidget {
                                   ),
                                   Text(
                                     _data.employeeDetail!.designation!.name!,
-                                    style: GoogleFonts.abel(
+                                    style: GoogleFonts.akayaKanadaka(
                                         fontSize: width < 700
                                             ? width / 24
                                             : width / 45,
@@ -118,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
                                   RichText(
                                     text: TextSpan(
                                         text: "Employee Id : ",
-                                        style: GoogleFonts.abel(
+                                        style: GoogleFonts.akayaKanadaka(
                                             fontSize: width < 700
                                                 ? width / 26
                                                 : width / 44,
@@ -129,7 +129,7 @@ class ProfileScreen extends StatelessWidget {
                                           TextSpan(
                                             text: _data.employeeDetail!.id!
                                                 .toString(),
-                                            style: GoogleFonts.abel(
+                                            style: GoogleFonts.akayaKanadaka(
                                                 fontSize: width < 700
                                                     ? width / 24
                                                     : width / 44,
@@ -154,30 +154,30 @@ class ProfileScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "ADDITIONAL INFORMATION :  ",
-                        style: GoogleFonts.abel(
+                        style: GoogleFonts.akayaKanadaka(
                             fontSize: width < 700 ? width / 28 : width / 45,
                             fontWeight: FontWeight.w500,
                             color: GlobalColors.black,
                             letterSpacing: 0),
                       ),
                     ),
-                    CustomInformationScreen(lable: "Email", text: _data.email!),
+                    CustomInformationScreen(label: "Email", text: _data.email!),
                     CustomInformationScreen(
-                        lable: "Mobile",
+                        label: "Mobile",
                         text: _data.employeeDetail!.mobileOne!),
                     CustomInformationScreen(
-                        lable: "Phone",
+                        label: "Phone",
                         text: _data.employeeDetail!.whatsappNo!),
                     CustomInformationScreen(
-                        lable: "Gender", text: _data.gender!),
+                        label: "Gender", text: _data.gender!),
                     CustomInformationScreen(
-                        lable: "State",
+                        label: "State",
                         text: _data.employeeDetail!.permanentAddState!),
                     CustomInformationScreen(
-                        lable: "City",
+                        label: "City",
                         text: _data.employeeDetail!.permanentAddCity!),
                     CustomInformationScreen(
-                        lable: "Pin-Code",
+                        label: "Pin-Code",
                         text: _data.employeeDetail!.permanentAddPincode!),
                     Container(
                       width: width,
@@ -190,7 +190,7 @@ class ProfileScreen extends StatelessWidget {
                             width: width * 0.35,
                             child: Text(
                               "Address",
-                              style: GoogleFonts.abel(
+                              style: GoogleFonts.akayaKanadaka(
                                   fontSize:
                                       width < 700 ? width / 28 : width / 47,
                                   fontWeight: FontWeight.w400,
@@ -207,7 +207,7 @@ class ProfileScreen extends StatelessWidget {
                             child: Text(
                               "${_data.employeeDetail!.permanentAddress!} ",
                               softWrap: true,
-                              style: GoogleFonts.abel(
+                              style: GoogleFonts.akayaKanadaka(
                                   fontSize:
                                       width < 700 ? width / 28 : width / 45,
                                   fontWeight: FontWeight.w400,

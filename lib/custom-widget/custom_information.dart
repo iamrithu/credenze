@@ -7,10 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../const/global_colors.dart';
 
 class CustomInformationScreen extends StatefulWidget {
-  final String lable;
+  final String label;
   final String text;
   const CustomInformationScreen(
-      {Key? key, required this.lable, required this.text})
+      {Key? key, required this.label, required this.text})
       : super(key: key);
 
   @override
@@ -35,8 +35,8 @@ class _CustomInformationScreenState extends State<CustomInformationScreen> {
             padding: EdgeInsets.only(left: width * 0.055),
             width: width * 0.35,
             child: Text(
-              widget.lable,
-              style: GoogleFonts.abel(
+              widget.label,
+              style: GoogleFonts.akayaKanadaka(
                   fontSize: width < 700 ? width / 28 : width / 47,
                   fontWeight: FontWeight.w400,
                   color: GlobalColors.themeColor,
@@ -51,7 +51,7 @@ class _CustomInformationScreenState extends State<CustomInformationScreen> {
               width: width * 0.6,
               child: Text(
                 "${widget.text} ",
-                style: GoogleFonts.abel(
+                style: GoogleFonts.akayaKanadaka(
                     fontSize: width < 700 ? width / 28 : width / 45,
                     fontWeight: FontWeight.w400,
                     color: GlobalColors.black,

@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:credenze/const/secret.dart';
 import 'package:credenze/models/installation-list-model.dart';
+import 'package:credenze/models/installation-overview-model.dart';
 import 'package:credenze/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/installation-overview-model.dart';
 import '../models/login_model.dart';
 
 class Api {
@@ -107,6 +109,23 @@ class ProviderApi {
         installations.add(InstallationModel.fromJson(e));
       }).toList();
       return installations;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<InstallationOverViewModel> InstallationOverView(
+      String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "user/profile/$id/overview",
+    );
+
+    print(response.toString());
+    if (response.statusCode == 200) {
+      InstallationOverViewModel overView =
+          InstallationOverViewModel.fromJson(response.data["data"]);
+      return overView;
     } else {
       throw Exception(response.statusMessage);
     }

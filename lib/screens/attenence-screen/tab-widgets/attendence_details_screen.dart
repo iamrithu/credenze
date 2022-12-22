@@ -41,7 +41,7 @@ class _AttendenceDetailsScreenState extends State<AttendenceDetailsScreen> {
                   RichText(
                     text: TextSpan(
                         text: DateFormat("MMMM").format(newDate),
-                        style: GoogleFonts.abel(
+                        style: GoogleFonts.akayaKanadaka(
                             fontSize: width < 700 ? width / 16 : width / 22,
                             fontWeight: FontWeight.w400,
                             color: GlobalColors.themeColor2,
@@ -49,7 +49,7 @@ class _AttendenceDetailsScreenState extends State<AttendenceDetailsScreen> {
                         children: [
                           TextSpan(
                             text: " - " + newDate.year.toString(),
-                            style: GoogleFonts.abel(
+                            style: GoogleFonts.akayaKanadaka(
                               fontSize: width < 700 ? width / 22 : width / 45,
                               fontWeight: FontWeight.w400,
                               color: GlobalColors.black,
@@ -75,7 +75,7 @@ class _AttendenceDetailsScreenState extends State<AttendenceDetailsScreen> {
                     },
                     child: Text(
                       "Pick Date",
-                      style: GoogleFonts.abel(
+                      style: GoogleFonts.akayaKanadaka(
                           fontSize: width < 700 ? width / 28 : width / 45,
                           fontWeight: FontWeight.w400,
                           letterSpacing: 0),
@@ -173,14 +173,16 @@ class _AttendenceDetailsScreenState extends State<AttendenceDetailsScreen> {
                                           child: RichText(
                                             text: TextSpan(
                                                 text: i.toString(),
-                                                style: GoogleFonts.abel(
-                                                    fontSize: width < 700
-                                                        ? width / 22
-                                                        : width / 40,
-                                                    fontWeight: FontWeight.w400,
-                                                    color:
-                                                        GlobalColors.themeColor,
-                                                    letterSpacing: 2),
+                                                style:
+                                                    GoogleFonts.akayaKanadaka(
+                                                        fontSize: width < 700
+                                                            ? width / 22
+                                                            : width / 40,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: GlobalColors
+                                                            .themeColor,
+                                                        letterSpacing: 2),
                                                 children: [
                                                   TextSpan(
                                                     text: "  " +
@@ -189,15 +191,17 @@ class _AttendenceDetailsScreenState extends State<AttendenceDetailsScreen> {
                                                                 newDate.year,
                                                                 newDate.month,
                                                                 i)),
-                                                    style: GoogleFonts.abel(
-                                                        fontSize: width < 700
-                                                            ? width / 32
-                                                            : width / 48,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color:
-                                                            GlobalColors.black,
-                                                        letterSpacing: 2),
+                                                    style: GoogleFonts
+                                                        .akayaKanadaka(
+                                                            fontSize: width <
+                                                                    700
+                                                                ? width / 32
+                                                                : width / 48,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: GlobalColors
+                                                                .black,
+                                                            letterSpacing: 2),
                                                   ),
                                                 ]),
                                           ),

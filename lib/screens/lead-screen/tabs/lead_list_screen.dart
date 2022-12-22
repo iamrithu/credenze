@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../const/global_colors.dart';
 import 'widgets/lead_custom_input.dart';
-import 'widgets/lead_custom_lable.dart';
 
 class LeadListingScreen extends StatefulWidget {
   const LeadListingScreen({Key? key}) : super(key: key);
@@ -56,7 +55,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.25,
                                         child: Text(
                                           "Lead Id",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.themeColor2,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -69,7 +68,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.45,
                                         child: Text(
                                           "#1",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.black,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -86,7 +85,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.25,
                                         child: Text(
                                           "Lead Name",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.themeColor2,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -99,7 +98,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.45,
                                         child: Text(
                                           "Mr Rithi Mahesh Kumar",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.black,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -116,7 +115,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.25,
                                         child: Text(
                                           "Company Name",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.themeColor2,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -129,7 +128,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.45,
                                         child: Text(
                                           "Themeparrot",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.black,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -146,7 +145,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.25,
                                         child: Text(
                                           "Created   ",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.themeColor2,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -159,7 +158,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.45,
                                         child: Text(
                                           "06-12-2022",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.black,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -176,7 +175,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.25,
                                         child: Text(
                                           "Lead Value ",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.themeColor2,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -189,7 +188,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.45,
                                         child: Text(
                                           "10000 Rs",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.black,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -206,7 +205,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                         width: width * 0.25,
                                         child: Text(
                                           "Lead Agend   ",
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               color: GlobalColors.themeColor2,
                                               fontSize: width < 700
                                                   ? width / 30
@@ -223,7 +222,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                           children: [
                                             Text(
                                               "Mrs Prabavathi",
-                                              style: GoogleFonts.abel(
+                                              style: GoogleFonts.akayaKanadaka(
                                                   color: GlobalColors.black,
                                                   fontSize: width < 700
                                                       ? width / 30
@@ -233,7 +232,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                                             ),
                                             Text(
                                               "Pending",
-                                              style: GoogleFonts.abel(
+                                              style: GoogleFonts.akayaKanadaka(
                                                   color: Color.fromARGB(
                                                       255, 225, 198, 27),
                                                   fontSize: width < 700
@@ -251,7 +250,7 @@ class _LeadListingScreenState extends State<LeadListingScreen> {
                               ),
                             ),
                             Container(
-                              width: width * 0.2,
+                              width: width * 0.17,
                               child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

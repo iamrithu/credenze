@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomInputForm extends StatefulWidget {
-  final String lable;
+  final String label;
   final TextEditingController? controller;
 
   const CustomInputForm(
-      {super.key, required this.lable, required this.controller});
+      {super.key, required this.label, required this.controller});
 
   @override
   State<CustomInputForm> createState() => _CustomInputFormState();
@@ -34,11 +34,11 @@ class _CustomInputFormState extends State<CustomInputForm> {
             padding: EdgeInsets.symmetric(horizontal: width * 0.03),
             child: TextFormField(
                 controller: widget.controller,
-                obscureText: widget.lable == "Password" ? obscureText : false,
+                obscureText: widget.label == "Password" ? obscureText : false,
                 decoration: InputDecoration(
                   label: Text(
-                    widget.lable,
-                    style: GoogleFonts.abel(
+                    widget.label,
+                    style: GoogleFonts.akayaKanadaka(
                         color: GlobalColors.themeColor2,
                         fontSize: width < 700 ? width / 28 : width / 45,
                         fontWeight: FontWeight.w400,
@@ -47,7 +47,7 @@ class _CustomInputFormState extends State<CustomInputForm> {
                   border: InputBorder.none,
                 )),
           ),
-          if (widget.lable == "Password")
+          if (widget.label == "Password")
             IconButton(
                 onPressed: () {
                   setState(() {
@@ -57,7 +57,7 @@ class _CustomInputFormState extends State<CustomInputForm> {
                 icon: obscureText
                     ? Icon(Icons.visibility_off_rounded)
                     : Icon(Icons.visibility_rounded)),
-          if (widget.lable == "Email")
+          if (widget.label == "Email")
             IconButton(onPressed: () {}, icon: Icon(Icons.email))
         ],
       ),

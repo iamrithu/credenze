@@ -1,4 +1,5 @@
 import 'package:credenze/const/global_colors.dart';
+import 'package:credenze/custom-widget/custom_appbar.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/attenence-screen/attenence_screen.dart';
 import 'package:credenze/screens/profile/profile_screen.dart';
@@ -49,6 +50,10 @@ class HomeScreen extends ConsumerWidget {
       LeadDetailsScreen()
     ];
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size(width, height * 0.05),
+        child: CustomAppBar(page: ref.watch(pageIndex)),
+      ),
       body: RefreshIndicator(
         color: Colors.white,
         backgroundColor: GlobalColors.themeColor,
@@ -58,12 +63,7 @@ class HomeScreen extends ConsumerWidget {
         },
         child: SafeArea(
           child: isNetworkConnected
-              ? ListView(
-                  children: [
-                    Container(
-                        width: width, height: height, child: pages[_page]),
-                  ],
-                )
+              ? Container(width: width, height: height, child: pages[_page])
               : Container(
                   width: width,
                   height: height * 1,

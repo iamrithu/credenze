@@ -3,17 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../const/global_colors.dart';
 
-class LeadCustomLable extends StatefulWidget {
-  final String lable;
+class LeadCustomlabel extends StatefulWidget {
+  final String label;
   final String? start;
-  LeadCustomLable({Key? key, required this.lable, this.start})
+  LeadCustomlabel({Key? key, required this.label, this.start})
       : super(key: key);
 
   @override
-  _LeadCustomLableState createState() => _LeadCustomLableState();
+  _LeadCustomlabelState createState() => _LeadCustomlabelState();
 }
 
-class _LeadCustomLableState extends State<LeadCustomLable> {
+class _LeadCustomlabelState extends State<LeadCustomlabel> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -23,8 +23,8 @@ class _LeadCustomLableState extends State<LeadCustomLable> {
       margin: EdgeInsets.symmetric(horizontal: width * 0.01),
       child: RichText(
         text: TextSpan(
-            text: widget.lable,
-            style: GoogleFonts.abel(
+            text: widget.label,
+            style: GoogleFonts.akayaKanadaka(
                 fontSize: width < 700 ? width / 28 : width / 45,
                 fontWeight: FontWeight.w400,
                 color: GlobalColors.black,
@@ -32,7 +32,7 @@ class _LeadCustomLableState extends State<LeadCustomLable> {
             children: [
               TextSpan(
                 text: widget.start,
-                style: GoogleFonts.abel(
+                style: GoogleFonts.akayaKanadaka(
                     fontSize: width < 700 ? width / 28 : width / 45,
                     fontWeight: FontWeight.w400,
                     color: GlobalColors.themeColor,

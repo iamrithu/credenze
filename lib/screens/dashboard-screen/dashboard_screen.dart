@@ -32,11 +32,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String? _dayOut;
   bool _dayCompleted = false;
 
-  _startLocation() async {
-    LocationService().initialize();
-    LocationService().getLat().then((value) {});
-  }
-
   attendenceDetails() async {
     final prefs = await SharedPreferences.getInstance();
     String? token = await prefs.getString('token');
@@ -94,14 +89,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _stopWatchTimer.setPresetSecondTime(diff.inSeconds % 60.abs());
               _stopWatchTimer.onStopTimer();
             }
-
-            // if (_dayIn != null) {
-            //   _action = "DayOut";
-
-            // }
-
-            // if (_dayOut != null) {
-            //   _action = "DayIn";
           });
         }
       }
@@ -110,6 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void initState() {
+    // ignore: todo
     // TODO: implement initState
     super.initState();
     attendenceDetails();
@@ -276,7 +264,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           top: height * 0.01),
                                       child: Text(
                                         "WELCOME ",
-                                        style: GoogleFonts.abel(
+                                        style: GoogleFonts.akayaKanadaka(
                                             fontSize: width < 700
                                                 ? width / 27
                                                 : width / 40,
@@ -303,15 +291,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 data: (_data) {
                                                   return Text(
                                                     _data.name!,
-                                                    style: GoogleFonts.abel(
-                                                        fontSize: width < 700
-                                                            ? width / 17
-                                                            : width / 40,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: GlobalColors
-                                                            .themeColor,
-                                                        letterSpacing: 0),
+                                                    style: GoogleFonts
+                                                        .akayaKanadaka(
+                                                            fontSize: width <
+                                                                    700
+                                                                ? width / 17
+                                                                : width / 40,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: GlobalColors
+                                                                .themeColor,
+                                                            letterSpacing: 0),
                                                   );
                                                 },
                                                 error: (err, s) => Text(
@@ -367,7 +357,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               children: [
                                 Text(
                                   "Today's Status ",
-                                  style: GoogleFonts.abel(
+                                  style: GoogleFonts.akayaKanadaka(
                                       fontSize:
                                           width < 700 ? width / 21 : width / 48,
                                       fontWeight: FontWeight.w400,
@@ -391,7 +381,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     children: [
                                       Text(
                                         "Day In ",
-                                        style: GoogleFonts.abel(
+                                        style: GoogleFonts.akayaKanadaka(
                                             fontSize: width < 700
                                                 ? width / 18
                                                 : width / 24,
@@ -401,7 +391,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ),
                                       Text(
                                         _dayIn ?? "--/--",
-                                        style: GoogleFonts.abel(
+                                        style: GoogleFonts.akayaKanadaka(
                                             fontSize: width < 700
                                                 ? width / 17
                                                 : width / 23,
@@ -418,7 +408,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     children: [
                                       Text(
                                         "Day Out ",
-                                        style: GoogleFonts.abel(
+                                        style: GoogleFonts.akayaKanadaka(
                                             fontSize: width < 700
                                                 ? width / 18
                                                 : width / 24,
@@ -428,7 +418,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ),
                                       Text(
                                         _dayOut ?? "--/--",
-                                        style: GoogleFonts.abel(
+                                        style: GoogleFonts.akayaKanadaka(
                                             fontSize: width < 700
                                                 ? width / 17
                                                 : width / 23,
@@ -455,7 +445,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: RichText(
                             text: TextSpan(
                                 text: DateTime.now().day.toString(),
-                                style: GoogleFonts.abel(
+                                style: GoogleFonts.akayaKanadaka(
                                     fontSize:
                                         width < 700 ? width / 16 : width / 22,
                                     fontWeight: FontWeight.w400,
@@ -466,7 +456,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     text: " " +
                                         DateFormat("MMMM yyyy")
                                             .format(DateTime.now()),
-                                    style: GoogleFonts.abel(
+                                    style: GoogleFonts.akayaKanadaka(
                                         fontSize: width < 700
                                             ? width / 22
                                             : width / 45,
@@ -493,7 +483,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   child: Text(
                                     DateFormat("hh:mm:ss a")
                                         .format(DateTime.now()),
-                                    style: GoogleFonts.abel(
+                                    style: GoogleFonts.akayaKanadaka(
                                         fontSize: width < 700
                                             ? width / 22
                                             : width / 45,
@@ -540,7 +530,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               children: [
                                 Text(
                                   "Logged In Time",
-                                  style: GoogleFonts.abel(
+                                  style: GoogleFonts.akayaKanadaka(
                                       fontSize:
                                           width < 700 ? width / 28 : width / 42,
                                       fontWeight: FontWeight.w400,
@@ -559,7 +549,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       text: TextSpan(
                                           text:
                                               displayTimeWithoutSec.toString(),
-                                          style: GoogleFonts.abel(
+                                          style: GoogleFonts.akayaKanadaka(
                                               fontSize: width < 700
                                                   ? width / 20
                                                   : width / 24,
@@ -570,7 +560,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             TextSpan(
                                               text: " " +
                                                   displayTimeWithSec.toString(),
-                                              style: GoogleFonts.abel(
+                                              style: GoogleFonts.akayaKanadaka(
                                                   fontSize: width < 700
                                                       ? width / 12
                                                       : width / 18,
@@ -610,7 +600,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     _action == "DayIn"
                                         ? "Slide To Day In"
                                         : "Slide To Day Out",
-                                    style: GoogleFonts.abel(
+                                    style: GoogleFonts.akayaKanadaka(
                                         fontSize: width < 700
                                             ? width / 28
                                             : width / 42,
@@ -651,7 +641,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     "YOU HAVE DONE A GOOD JOB TODAY 🤝🤝🤝",
-                                    style: GoogleFonts.abel(
+                                    style: GoogleFonts.akayaKanadaka(
                                         fontSize: width < 700
                                             ? width / 22
                                             : width / 48,

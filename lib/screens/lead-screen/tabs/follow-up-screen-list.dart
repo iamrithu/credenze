@@ -1,12 +1,7 @@
-import 'package:credenze/river-pod/riverpod_provider.dart';
-import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../const/global_colors.dart';
-import 'widgets/lead_custom_input.dart';
-import 'widgets/lead_custom_lable.dart';
 
 class FollowUpListScreen extends StatefulWidget {
   const FollowUpListScreen({Key? key}) : super(key: key);
@@ -50,7 +45,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.25,
                                     child: Text(
                                       "Lead Id",
-                                      style: GoogleFonts.abel(
+                                      style: GoogleFonts.akayaKanadaka(
                                           color: GlobalColors.themeColor2,
                                           fontSize: width < 700
                                               ? width / 30
@@ -63,7 +58,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.45,
                                     child: Text(
                                       "#1",
-                                      style: GoogleFonts.abel(
+                                      style: GoogleFonts.akayaKanadaka(
                                           color: GlobalColors.black,
                                           fontSize: width < 700
                                               ? width / 30
@@ -80,7 +75,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.25,
                                     child: Text(
                                       "Follow Up Date",
-                                      style: GoogleFonts.abel(
+                                      style: GoogleFonts.akayaKanadaka(
                                           color: GlobalColors.themeColor2,
                                           fontSize: width < 700
                                               ? width / 30
@@ -93,7 +88,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.45,
                                     child: Text(
                                       "14 Dec 2022",
-                                      style: GoogleFonts.abel(
+                                      style: GoogleFonts.akayaKanadaka(
                                           color: GlobalColors.black,
                                           fontSize: width < 700
                                               ? width / 30
@@ -110,7 +105,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.25,
                                     child: Text(
                                       "Follow Up Time",
-                                      style: GoogleFonts.abel(
+                                      style: GoogleFonts.akayaKanadaka(
                                           color: GlobalColors.themeColor2,
                                           fontSize: width < 700
                                               ? width / 30
@@ -123,7 +118,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.45,
                                     child: Text(
                                       "2:30 AM",
-                                      style: GoogleFonts.abel(
+                                      style: GoogleFonts.akayaKanadaka(
                                           color: GlobalColors.black,
                                           fontSize: width < 700
                                               ? width / 30
@@ -140,7 +135,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.25,
                                     child: Text(
                                       "Remarks",
-                                      style: GoogleFonts.abel(
+                                      style: GoogleFonts.akayaKanadaka(
                                           color: GlobalColors.themeColor2,
                                           fontSize: width < 700
                                               ? width / 30
@@ -153,7 +148,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.45,
                                     child: Text(
                                       "Need a conversation for understading thier products",
-                                      style: GoogleFonts.abel(
+                                      style: GoogleFonts.akayaKanadaka(
                                           color: GlobalColors.black,
                                           fontSize: width < 700
                                               ? width / 30

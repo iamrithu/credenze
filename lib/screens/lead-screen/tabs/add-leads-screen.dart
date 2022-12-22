@@ -1,9 +1,9 @@
+import 'package:credenze/screens/lead-screen/tabs/widgets/lead_custom_lable.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../const/global_colors.dart';
 import 'widgets/lead_custom_input.dart';
-import 'widgets/lead_custom_lable.dart';
 
 const List<String> Salutation = <String>[
   'Mr',
@@ -147,8 +147,8 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
               ),
               Row(
                 children: [
-                  LeadCustomLable(
-                    lable: "Lead Name",
+                  LeadCustomlabel(
+                    label: "Lead Name",
                     start: "*",
                   )
                 ],
@@ -200,7 +200,7 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                       ),
                     ),
                     LeadCustomInput(
-                      lable: "Lead Name",
+                      label: "Lead Name",
                       controller: _leadNameController,
                     ),
                   ],
@@ -214,12 +214,12 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Lead Email",
+                    LeadCustomlabel(
+                      label: "Lead Email",
                       start: "*",
                     ),
                     LeadCustomInput(
-                      lable: "Lead Email",
+                      label: "Lead Email",
                       controller: _leadEmailController,
                     ),
                   ],
@@ -233,12 +233,12 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Mobiel No",
+                    LeadCustomlabel(
+                      label: "Mobiel No",
                       start: "*",
                     ),
                     LeadCustomInput(
-                      lable: "e.g : 111111111",
+                      label: "e.g : 111111111",
                       controller: _leadMobileNoController,
                     ),
                   ],
@@ -252,12 +252,12 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Lead Value",
+                    LeadCustomlabel(
+                      label: "Lead Value",
                       start: "*",
                     ),
                     LeadCustomInput(
-                      lable: "Lead Value",
+                      label: "Lead Value",
                       controller: _leadValueController,
                     ),
                   ],
@@ -271,8 +271,8 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Lead Agend",
+                    LeadCustomlabel(
+                      label: "Lead Agend",
                       start: "*",
                     ),
                     Container(
@@ -333,8 +333,8 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Lead Source",
+                    LeadCustomlabel(
+                      label: "Lead Source",
                       start: "*",
                     ),
                     Container(
@@ -395,8 +395,8 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Lead Category",
+                    LeadCustomlabel(
+                      label: "Lead Category",
                       start: "*",
                     ),
                     Container(
@@ -456,8 +456,8 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "AllowFollowUp",
+                    LeadCustomlabel(
+                      label: "AllowFollowUp",
                       start: "*",
                     ),
                     Container(
@@ -499,8 +499,8 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Status",
+                    LeadCustomlabel(
+                      label: "Status",
                       start: "*",
                     ),
                     Container(
@@ -608,12 +608,12 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Company Name",
+                    LeadCustomlabel(
+                      label: "Company Name",
                       start: null,
                     ),
                     LeadCustomInput(
-                      lable: "Company Name",
+                      label: "Company Name",
                       controller: _companyNameController,
                     ),
                   ],
@@ -627,12 +627,12 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Website",
+                    LeadCustomlabel(
+                      label: "Website",
                       start: null,
                     ),
                     LeadCustomInput(
-                      lable: "e.g : https://www.example.com",
+                      label: "e.g : https://www.example.com",
                       controller: _companyWebsiteController,
                     ),
                   ],
@@ -646,12 +646,12 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Office No",
+                    LeadCustomlabel(
+                      label: "Office No",
                       start: null,
                     ),
                     LeadCustomInput(
-                      lable: "office-no",
+                      label: "office-no",
                       controller: _companyOfficeNoController,
                     ),
                   ],
@@ -697,12 +697,12 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    LeadCustomLable(
-                      lable: "Postal Code",
+                    LeadCustomlabel(
+                      label: "Postal Code",
                       start: null,
                     ),
                     LeadCustomInput(
-                      lable: "postal-code ",
+                      label: "postal-code ",
                       controller: _companyPostalCodeController,
                     ),
                   ],
