@@ -68,22 +68,18 @@ class MapsAndLocation {
     if (permission == LocationPermission.deniedForever) {
       return Future.error("Location Permissions are Permanently Disabled");
     }
-    print("${await Geolocator.getCurrentPosition()}");
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
   }
 
-  Future<File?> getCamera() async {
+  Future getCamera() async {
     final ImagePicker _picker = ImagePicker();
 
     try {
       final image = await _picker.pickImage(
-          source: ImageSource.camera,
-          maxWidth: 200,
-          maxHeight: 200,
-          preferredCameraDevice: CameraDevice.front);
+          source: ImageSource.camera, preferredCameraDevice: CameraDevice.rear);
 
-      if (image == null) return null;
+      if (image == null) return;
       final imageTemporay = File(image.path);
       return imageTemporay;
     } on PlatformException catch (e) {

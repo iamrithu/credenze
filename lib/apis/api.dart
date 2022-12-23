@@ -71,20 +71,28 @@ class Api {
     }
   }
 
-  Future ClockIn(String token, int id, String latitude, String longitude,
+  Future ClockIn(String? token, int? id, String? latitude, String? longitude,
       File photo) async {
-    dio.options.headers["Authorization"] = "Bearer $token";
-
-    var params = {latitude, longitude, photo};
+    String fileName = photo.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(photo.path, filename: fileName),
+    });
+    var params = {
+      "latitude": latitude!,
+      "longitude": longitude!,
+      "photo": formData.files,
+    };
 
     try {
-      Response response = await dio.post(
-        "installation/$id/dayin",
-        data: jsonEncode(params),
-      );
+      Response response = await dio.post("installation/$id/dayin",
+          data: jsonEncode(params),
+          options: Options(contentType: 'multipart/form-data'));
+      print(response.toString());
 
       return response;
     } on DioError catch (e) {
+      print(e.toString());
+
       return e.response;
     }
   }

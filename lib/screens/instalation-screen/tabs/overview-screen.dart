@@ -101,7 +101,9 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
     });
   }
 
-  installationClockIn() {
+  installationClockIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = await prefs.getString('token');
     MapsAndLocation().locationPermisson().then((value) {
       setState(() {
         lat = value.latitude;
@@ -109,7 +111,12 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
       });
     });
     MapsAndLocation().getCamera().then((value) {
-      newImage = value;
+      setState(() {
+        newImage = value;
+      });
+      Api().ClockIn(token!, ref.watch(userId), lat.toString(), long.toString(),
+          newImage!);
+      getInstallationAttendence();
     });
   }
 
@@ -142,7 +149,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                     children: [
                       Container(
                         width: widget.width,
-                        height: widget.height! * 0.5,
                         child: Card(
                             elevation: 10,
                             shape: RoundedRectangleBorder(
@@ -492,7 +498,12 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                       ),
                       Text("$lat"),
                       Text("$long"),
-                      newImage == null ? Text("null") : Image.file(newImage!)
+                      newImage == null
+                          ? Text("null")
+                          : Image.file(
+                              newImage!,
+                              width: widget.width! * 0.3,
+                            )
                     ],
                   ),
                 ),
