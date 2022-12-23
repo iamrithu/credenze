@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final InstallationOverViewModel = InstallationOverViewModelFromJson(jsonString);
-
 class InstallationOverViewModel {
   InstallationOverViewModel({
     required this.id,
@@ -29,82 +25,103 @@ class InstallationOverViewModel {
     required this.customerAddressinfo,
   });
 
-  int id;
-  int branchId;
-  String installationPrefix;
-  String installationNos;
-  String installationName;
-  int customerId;
-  int addressId;
-  String siteLatitude;
-  String siteLongitude;
-  String customerName;
-  String customerAddress;
-  int branchState;
-  int customerState;
-  DateTime startDate;
-  DateTime completionDate;
-  int installationStatus;
+  int? id;
+  int? branchId;
+  String? installationPrefix;
+  String? installationNos;
+  String? installationName;
+  int? customerId;
+  int? addressId;
+  String? siteLatitude;
+  String? siteLongitude;
+  String? customerName;
+  String? customerAddress;
+  int? branchState;
+  int? customerState;
+  DateTime? startDate;
+  dynamic completionDate;
+  int? installationStatus;
   dynamic addedBy;
   dynamic lastUpdatedBy;
-  int siteIncharge;
-  String installationSummary;
-  int quoteId;
-  String installationCode;
-  CustomerAddressinfo customerAddressinfo;
+  int? siteIncharge;
+  dynamic installationSummary;
+  int? quoteId;
+  String? installationCode;
+  CustomerAddressinfo? customerAddressinfo;
 
   factory InstallationOverViewModel.fromJson(Map<String, dynamic> json) =>
       InstallationOverViewModel(
-        id: json["id"],
-        branchId: json["branch_id"],
-        installationPrefix: json["installation_prefix"],
-        installationNos: json["installation_nos"],
-        installationName: json["installation_name"],
-        customerId: json["customer_id"],
-        addressId: json["address_id"],
-        siteLatitude: json["site_latitude"],
-        siteLongitude: json["site_longitude"],
-        customerName: json["customer_name"],
-        customerAddress: json["customer_address"],
-        branchState: json["branch_state"],
-        customerState: json["customer_state"],
-        startDate: DateTime.parse(json["start_date"]),
-        completionDate: DateTime.parse(json["completion_date"]),
-        installationStatus: json["installation_status"],
+        id: json["id"] == null ? null : json["id"],
+        branchId: json["branch_id"] == null ? null : json["branch_id"],
+        installationPrefix: json["installation_prefix"] == null
+            ? null
+            : json["installation_prefix"],
+        installationNos:
+            json["installation_nos"] == null ? null : json["installation_nos"],
+        installationName: json["installation_name"] == null
+            ? null
+            : json["installation_name"],
+        customerId: json["customer_id"] == null ? null : json["customer_id"],
+        addressId: json["address_id"] == null ? null : json["address_id"],
+        siteLatitude:
+            json["site_latitude"] == null ? null : json["site_latitude"],
+        siteLongitude:
+            json["site_longitude"] == null ? null : json["site_longitude"],
+        customerName:
+            json["customer_name"] == null ? null : json["customer_name"],
+        customerAddress:
+            json["customer_address"] == null ? null : json["customer_address"],
+        branchState: json["branch_state"] == null ? null : json["branch_state"],
+        customerState:
+            json["customer_state"] == null ? null : json["customer_state"],
+        startDate: json["start_date"] == null
+            ? null
+            : DateTime.parse(json["start_date"]),
+        completionDate: json["completion_date"],
+        installationStatus: json["installation_status"] == null
+            ? null
+            : json["installation_status"],
         addedBy: json["added_by"],
         lastUpdatedBy: json["last_updated_by"],
-        siteIncharge: json["site_incharge"],
+        siteIncharge:
+            json["site_incharge"] == null ? null : json["site_incharge"],
         installationSummary: json["installation_summary"],
-        quoteId: json["quote_id"],
-        installationCode: json["installation_code"],
-        customerAddressinfo:
-            CustomerAddressinfo.fromJson(json["customer_addressinfo"]),
+        quoteId: json["quote_id"] == null ? null : json["quote_id"],
+        installationCode: json["installation_code"] == null
+            ? null
+            : json["installation_code"],
+        customerAddressinfo: json["customer_addressinfo"] == null
+            ? null
+            : CustomerAddressinfo.fromJson(json["customer_addressinfo"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "branch_id": branchId,
-        "installation_prefix": installationPrefix,
-        "installation_nos": installationNos,
-        "installation_name": installationName,
-        "customer_id": customerId,
-        "address_id": addressId,
-        "site_latitude": siteLatitude,
-        "site_longitude": siteLongitude,
-        "customer_name": customerName,
-        "customer_address": customerAddress,
-        "branch_state": branchState,
-        "customer_state": customerState,
-        "start_date": startDate.toIso8601String(),
-        "completion_date": completionDate.toIso8601String(),
-        "installation_status": installationStatus,
+        "id": id == null ? null : id,
+        "branch_id": branchId == null ? null : branchId,
+        "installation_prefix":
+            installationPrefix == null ? null : installationPrefix,
+        "installation_nos": installationNos == null ? null : installationNos,
+        "installation_name": installationName == null ? null : installationName,
+        "customer_id": customerId == null ? null : customerId,
+        "address_id": addressId == null ? null : addressId,
+        "site_latitude": siteLatitude == null ? null : siteLatitude,
+        "site_longitude": siteLongitude == null ? null : siteLongitude,
+        "customer_name": customerName == null ? null : customerName,
+        "customer_address": customerAddress == null ? null : customerAddress,
+        "branch_state": branchState == null ? null : branchState,
+        "customer_state": customerState == null ? null : customerState,
+        "start_date": startDate == null ? null : startDate!.toString(),
+        "completion_date": completionDate,
+        "installation_status":
+            installationStatus == null ? null : installationStatus,
         "added_by": addedBy,
         "last_updated_by": lastUpdatedBy,
-        "site_incharge": siteIncharge,
+        "site_incharge": siteIncharge == null ? null : siteIncharge,
         "installation_summary": installationSummary,
-        "quote_id": quoteId,
-        "installation_code": installationCode,
-        "customer_addressinfo": customerAddressinfo.toJson(),
+        "quote_id": quoteId == null ? null : quoteId,
+        "installation_code": installationCode == null ? null : installationCode,
+        "customer_addressinfo":
+            customerAddressinfo == null ? null : customerAddressinfo!.toJson(),
       };
 }
 
@@ -123,45 +140,50 @@ class CustomerAddressinfo {
     required this.stateinfo,
   });
 
-  int id;
-  int customerId;
+  int? id;
+  int? customerId;
   dynamic landmark;
-  String address;
-  String city;
-  int district;
-  int stateId;
-  String pincode;
-  String addressDetails;
-  Districtinfo districtinfo;
-  Stateinfo stateinfo;
+  String? address;
+  String? city;
+  int? district;
+  int? stateId;
+  String? pincode;
+  String? addressDetails;
+  Districtinfo? districtinfo;
+  Stateinfo? stateinfo;
 
   factory CustomerAddressinfo.fromJson(Map<String, dynamic> json) =>
       CustomerAddressinfo(
-        id: json["id"],
-        customerId: json["customer_id"],
+        id: json["id"] == null ? null : json["id"],
+        customerId: json["customer_id"] == null ? null : json["customer_id"],
         landmark: json["landmark"],
-        address: json["address"],
-        city: json["city"],
-        district: json["district"],
-        stateId: json["state_id"],
-        pincode: json["pincode"],
-        addressDetails: json["address_details"],
-        districtinfo: Districtinfo.fromJson(json["districtinfo"]),
-        stateinfo: Stateinfo.fromJson(json["stateinfo"]),
+        address: json["address"] == null ? null : json["address"],
+        city: json["city"] == null ? null : json["city"],
+        district: json["district"] == null ? null : json["district"],
+        stateId: json["state_id"] == null ? null : json["state_id"],
+        pincode: json["pincode"] == null ? null : json["pincode"],
+        addressDetails:
+            json["address_details"] == null ? null : json["address_details"],
+        districtinfo: json["districtinfo"] == null
+            ? null
+            : Districtinfo.fromJson(json["districtinfo"]),
+        stateinfo: json["stateinfo"] == null
+            ? null
+            : Stateinfo.fromJson(json["stateinfo"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "customer_id": customerId,
+        "id": id == null ? null : id,
+        "customer_id": customerId == null ? null : customerId,
         "landmark": landmark,
-        "address": address,
-        "city": city,
-        "district": district,
-        "state_id": stateId,
-        "pincode": pincode,
-        "address_details": addressDetails,
-        "districtinfo": districtinfo.toJson(),
-        "stateinfo": stateinfo.toJson(),
+        "address": address == null ? null : address,
+        "city": city == null ? null : city,
+        "district": district == null ? null : district,
+        "state_id": stateId == null ? null : stateId,
+        "pincode": pincode == null ? null : pincode,
+        "address_details": addressDetails == null ? null : addressDetails,
+        "districtinfo": districtinfo == null ? null : districtinfo!.toJson(),
+        "stateinfo": stateinfo == null ? null : stateinfo!.toJson(),
       };
 }
 
@@ -174,26 +196,27 @@ class Districtinfo {
     required this.lastUpdatedBy,
   });
 
-  int id;
-  String name;
-  int stateId;
-  int addedBy;
-  int lastUpdatedBy;
+  int? id;
+  String? name;
+  int? stateId;
+  int? addedBy;
+  int? lastUpdatedBy;
 
   factory Districtinfo.fromJson(Map<String, dynamic> json) => Districtinfo(
-        id: json["id"],
-        name: json["name"],
-        stateId: json["state_id"],
-        addedBy: json["added_by"],
-        lastUpdatedBy: json["last_updated_by"],
+        id: json["id"] == null ? null : json["id"],
+        name: json["name"] == null ? null : json["name"],
+        stateId: json["state_id"] == null ? null : json["state_id"],
+        addedBy: json["added_by"] == null ? null : json["added_by"],
+        lastUpdatedBy:
+            json["last_updated_by"] == null ? null : json["last_updated_by"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "state_id": stateId,
-        "added_by": addedBy,
-        "last_updated_by": lastUpdatedBy,
+        "id": id == null ? null : id,
+        "name": name == null ? null : name,
+        "state_id": stateId == null ? null : stateId,
+        "added_by": addedBy == null ? null : addedBy,
+        "last_updated_by": lastUpdatedBy == null ? null : lastUpdatedBy,
       };
 }
 
@@ -203,16 +226,16 @@ class Stateinfo {
     required this.stateName,
   });
 
-  int id;
-  String stateName;
+  int? id;
+  String? stateName;
 
   factory Stateinfo.fromJson(Map<String, dynamic> json) => Stateinfo(
-        id: json["id"],
-        stateName: json["state_name"],
+        id: json["id"] == null ? null : json["id"],
+        stateName: json["state_name"] == null ? null : json["state_name"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "state_name": stateName,
+        "id": id == null ? null : id,
+        "state_name": stateName == null ? null : stateName,
       };
 }

@@ -1,3 +1,15 @@
+// To parse this JSON data, do
+//
+//     final InstallationModel = InstallationModelFromJson(jsonString);
+
+import 'dart:convert';
+
+InstallationModel InstallationModelFromJson(String str) =>
+    InstallationModel.fromJson(json.decode(str));
+
+String InstallationModelToJson(InstallationModel data) =>
+    json.encode(data.toJson());
+
 class InstallationModel {
   InstallationModel({
     required this.id,
@@ -41,12 +53,12 @@ class InstallationModel {
   int? branchState;
   int? customerState;
   DateTime? startDate;
-  DateTime? completionDate;
+  dynamic completionDate;
   int? installationStatus;
   dynamic addedBy;
   dynamic lastUpdatedBy;
-  int? siteIncharge;
-  String? installationSummary;
+  dynamic siteIncharge;
+  dynamic installationSummary;
   int? quoteId;
   int? userId;
   int? installationId;
@@ -55,59 +67,81 @@ class InstallationModel {
 
   factory InstallationModel.fromJson(Map<String, dynamic> json) =>
       InstallationModel(
-        id: json["id"],
-        branchId: json["branch_id"],
-        installationPrefix: json["installation_prefix"],
-        installationNos: json["installation_nos"],
-        installationName: json["installation_name"],
-        customerId: json["customer_id"],
-        addressId: json["address_id"],
-        siteLatitude: json["site_latitude"],
-        siteLongitude: json["site_longitude"],
-        customerName: json["customer_name"],
-        customerAddress: json["customer_address"],
-        branchState: json["branch_state"],
-        customerState: json["customer_state"],
-        startDate: DateTime.parse(json["start_date"]),
-        completionDate: DateTime.parse(json["completion_date"]),
-        installationStatus: json["installation_status"],
+        id: json["id"] == null ? null : json["id"],
+        branchId: json["branch_id"] == null ? null : json["branch_id"],
+        installationPrefix: json["installation_prefix"] == null
+            ? null
+            : json["installation_prefix"],
+        installationNos:
+            json["installation_nos"] == null ? null : json["installation_nos"],
+        installationName: json["installation_name"] == null
+            ? null
+            : json["installation_name"],
+        customerId: json["customer_id"] == null ? null : json["customer_id"],
+        addressId: json["address_id"] == null ? null : json["address_id"],
+        siteLatitude:
+            json["site_latitude"] == null ? null : json["site_latitude"],
+        siteLongitude:
+            json["site_longitude"] == null ? null : json["site_longitude"],
+        customerName:
+            json["customer_name"] == null ? null : json["customer_name"],
+        customerAddress:
+            json["customer_address"] == null ? null : json["customer_address"],
+        branchState: json["branch_state"] == null ? null : json["branch_state"],
+        customerState:
+            json["customer_state"] == null ? null : json["customer_state"],
+        startDate: json["start_date"] == null
+            ? null
+            : DateTime.parse(json["start_date"]),
+        completionDate: json["completion_date"],
+        installationStatus: json["installation_status"] == null
+            ? null
+            : json["installation_status"],
         addedBy: json["added_by"],
         lastUpdatedBy: json["last_updated_by"],
         siteIncharge: json["site_incharge"],
         installationSummary: json["installation_summary"],
-        quoteId: json["quote_id"],
-        userId: json["user_id"],
-        installationId: json["installation_id"],
-        assignDate: DateTime.parse(json["assign_date"]),
-        installationCode: json["installation_code"],
+        quoteId: json["quote_id"] == null ? null : json["quote_id"],
+        userId: json["user_id"] == null ? null : json["user_id"],
+        installationId:
+            json["installation_id"] == null ? null : json["installation_id"],
+        assignDate: json["assign_date"] == null
+            ? null
+            : DateTime.parse(json["assign_date"]),
+        installationCode: json["installation_code"] == null
+            ? null
+            : json["installation_code"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id!,
-        "branch_id": branchId!,
-        "installation_prefix": installationPrefix!,
-        "installation_nos": installationNos!,
-        "installation_name": installationName!,
-        "customer_id": customerId!,
-        "address_id": addressId!,
-        "site_latitude": siteLatitude!,
-        "site_longitude": siteLongitude!,
-        "customer_name": customerName!,
-        "customer_address": customerAddress!,
-        "branch_state": branchState!,
-        "customer_state": customerState!,
-        "start_date": startDate!.toString(),
-        "completion_date": completionDate!.toString(),
-        "installation_status": installationStatus!,
+        "id": id == null ? null : id,
+        "branch_id": branchId == null ? null : branchId,
+        "installation_prefix":
+            installationPrefix == null ? null : installationPrefix,
+        "installation_nos": installationNos == null ? null : installationNos,
+        "installation_name": installationName == null ? null : installationName,
+        "customer_id": customerId == null ? null : customerId,
+        "address_id": addressId == null ? null : addressId,
+        "site_latitude": siteLatitude == null ? null : siteLatitude,
+        "site_longitude": siteLongitude == null ? null : siteLongitude,
+        "customer_name": customerName == null ? null : customerName,
+        "customer_address": customerAddress == null ? null : customerAddress,
+        "branch_state": branchState == null ? null : branchState,
+        "customer_state": customerState == null ? null : customerState,
+        "start_date": startDate == null ? null : startDate.toString(),
+        "completion_date": completionDate,
+        "installation_status":
+            installationStatus == null ? null : installationStatus,
         "added_by": addedBy,
-        "last_updated_by": lastUpdatedBy!,
-        "site_incharge": siteIncharge!,
-        "installation_summary": installationSummary!,
-        "quote_id": quoteId!,
-        "user_id": userId!,
-        "installation_id": installationId!,
-        "assign_date":
-            "${assignDate!.year.toString().padLeft(4, '0')}-${assignDate!.month.toString().padLeft(2, '0')}-${assignDate!.day.toString().padLeft(2, '0')}",
-        "installation_code": installationCode!,
+        "last_updated_by": lastUpdatedBy,
+        "site_incharge": siteIncharge,
+        "installation_summary": installationSummary,
+        "quote_id": quoteId == null ? null : quoteId,
+        "user_id": userId == null ? null : userId,
+        "installation_id": installationId == null ? null : installationId,
+        "assign_date": assignDate == null
+            ? null
+            : "${assignDate!.year.toString().padLeft(4, '0')}-${assignDate!.month.toString().padLeft(2, '0')}-${assignDate!.day.toString().padLeft(2, '0')}",
+        "installation_code": installationCode == null ? null : installationCode,
       };
 }

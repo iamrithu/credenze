@@ -55,30 +55,30 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
           height: height * 0.85,
           child: ListView(
             children: [
-              Row(
-                children: [
-                  Consumer(builder: ((context, ref, child) {
-                    return Container(
-                      margin: EdgeInsets.symmetric(horizontal: width * 0.05),
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                          color: GlobalColors.themeColor,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: IconButton(
-                        color: GlobalColors.themeColor,
-                        icon: Icon(
-                          Icons.arrow_back_ios_new,
-                          size: width < 700 ? width / 28 : width / 45,
-                          color: GlobalColors.white,
-                        ),
-                        onPressed: () {
-                          ref.read(pageIndex.notifier).update((state) => 3);
-                        },
-                      ),
-                    );
-                  })),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Consumer(builder: ((context, ref, child) {
+              //       return Container(
+              //         margin: EdgeInsets.symmetric(horizontal: width * 0.05),
+              //         alignment: Alignment.centerLeft,
+              //         decoration: BoxDecoration(
+              //             color: GlobalColors.themeColor,
+              //             borderRadius: BorderRadius.circular(10)),
+              //         child: IconButton(
+              //           color: GlobalColors.themeColor,
+              //           icon: Icon(
+              //             Icons.arrow_back_ios_new,
+              //             size: width < 700 ? width / 28 : width / 45,
+              //             color: GlobalColors.white,
+              //           ),
+              //           onPressed: () {
+              //             ref.read(pageIndex.notifier).update((state) => 3);
+              //           },
+              //         ),
+              //       );
+              //     })),
+              //   ],
+              // ),
               Container(
                 margin: EdgeInsets.only(top: 15),
                 padding: EdgeInsets.only(left: 20),

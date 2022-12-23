@@ -6,9 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final newToken = StateProvider<String?>((ref) => "");
 final pageIndex = StateProvider<int>((ref) => 0);
+final userId = StateProvider<int>((ref) => 0);
 final netWorkConnectivity = StateProvider<bool>((ref) => true);
-final overViewId = StateProvider<int>((ref) => 1);
-
+final InstallationClockIn = StateProvider<bool>((ref) => true);
+final overViewId = StateProvider<int>((ref) => 0);
 final userDataProvider = FutureProvider<UserModel>((ref) {
   String? token = ref.watch(newToken);
   return ref.watch(provider).UserData(token);

@@ -125,7 +125,7 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
         body: Container(
           width: width,
           height: height * 0.7,
-          padding: EdgeInsets.all(6),
+          padding: EdgeInsets.all(4),
           child: ListView(
             children: [
               Row(

@@ -6,10 +6,6 @@ import 'package:credenze/models/installation-overview-model.dart';
 import 'package:credenze/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/installation-overview-model.dart';
-import '../models/login_model.dart';
 
 class Api {
   final dio = Dio(BaseOptions(
@@ -33,7 +29,7 @@ class Api {
     }
   }
 
-  Future clockIn(token) async {
+  Future DayIn(token) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -47,7 +43,7 @@ class Api {
     }
   }
 
-  Future ClockOut(token) async {
+  Future DayOut(token) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -67,6 +63,59 @@ class Api {
     try {
       Response response = await dio.post(
         "attendance/today",
+      );
+
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future ClockIn(String token, int id, String latitude, String longitude,
+      File photo) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    var params = {latitude, longitude, photo};
+
+    try {
+      Response response = await dio.post(
+        "installation/$id/dayin",
+        data: jsonEncode(params),
+      );
+
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future ClockOut(
+    String token,
+    int id,
+    String latitude,
+    String longitude,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    var params = {latitude, longitude};
+
+    try {
+      Response response = await dio.post(
+        "installation/$id/dayout",
+        data: jsonEncode(params),
+      );
+
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future InstallationAttendence(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "installation/$id/attendance",
       );
 
       return response;
@@ -118,10 +167,8 @@ class ProviderApi {
       String? token, int? id) async {
     dio.options.headers["Authorization"] = "Bearer $token";
     Response response = await dio.get(
-      "user/profile/$id/overview",
+      "installation/$id/overview",
     );
-
-    print(response.toString());
     if (response.statusCode == 200) {
       InstallationOverViewModel overView =
           InstallationOverViewModel.fromJson(response.data["data"]);

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:credenze/const/global_colors.dart';
-import 'package:credenze/locations/location_service.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,14 +14,14 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import '../../apis/api.dart';
 import '../../custom-widget/custom_alertbox.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String msg = "";
   bool visible = false;
   bool success = false;
@@ -107,9 +106,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-
     _stopWatchTimer.dispose();
   }
 
@@ -121,7 +118,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     dayIn() async {
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
-      Api().clockIn(token).then((value) async {
+      Api().DayIn(token).then((value) async {
         if (value.data["success"]) {
           setState(() {
             _action = "DayOut";
@@ -133,13 +130,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           });
           attendenceDetails();
 
-          // await prefs.setString('dayIn', _dayIn.toString());
-          // await prefs.setString('dayOut', "");
           _stopWatchTimer.clearPresetTime();
-          // _stopWatchTimer.onStartTimer();
-          // _stopWatchTimer.setPresetHoursTime(0);
-          // _stopWatchTimer.setPresetMinuteTime(0);
-          // _stopWatchTimer.setPresetSecondTime(0);
+
           if (visible) {
             Timer(const Duration(milliseconds: 1500), () {
               setState(() {
@@ -171,7 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     dayOut() async {
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
-      Api().ClockOut(token).then((value) async {
+      Api().DayOut(token).then((value) async {
         if (value.data["success"]) {
           setState(() {
             _action = "DayIn";
@@ -289,6 +281,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                                             return data.when(
                                                 data: (_data) {
+                                                  ref
+                                                      .read(userId.notifier)
+                                                      .update(
+                                                          (state) => _data.id!);
                                                   return Text(
                                                     _data.name!,
                                                     style: GoogleFonts

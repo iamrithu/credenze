@@ -29,7 +29,7 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Container(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(6),
                     width: width,
                     height: height * 0.18,
                     child: Row(

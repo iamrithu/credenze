@@ -66,7 +66,7 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Card(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(10),
                           side: BorderSide(color: GlobalColors.themeColor)),
                       elevation: 10,
                       child: Container(
@@ -77,12 +77,12 @@ class ProfileScreen extends StatelessWidget {
                             Container(
                               width: width * 0.3,
                               child: Card(
+                                elevation: 10,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    side: BorderSide(
-                                        color: GlobalColors.themeColor2)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(10),
                                     child: Image.network(
                                         _data.imageUrl.toString())),
                               ),
@@ -146,78 +146,90 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 15),
-                      padding: EdgeInsets.only(left: 20),
-                      width: width,
-                      height: height * 0.03,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "ADDITIONAL INFORMATION :  ",
-                        style: GoogleFonts.akayaKanadaka(
-                            fontSize: width < 700 ? width / 28 : width / 45,
-                            fontWeight: FontWeight.w500,
-                            color: GlobalColors.black,
-                            letterSpacing: 0),
-                      ),
-                    ),
-                    CustomInformationScreen(label: "Email", text: _data.email!),
-                    CustomInformationScreen(
-                        label: "Mobile",
-                        text: _data.employeeDetail!.mobileOne!),
-                    CustomInformationScreen(
-                        label: "Phone",
-                        text: _data.employeeDetail!.whatsappNo!),
-                    CustomInformationScreen(
-                        label: "Gender", text: _data.gender!),
-                    CustomInformationScreen(
-                        label: "State",
-                        text: _data.employeeDetail!.permanentAddState!),
-                    CustomInformationScreen(
-                        label: "City",
-                        text: _data.employeeDetail!.permanentAddCity!),
-                    CustomInformationScreen(
-                        label: "Pin-Code",
-                        text: _data.employeeDetail!.permanentAddPincode!),
-                    Container(
-                      width: width,
-                      height: height * 0.08,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    Card(
+                      margin: EdgeInsets.symmetric(horizontal: 4),
+                      elevation: 5,
+                      child: Column(
                         children: [
                           Container(
-                            padding: EdgeInsets.only(left: width * 0.056),
-                            width: width * 0.35,
+                            margin: EdgeInsets.only(top: 15),
+                            padding: EdgeInsets.only(left: 20),
+                            width: width,
+                            height: height * 0.03,
+                            alignment: Alignment.centerLeft,
                             child: Text(
-                              "Address",
-                              style: GoogleFonts.akayaKanadaka(
-                                  fontSize:
-                                      width < 700 ? width / 28 : width / 47,
-                                  fontWeight: FontWeight.w400,
-                                  color: GlobalColors.themeColor,
-                                  letterSpacing: 0),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(
-                              left: 10,
-                            ),
-                            padding: EdgeInsets.only(right: 5),
-                            width: width * 0.6,
-                            child: Text(
-                              "${_data.employeeDetail!.permanentAddress!} ",
-                              softWrap: true,
+                              "ADDITIONAL INFORMATION :  ",
                               style: GoogleFonts.akayaKanadaka(
                                   fontSize:
                                       width < 700 ? width / 28 : width / 45,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   color: GlobalColors.black,
                                   letterSpacing: 0),
                             ),
                           ),
+                          CustomInformationScreen(
+                              label: "Email", text: _data.email!),
+                          CustomInformationScreen(
+                              label: "Mobile",
+                              text: _data.employeeDetail!.mobileOne!),
+                          CustomInformationScreen(
+                              label: "Phone",
+                              text: _data.employeeDetail!.whatsappNo!),
+                          CustomInformationScreen(
+                              label: "Gender", text: _data.gender!),
+                          CustomInformationScreen(
+                              label: "State",
+                              text: _data.employeeDetail!.permanentAddState!),
+                          CustomInformationScreen(
+                              label: "City",
+                              text: _data.employeeDetail!.permanentAddCity!),
+                          CustomInformationScreen(
+                              label: "Pin-Code",
+                              text: _data.employeeDetail!.permanentAddPincode!),
+                          Container(
+                            width: width,
+                            height: height * 0.08,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: width * 0.056),
+                                  width: width * 0.35,
+                                  child: Text(
+                                    "Address",
+                                    style: GoogleFonts.akayaKanadaka(
+                                        fontSize: width < 700
+                                            ? width / 28
+                                            : width / 47,
+                                        fontWeight: FontWeight.w400,
+                                        color: GlobalColors.themeColor,
+                                        letterSpacing: 0),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    left: 10,
+                                  ),
+                                  padding: EdgeInsets.only(right: 5),
+                                  width: width * 0.6,
+                                  child: Text(
+                                    "${_data.employeeDetail!.permanentAddress!} ",
+                                    softWrap: true,
+                                    style: GoogleFonts.akayaKanadaka(
+                                        fontSize: width < 700
+                                            ? width / 28
+                                            : width / 45,
+                                        fontWeight: FontWeight.w400,
+                                        color: GlobalColors.black,
+                                        letterSpacing: 0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
