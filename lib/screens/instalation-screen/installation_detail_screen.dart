@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/screens/instalation-screen/tabs/members-screen.dart';
 
@@ -7,7 +5,6 @@ import 'package:credenze/screens/instalation-screen/tabs/overview-screen.dart';
 import 'package:credenze/screens/instalation-screen/tabs/task-screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -51,7 +48,7 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                       }
                       return GlobalColors.themeColor;
                     }),
-                    splashBorderRadius: BorderRadius.circular(20),
+                    splashBorderRadius: BorderRadius.circular(4),
                     tabs: <Widget>[
                       Tab(
                         child: Text(

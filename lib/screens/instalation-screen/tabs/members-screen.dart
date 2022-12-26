@@ -139,7 +139,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                                                 ? widget.width! / 28
                                                 : widget.width! / 42,
                                             fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor2,
+                                            color: GlobalColors.green,
                                             letterSpacing: 0),
                                       )
                                     : Text(""),

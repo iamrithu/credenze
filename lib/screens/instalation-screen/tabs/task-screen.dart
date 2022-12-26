@@ -82,7 +82,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                     TextRowWidget(
                                       width: widget.width!,
                                       lable: "Task Id",
-                                      value: "${_data[i].id!}",
+                                      value: "#${_data[i].id!}",
                                     ),
                                     TextRowWidget(
                                       width: widget.width!,
@@ -104,32 +104,42 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                     Row(
                                       children: [
                                         Container(
-                                          width: widget.width! * 0.3,
-                                          child: Text(
-                                            "	Category",
-                                            style: GoogleFonts.akayaKanadaka(
-                                                fontSize: widget.width! < 700
-                                                    ? widget.width! / 32
-                                                    : widget.width! / 45,
-                                                fontWeight: FontWeight.w400,
-                                                color: GlobalColors.themeColor2,
-                                                letterSpacing: 0),
+                                          width: widget.width! * 0.27,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                left: widget.width! * 0.03),
+                                            child: Text(
+                                              "Category",
+                                              style: GoogleFonts.akayaKanadaka(
+                                                  fontSize: widget.width! < 700
+                                                      ? widget.width! / 32
+                                                      : widget.width! / 45,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      GlobalColors.themeColor2,
+                                                  letterSpacing: 0),
+                                            ),
                                           ),
                                         ),
-                                        Container(
-                                          width: widget.width! * 0.5,
-                                          child: HtmlWidget(
-                                            "${_data[i].categoryName!}",
-                                            textStyle:
-                                                GoogleFonts.akayaKanadaka(
-                                                    fontSize: widget.width! <
-                                                            700
-                                                        ? widget.width! / 32
-                                                        : widget.width! / 45,
-                                                    fontWeight: FontWeight.w400,
-                                                    color:
-                                                        GlobalColors.themeColor,
-                                                    letterSpacing: 0),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: widget.width! * 0.02),
+                                          child: Container(
+                                            width: widget.width! * 0.45,
+                                            child: HtmlWidget(
+                                              "${_data[i].categoryName!}",
+                                              textStyle:
+                                                  GoogleFonts.akayaKanadaka(
+                                                      fontSize: widget.width! <
+                                                              700
+                                                          ? widget.width! / 32
+                                                          : widget.width! / 45,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: GlobalColors
+                                                          .themeColor,
+                                                      letterSpacing: 0),
+                                            ),
                                           ),
                                         ),
                                       ],

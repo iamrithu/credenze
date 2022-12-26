@@ -3,10 +3,9 @@ import 'dart:io';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/text-row-widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -32,6 +31,20 @@ class OverviewScreen extends ConsumerStatefulWidget {
 class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   double lat = 0.0;
   double long = 0.0;
+  bool detailVisible = false;
+  String? clockInlat = "";
+  String? clockInlong = "";
+  String? clockOutlat = "";
+  String? clockOutlong = "";
+  String? clockInAddress = "";
+  String? clockOutAddress = "";
+
+  String? attendanceDetail = "ClockInDetail";
+  List<String> allowFolowUp = ["ClockInDetail", "ClockOutDetail"];
+  final List<bool> _allowFollowUp = <bool>[
+    true,
+    false,
+  ];
 
   late String? clockIn = null;
   late String? clockOut = null;
@@ -39,6 +52,28 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
   late File? newImage = null;
+
+  getclockInAddress(lat, long) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(11.0299, 76.9632);
+    print(placemarks[0].toString());
+
+    setState(() {
+      clockInAddress =
+          "${placemarks[0].street},${placemarks[0].thoroughfare},${placemarks[0].locality},${placemarks[0].administrativeArea},${placemarks[0].postalCode},${placemarks[0].country}";
+    });
+  }
+
+  getclockOutAddress(lat, long) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(11.0299, 76.9632);
+    print(placemarks[0].toString());
+
+    setState(() {
+      clockOutAddress =
+          "${placemarks[0].street},${placemarks[0].thoroughfare},${placemarks[0].locality},${placemarks[0].administrativeArea},${placemarks[0].postalCode},${placemarks[0].country}";
+    });
+  }
 
   getInstallationAttendence() async {
     final prefs = await SharedPreferences.getInstance();
@@ -61,9 +96,15 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
           ref.read(InstallationClockIn.notifier).update((state) => true);
         } else {
           ref.read(InstallationClockIn.notifier).update((state) => false);
+
           setState(() {
             clockIn = DateFormat("hh:mm:ss a")
                 .format(DateTime.parse(newdata["clock_in"]).toLocal());
+            detailVisible = true;
+            clockInlat = newdata["latitude"];
+            clockInlong = newdata["longitude"];
+            getclockInAddress(
+                double.parse(clockInlat!), double.parse(clockInlong!));
           });
         }
         if (newdata["clock_out"] == null) {
@@ -86,6 +127,10 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
             installationComplete = true;
             clockOut = DateFormat("hh:mm:ss a")
                 .format(DateTime.parse(newdata["clock_out"]).toLocal());
+            clockOutlat = newdata["clock_out_latitude"];
+            clockOutlong = newdata["clock_out_longitude"];
+            getclockOutAddress(
+                double.parse(clockOutlat!), double.parse(clockOutlong!));
           });
 
           ref.read(InstallationClockIn.notifier).update((state) => true);
@@ -187,7 +232,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                             shape: RoundedRectangleBorder(
                                 side:
                                     BorderSide(color: GlobalColors.themeColor2),
-                                borderRadius: BorderRadius.circular(10)),
+                                borderRadius: BorderRadius.circular(4)),
                             child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Row(
@@ -318,7 +363,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                           elevation: 10,
                           shape: RoundedRectangleBorder(
                               side: BorderSide(color: GlobalColors.themeColor2),
-                              borderRadius: BorderRadius.circular(10)),
+                              borderRadius: BorderRadius.circular(4)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -525,25 +570,466 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                           ),
                         ),
                       ),
-                      Container(
-                        width: widget.width,
-                        height: widget.height! * 0.16,
-                        child: Card(
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                side:
-                                    BorderSide(color: GlobalColors.themeColor2),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: widget.width! * 0.5,
-                                  child: Column(
-                                    children: [Text("rithi")],
+                      Visibility(
+                        visible: detailVisible,
+                        child: Container(
+                          width: widget.width,
+                          height: widget.height! * 0.4,
+                          child: Card(
+                              elevation: 10,
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      color: GlobalColors.themeColor2),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: widget.width! * 0.6,
+                                    alignment: AlignmentDirectional.center,
+                                    child: ToggleButtons(
+                                      direction: Axis.horizontal,
+                                      onPressed: (int index) {
+                                        setState(() {
+                                          // The button that is tapped is set to true, and the others to false.
+                                          for (int i = 0;
+                                              i < _allowFollowUp.length;
+                                              i++) {
+                                            _allowFollowUp[i] = i == index;
+                                          }
+                                          allowFolowUp[index];
+                                          setState(() {
+                                            attendanceDetail =
+                                                allowFolowUp[index];
+                                          });
+                                        });
+                                      },
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(4)),
+                                      selectedBorderColor: Colors.red[700],
+                                      selectedColor: Colors.white,
+                                      fillColor: GlobalColors.themeColor,
+                                      color: GlobalColors.themeColor2,
+                                      constraints: const BoxConstraints(
+                                        minHeight: 40.0,
+                                        minWidth: 80.0,
+                                      ),
+                                      isSelected: _allowFollowUp,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Text(
+                                            "Clock In Detail",
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.akayaKanadaka(
+                                                fontSize: widget.width! < 700
+                                                    ? widget.width! / 28
+                                                    : widget.width! / 42,
+                                                fontWeight: FontWeight.w400,
+                                                letterSpacing: 0),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Text(
+                                            "Clock Out Detail",
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.akayaKanadaka(
+                                                fontSize: widget.width! < 700
+                                                    ? widget.width! / 28
+                                                    : widget.width! / 42,
+                                                fontWeight: FontWeight.w400,
+                                                letterSpacing: 0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                )
-                              ],
-                            )),
+                                  attendanceDetail == "ClockInDetail"
+                                      ? Row(
+                                          children: [
+                                            Container(
+                                              width: widget.width! * 0.4,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    child: Image.network(
+                                                      "http://15.207.1.213/user-uploads/installation-dayin/27b09ed8d04037aa66864a39e79c1306.png",
+                                                      width:
+                                                          widget.width! * 0.3,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              width: widget.width! * 0.4,
+                                              height: widget.height! * 0.3,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      text: "Latitude :",
+                                                      style: GoogleFonts.akayaKanadaka(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  28
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .themeColor2,
+                                                          letterSpacing: 0),
+                                                      children: [
+                                                        TextSpan(
+                                                          text: "$clockInlat",
+                                                          style: GoogleFonts.akayaKanadaka(
+                                                              fontSize: widget.width! <
+                                                                      700
+                                                                  ? widget.width! /
+                                                                      28
+                                                                  : widget.width! /
+                                                                      42,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color:
+                                                                  GlobalColors
+                                                                      .black,
+                                                              letterSpacing: 0),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      text: "Longitude :",
+                                                      style: GoogleFonts.akayaKanadaka(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  28
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .themeColor2,
+                                                          letterSpacing: 0),
+                                                      children: [
+                                                        TextSpan(
+                                                          text: "$clockInlong",
+                                                          style: GoogleFonts.akayaKanadaka(
+                                                              fontSize: widget.width! <
+                                                                      700
+                                                                  ? widget.width! /
+                                                                      28
+                                                                  : widget.width! /
+                                                                      42,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color:
+                                                                  GlobalColors
+                                                                      .black,
+                                                              letterSpacing: 0),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      text: "Clock In Time :",
+                                                      style: GoogleFonts.akayaKanadaka(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  28
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .themeColor2,
+                                                          letterSpacing: 0),
+                                                      children: [
+                                                        TextSpan(
+                                                          text: "$clockIn",
+                                                          style: GoogleFonts.akayaKanadaka(
+                                                              fontSize: widget.width! <
+                                                                      700
+                                                                  ? widget.width! /
+                                                                      28
+                                                                  : widget.width! /
+                                                                      42,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color:
+                                                                  GlobalColors
+                                                                      .black,
+                                                              letterSpacing: 0),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Address :",
+                                                    textAlign: TextAlign.start,
+                                                    style: GoogleFonts
+                                                        .akayaKanadaka(
+                                                            fontSize: widget
+                                                                        .width! <
+                                                                    700
+                                                                ? widget.width! /
+                                                                    28
+                                                                : widget.width! /
+                                                                    42,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: GlobalColors
+                                                                .themeColor2,
+                                                            letterSpacing: 0),
+                                                  ),
+                                                  Text(
+                                                    "${clockInAddress}",
+                                                    textAlign: TextAlign.start,
+                                                    style: GoogleFonts
+                                                        .akayaKanadaka(
+                                                            fontSize: widget
+                                                                        .width! <
+                                                                    700
+                                                                ? widget.width! /
+                                                                    32
+                                                                : widget.width! /
+                                                                    42,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            letterSpacing: 0),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Row(
+                                          children: [
+                                            !installationComplete
+                                                ? Center(
+                                                    child: Text(
+                                                      "Clock Out Detail Not Available ...",
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: GoogleFonts.akayaKanadaka(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  28
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .black,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    width: widget.width! * 0.9,
+                                                    padding: EdgeInsets.only(
+                                                        left: widget.width! *
+                                                            0.06),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        RichText(
+                                                          text: TextSpan(
+                                                            text: "Latitude :",
+                                                            style: GoogleFonts.akayaKanadaka(
+                                                                fontSize: widget
+                                                                            .width! <
+                                                                        700
+                                                                    ? widget.width! /
+                                                                        28
+                                                                    : widget.width! /
+                                                                        42,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: GlobalColors
+                                                                    .themeColor2,
+                                                                letterSpacing:
+                                                                    0),
+                                                            children: [
+                                                              TextSpan(
+                                                                text:
+                                                                    "$clockOutlat",
+                                                                style: GoogleFonts.akayaKanadaka(
+                                                                    fontSize: widget.width! <
+                                                                            700
+                                                                        ? widget.width! /
+                                                                            28
+                                                                        : widget.width! /
+                                                                            42,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: GlobalColors
+                                                                        .black,
+                                                                    letterSpacing:
+                                                                        0),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        RichText(
+                                                          text: TextSpan(
+                                                            text: "Longitude :",
+                                                            style: GoogleFonts.akayaKanadaka(
+                                                                fontSize: widget
+                                                                            .width! <
+                                                                        700
+                                                                    ? widget.width! /
+                                                                        28
+                                                                    : widget.width! /
+                                                                        42,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: GlobalColors
+                                                                    .themeColor2,
+                                                                letterSpacing:
+                                                                    0),
+                                                            children: [
+                                                              TextSpan(
+                                                                text:
+                                                                    "$clockOutlong",
+                                                                style: GoogleFonts.akayaKanadaka(
+                                                                    fontSize: widget.width! <
+                                                                            700
+                                                                        ? widget.width! /
+                                                                            28
+                                                                        : widget.width! /
+                                                                            42,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: GlobalColors
+                                                                        .black,
+                                                                    letterSpacing:
+                                                                        0),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        RichText(
+                                                          text: TextSpan(
+                                                            text:
+                                                                "Clock Out Time :",
+                                                            style: GoogleFonts.akayaKanadaka(
+                                                                fontSize: widget
+                                                                            .width! <
+                                                                        700
+                                                                    ? widget.width! /
+                                                                        28
+                                                                    : widget.width! /
+                                                                        42,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: GlobalColors
+                                                                    .themeColor2,
+                                                                letterSpacing:
+                                                                    0),
+                                                            children: [
+                                                              TextSpan(
+                                                                text:
+                                                                    "$clockOut",
+                                                                style: GoogleFonts.akayaKanadaka(
+                                                                    fontSize: widget.width! <
+                                                                            700
+                                                                        ? widget.width! /
+                                                                            28
+                                                                        : widget.width! /
+                                                                            42,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: GlobalColors
+                                                                        .black,
+                                                                    letterSpacing:
+                                                                        0),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          "Address :",
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          style: GoogleFonts.akayaKanadaka(
+                                                              fontSize: widget
+                                                                          .width! <
+                                                                      700
+                                                                  ? widget.width! /
+                                                                      28
+                                                                  : widget.width! /
+                                                                      42,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: GlobalColors
+                                                                  .themeColor2,
+                                                              letterSpacing: 0),
+                                                        ),
+                                                        Text(
+                                                          "${clockOutAddress}",
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          style: GoogleFonts.akayaKanadaka(
+                                                              fontSize: widget
+                                                                          .width! <
+                                                                      700
+                                                                  ? widget.width! /
+                                                                      32
+                                                                  : widget.width! /
+                                                                      42,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              letterSpacing: 0),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                          ],
+                                        ),
+                                ],
+                              )),
+                        ),
                       ),
                     ],
                   ),

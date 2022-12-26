@@ -23,4 +23,5 @@ class GlobalColors {
 
   static const white = Color.fromARGB(255, 255, 255, 255);
   static const black = Color.fromARGB(255, 0, 0, 0);
+  static const green = Color.fromARGB(255, 12, 194, 91);
 }

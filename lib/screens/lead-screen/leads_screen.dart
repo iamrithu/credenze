@@ -53,7 +53,7 @@ class _LeadScreenState extends State<LeadScreen> {
                       }
                       return GlobalColors.themeColor;
                     }),
-                    splashBorderRadius: BorderRadius.circular(20),
+                    splashBorderRadius: BorderRadius.circular(4),
                     tabs: <Widget>[
                       Tab(
                         child: Text(
