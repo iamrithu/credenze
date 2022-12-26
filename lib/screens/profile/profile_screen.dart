@@ -42,6 +42,11 @@ class ProfileScreen extends StatelessWidget {
                       }),
                     ));
                     ref.read(pageIndex.notifier).update((state) => 0);
+                    ref
+                        .read(InstallationClockIn.notifier)
+                        .update((state) => true);
+
+                    StateProvider<bool>((ref) => true);
                   },
                   icon: Icon(
                     FontAwesomeIcons.leftLong,

@@ -87,6 +87,8 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
             clockOut = DateFormat("hh:mm:ss a")
                 .format(DateTime.parse(newdata["clock_out"]).toLocal());
           });
+
+          ref.read(InstallationClockIn.notifier).update((state) => true);
           DateTime dt2 = DateTime.parse(newdata["clock_in"]).toLocal();
           DateTime dt1 = DateTime.parse(newdata["clock_out"]).toLocal();
           Duration diff = dt1.difference(dt2);
@@ -101,28 +103,57 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
     });
   }
 
-  installationClockIn() async {
+  installationClockIn(int? id) async {
     final prefs = await SharedPreferences.getInstance();
+    String? token = await prefs.getString('token');
+    MapsAndLocation().getCamera().then((value) {
+      setState(() {
+        newImage = value;
+      });
+      MapsAndLocation().locationPermisson().then((value) {
+        setState(() {
+          lat = value.latitude;
+          long = value.longitude;
+        });
+        Api()
+            .ClockIn(
+                token: token!,
+                id: id!,
+                latitude: lat.toString(),
+                longitude: long.toString(),
+                photo: newImage!)
+            .then((value) {
+          getInstallationAttendence();
+        });
+      });
+    });
+  }
+
+  installationClockOut(int? id) async {
+    final prefs = await SharedPreferences.getInstance();
+
     String? token = await prefs.getString('token');
     MapsAndLocation().locationPermisson().then((value) {
       setState(() {
         lat = value.latitude;
         long = value.longitude;
       });
-    });
-    MapsAndLocation().getCamera().then((value) {
-      setState(() {
-        newImage = value;
+      Api()
+          .ClockOut(
+              token: token!,
+              id: id!,
+              latitude: value.latitude.toString(),
+              longitude: value.longitude.toString())
+          .then((value) {
+        getInstallationAttendence();
       });
-      Api().ClockIn(token!, ref.watch(userId), lat.toString(), long.toString(),
-          newImage!);
-      getInstallationAttendence();
     });
   }
 
   @override
   void initState() {
     getInstallationAttendence();
+
     super.initState();
   }
 
@@ -130,6 +161,8 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   Widget build(BuildContext) {
     final installation = ref.watch(InsttalationOverVIewProvider);
     final instalationClockIn = ref.watch(InstallationClockIn);
+    int? id = ref.watch(overViewId);
+    print("overViewId" + id.toString());
     return installation.when(
         data: (_data) {
           return RefreshIndicator(
@@ -302,7 +335,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                           : !instalationClockIn
                                               ? null
                                               : () {
-                                                  installationClockIn();
+                                                  installationClockIn(id);
                                                 },
                                       child: Text(
                                         "Clock In ",
@@ -446,11 +479,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                           : instalationClockIn
                                               ? null
                                               : () {
-                                                  ref
-                                                      .read(InstallationClockIn
-                                                          .notifier)
-                                                      .update((state) =>
-                                                          !instalationClockIn);
+                                                  installationClockOut(id);
                                                 },
                                       child: Text(
                                         "Clock Out",
@@ -496,14 +525,26 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                           ),
                         ),
                       ),
-                      Text("$lat"),
-                      Text("$long"),
-                      newImage == null
-                          ? Text("null")
-                          : Image.file(
-                              newImage!,
-                              width: widget.width! * 0.3,
-                            )
+                      Container(
+                        width: widget.width,
+                        height: widget.height! * 0.16,
+                        child: Card(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                                side:
+                                    BorderSide(color: GlobalColors.themeColor2),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: widget.width! * 0.5,
+                                  child: Column(
+                                    children: [Text("rithi")],
+                                  ),
+                                )
+                              ],
+                            )),
+                      ),
                     ],
                   ),
                 ),

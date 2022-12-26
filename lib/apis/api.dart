@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:credenze/const/secret.dart';
 import 'package:credenze/models/installation-list-model.dart';
 import 'package:credenze/models/installation-overview-model.dart';
+import 'package:credenze/models/members_model.dart';
+import 'package:credenze/models/task-model.dart';
 import 'package:credenze/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,40 +73,46 @@ class Api {
     }
   }
 
-  Future ClockIn(String? token, int? id, String? latitude, String? longitude,
-      File photo) async {
-    String fileName = photo.path.split('/').last;
-    FormData formData = FormData.fromMap({
-      "file": await MultipartFile.fromFile(photo.path, filename: fileName),
-    });
+  Future ClockIn({
+    required String? token,
+    required int? id,
+    required String? latitude,
+    required String? longitude,
+    required File photo,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    final bytes = photo.readAsBytesSync();
+    String base64Image = "data:image/png;base64," + base64Encode(bytes);
     var params = {
       "latitude": latitude!,
       "longitude": longitude!,
-      "photo": formData.files,
+      "photo": base64Image,
     };
 
     try {
-      Response response = await dio.post("installation/$id/dayin",
-          data: jsonEncode(params),
-          options: Options(contentType: 'multipart/form-data'));
-      print(response.toString());
+      Response response = await dio.post(
+        "installation/$id/dayin",
+        data: jsonEncode(params),
+      );
+
+      print("demo" + response.toString());
 
       return response;
     } on DioError catch (e) {
-      print(e.toString());
+      print("demo" + e.message.toString());
 
       return e.response;
     }
   }
 
-  Future ClockOut(
-    String token,
-    int id,
-    String latitude,
-    String longitude,
-  ) async {
+  Future ClockOut({
+    required String? token,
+    required int? id,
+    required String? latitude,
+    required String? longitude,
+  }) async {
     dio.options.headers["Authorization"] = "Bearer $token";
-    var params = {latitude, longitude};
+    var params = {"latitude": latitude, "longitude": longitude};
 
     try {
       Response response = await dio.post(
@@ -112,8 +120,11 @@ class Api {
         data: jsonEncode(params),
       );
 
+      print("red" + response.toString());
+
       return response;
     } on DioError catch (e) {
+      print("err" + e.toString());
       return e.response;
     }
   }
@@ -181,6 +192,46 @@ class ProviderApi {
       InstallationOverViewModel overView =
           InstallationOverViewModel.fromJson(response.data["data"]);
       return overView;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<MemberModel>> Members(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "installation/$id/members",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+
+      List<MemberModel> members = [];
+      data.map((e) {
+        members.add(MemberModel.fromJson(e));
+      }).toList();
+      return members;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<TaskModel>> Tasks(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "installation/$id/task",
+    );
+
+    print(response.toString());
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+
+      print(response.toString());
+      List<TaskModel> tasks = [];
+      data.map((e) {
+        tasks.add(TaskModel.fromJson(e));
+      }).toList();
+      return tasks;
     } else {
       throw Exception(response.statusMessage);
     }

@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:credenze/const/global_colors.dart';
+import 'package:credenze/screens/instalation-screen/tabs/members-screen.dart';
 
 import 'package:credenze/screens/instalation-screen/tabs/overview-screen.dart';
+import 'package:credenze/screens/instalation-screen/tabs/task-screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -129,31 +131,52 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                       )
                     ],
                   ),
-                  Center(
-                    child: Text(
-                      "Tasks",
-                      style: GoogleFonts.akayaKanadaka(
-                          fontSize: width < 700 ? width / 28 : width / 45,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0),
-                    ),
+                  Column(
+                    children: [
+                      Container(
+                        width: width,
+                        height: width < 400
+                            ? height * 0.67
+                            : width < 700
+                                ? height * 0.69
+                                : height * 0.7,
+                        child: LayoutBuilder(builder: ((context, constraints) {
+                          return TaskScreen(
+                            height: constraints.maxHeight,
+                            width: constraints.maxWidth,
+                          );
+                        })),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        width: width,
+                        height: width < 400
+                            ? height * 0.67
+                            : width < 700
+                                ? height * 0.69
+                                : height * 0.7,
+                        child: LayoutBuilder(builder: ((context, constraints) {
+                          return MemberScreen(
+                            height: constraints.maxHeight,
+                            width: constraints.maxWidth,
+                          );
+                        })),
+                      )
+                    ],
                   ),
                   Center(
-                    child: Text(
-                      "Members",
-                      style: GoogleFonts.akayaKanadaka(
-                          fontSize: width < 700 ? width / 28 : width / 45,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0),
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      "Files",
-                      style: GoogleFonts.akayaKanadaka(
-                          fontSize: width < 700 ? width / 28 : width / 45,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Add Files",
+                        style: GoogleFonts.akayaKanadaka(
+                            fontSize: width < 700 ? width / 28 : width / 45,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0),
+                      ),
                     ),
                   )
                 ],
