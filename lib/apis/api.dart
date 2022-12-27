@@ -153,22 +153,45 @@ class Api {
       print(fileName);
 
       FormData data = FormData.fromMap({
-        "file": await MultipartFile.fromFile(
+        "file[]": await MultipartFile.fromFile(
           file.path,
           filename: fileName,
         ),
       });
 
       Response response = await dio.post(
-        "installation/3/files/add",
+        "installation/$id/files/add",
         data: data,
       );
 
-      print("red" + response.toString());
+      return response.toString();
+    } on DioError catch (e) {
+      return e.response.toString();
+    }
+  }
+
+  Future<String> DeleteFile({
+    required String? token,
+    required int? id,
+    required int? fileId,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    print(token.toString());
+    print(id.toString);
+    print(fileId.toString);
+
+    try {
+      Response response = await dio.post(
+        "installation/$id/files/$fileId/destroy",
+      );
+
+      print("dem" + response.toString());
 
       return response.toString();
     } on DioError catch (e) {
-      print("err" + e.toString());
+      print("dem" + e.response.toString());
+
       return e.response.toString();
     }
   }
