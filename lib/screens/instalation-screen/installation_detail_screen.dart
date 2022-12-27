@@ -1,4 +1,5 @@
 import 'package:credenze/const/global_colors.dart';
+import 'package:credenze/screens/instalation-screen/tabs/file-screen.dart';
 import 'package:credenze/screens/instalation-screen/tabs/members-screen.dart';
 
 import 'package:credenze/screens/instalation-screen/tabs/overview-screen.dart';
@@ -53,7 +54,7 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                       Tab(
                         child: Text(
                           "Overview",
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
@@ -66,7 +67,7 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                       Tab(
                         child: Text(
                           "Task",
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
@@ -79,7 +80,7 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                       Tab(
                         child: Text(
                           "Members",
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
@@ -92,7 +93,7 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                       Tab(
                         child: Text(
                           "Files",
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
@@ -164,18 +165,24 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                       )
                     ],
                   ),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Add Files",
-                        style: GoogleFonts.akayaKanadaka(
-                            fontSize: width < 700 ? width / 28 : width / 45,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0),
-                      ),
-                    ),
-                  )
+                  Column(
+                    children: [
+                      Container(
+                        width: width,
+                        height: width < 400
+                            ? height * 0.67
+                            : width < 700
+                                ? height * 0.69
+                                : height * 0.7,
+                        child: LayoutBuilder(builder: ((context, constraints) {
+                          return FileScreen(
+                            height: constraints.maxHeight,
+                            width: constraints.maxWidth,
+                          );
+                        })),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),

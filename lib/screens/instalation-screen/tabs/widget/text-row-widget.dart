@@ -15,15 +15,15 @@ class TextRowWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             width: width * 0.3,
             child: Text(
               lable!,
-              style: GoogleFonts.akayaKanadaka(
-                  fontSize: width < 700 ? width / 32 : width / 45,
+              style: GoogleFonts.ptSans(
+                  fontSize: width < 700 ? width / 35 : width / 45,
                   fontWeight: FontWeight.w400,
                   color: GlobalColors.themeColor2,
                   letterSpacing: 0),
@@ -33,13 +33,13 @@ class TextRowWidget extends StatelessWidget {
             width: width * 0.42,
             child: Text(
               value!,
-              style: GoogleFonts.akayaKanadaka(
-                  fontSize: width < 700 ? width / 32 : width / 45,
+              style: GoogleFonts.ptSans(
+                  fontSize: width < 700 ? width / 35 : width / 45,
                   fontWeight: FontWeight.w400,
                   color: GlobalColors.black,
                   letterSpacing: 0),
             ),
-          )
+          ),
         ],
       ),
     );

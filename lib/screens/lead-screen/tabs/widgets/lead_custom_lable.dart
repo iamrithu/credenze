@@ -24,16 +24,16 @@ class _LeadCustomlabelState extends State<LeadCustomlabel> {
       child: RichText(
         text: TextSpan(
             text: widget.label,
-            style: GoogleFonts.akayaKanadaka(
-                fontSize: width < 700 ? width / 28 : width / 45,
+            style: GoogleFonts.ptSans(
+                fontSize: width < 700 ? width / 35 : width / 45,
                 fontWeight: FontWeight.w400,
                 color: GlobalColors.black,
                 letterSpacing: 0),
             children: [
               TextSpan(
                 text: widget.start,
-                style: GoogleFonts.akayaKanadaka(
-                    fontSize: width < 700 ? width / 28 : width / 45,
+                style: GoogleFonts.ptSans(
+                    fontSize: width < 700 ? width / 35 : width / 45,
                     fontWeight: FontWeight.w400,
                     color: GlobalColors.themeColor,
                     letterSpacing: 0),

@@ -47,7 +47,7 @@ class _LeaveDetailsScreenState extends State<LeaveDetailsScreen> {
         ),
         label: Text(
           "Add Leave",
-          style: GoogleFonts.akayaKanadaka(
+          style: GoogleFonts.ptSans(
               color: GlobalColors.themeColor,
               fontSize: width < 700 ? width / 28 : width / 45,
               fontWeight: FontWeight.w400,
@@ -67,7 +67,7 @@ class _LeaveDetailsScreenState extends State<LeaveDetailsScreen> {
                 RichText(
                   text: TextSpan(
                       text: DateFormat("MMMM").format(newDate),
-                      style: GoogleFonts.akayaKanadaka(
+                      style: GoogleFonts.ptSans(
                           fontSize: width < 700 ? width / 16 : width / 22,
                           fontWeight: FontWeight.w400,
                           color: GlobalColors.themeColor2,
@@ -75,7 +75,7 @@ class _LeaveDetailsScreenState extends State<LeaveDetailsScreen> {
                       children: [
                         TextSpan(
                           text: " - " + newDate.year.toString(),
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                             fontSize: width < 700 ? width / 22 : width / 45,
                             fontWeight: FontWeight.w400,
                             color: GlobalColors.black,
@@ -101,7 +101,7 @@ class _LeaveDetailsScreenState extends State<LeaveDetailsScreen> {
                   },
                   child: Text(
                     "Pick Date",
-                    style: GoogleFonts.akayaKanadaka(
+                    style: GoogleFonts.ptSans(
                         fontSize: width < 700 ? width / 28 : width / 45,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 0),

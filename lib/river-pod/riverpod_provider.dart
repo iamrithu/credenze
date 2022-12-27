@@ -1,4 +1,5 @@
 import 'package:credenze/apis/api.dart';
+import 'package:credenze/models/file-model.dart';
 import 'package:credenze/models/installation-list-model.dart';
 import 'package:credenze/models/installation-overview-model.dart';
 import 'package:credenze/models/members_model.dart';
@@ -38,4 +39,10 @@ final taskProvider = FutureProvider<List<TaskModel>>((ref) {
   int? id = ref.watch(overViewId);
 
   return ref.watch(provider).Tasks(token, id);
+});
+final fileProvider = FutureProvider<List<FileModel>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(overViewId);
+
+  return ref.watch(provider).Files(token, id);
 });

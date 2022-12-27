@@ -188,9 +188,9 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                             value: value,
                             child: Text(
                               value,
-                              style: GoogleFonts.abel(
+                              style: GoogleFonts.ptSans(
                                 color: GlobalColors.themeColor2,
-                                fontSize: width < 700 ? width / 28 : width / 47,
+                                fontSize: width < 700 ? width / 35 : width / 47,
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: 0,
                               ),
@@ -371,10 +371,10 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                                   horizontal: width * 0.03),
                               child: Text(
                                 value,
-                                style: GoogleFonts.abel(
+                                style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor2,
                                   fontSize:
-                                      width < 700 ? width / 28 : width / 47,
+                                      width < 700 ? width / 35 : width / 47,
                                   fontWeight: FontWeight.w400,
                                   letterSpacing: 0,
                                 ),
@@ -432,10 +432,10 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                                   horizontal: width * 0.03),
                               child: Text(
                                 value,
-                                style: GoogleFonts.abel(
+                                style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor2,
                                   fontSize:
-                                      width < 700 ? width / 28 : width / 47,
+                                      width < 700 ? width / 35 : width / 47,
                                   fontWeight: FontWeight.w400,
                                   letterSpacing: 0,
                                 ),
@@ -480,8 +480,8 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                         selectedColor: Colors.white,
                         fillColor: GlobalColors.themeColor,
                         color: GlobalColors.themeColor2,
-                        constraints: const BoxConstraints(
-                          minHeight: 40.0,
+                        constraints: BoxConstraints(
+                          minHeight: height * 0.045,
                           minWidth: 80.0,
                         ),
                         isSelected: _allowFollowUp,
@@ -537,10 +537,10 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                                   horizontal: width * 0.03),
                               child: Text(
                                 value,
-                                style: GoogleFonts.abel(
+                                style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor2,
                                   fontSize:
-                                      width < 700 ? width / 28 : width / 47,
+                                      width < 700 ? width / 35 : width / 47,
                                   fontWeight: FontWeight.w400,
                                   letterSpacing: 0,
                                 ),
@@ -568,7 +568,7 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "    Notes.....",
-                          hintStyle: GoogleFonts.abel(
+                          hintStyle: GoogleFonts.ptSans(
                               color: GlobalColors.themeColor2,
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
@@ -591,7 +591,7 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                         horizontal: width * 0.01, vertical: height * 0.02),
                     child: Text(
                       "Company Deatails",
-                      style: GoogleFonts.abel(
+                      style: GoogleFonts.ptSans(
                           color: GlobalColors.themeColor,
                           fontSize: width < 700 ? width / 20 : width / 45,
                           fontWeight: FontWeight.w400,
@@ -661,16 +661,16 @@ class _LeadAddingScreenState extends State<LeadAddingScreen> {
                 width: width,
                 margin: EdgeInsets.only(top: 5),
                 child: CSCPicker(
-                  // dropdownItemStyle: GoogleFonts.abel(
-                  //     color: GlobalColors.black,
-                  //     fontSize: width < 700 ? width / 28 : width / 45,
-                  //     fontWeight: FontWeight.w400,
-                  //     letterSpacing: 0),
-                  // selectedItemStyle: GoogleFonts.abel(
-                  //     color: GlobalColors.black,
-                  //     fontSize: width < 700 ? width / 28 : width / 45,
-                  //     fontWeight: FontWeight.w400,
-                  //     letterSpacing: 0),
+                  dropdownItemStyle: GoogleFonts.abel(
+                      color: GlobalColors.black,
+                      fontSize: width < 700 ? width / 35 : width / 45,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0),
+                  selectedItemStyle: GoogleFonts.ptSans(
+                      color: GlobalColors.black,
+                      fontSize: width < 700 ? width / 35 : width / 45,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0),
                   searchBarRadius: 100,
                   onCountryChanged: (value) {
                     setState(() {

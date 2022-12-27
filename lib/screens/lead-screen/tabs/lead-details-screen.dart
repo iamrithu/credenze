@@ -43,7 +43,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
         ),
         label: Text(
           " Add Follow Up",
-          style: GoogleFonts.akayaKanadaka(
+          style: GoogleFonts.ptSans(
               color: GlobalColors.white,
               fontSize: width < 700 ? width / 28 : width / 45,
               fontWeight: FontWeight.w400,
@@ -87,7 +87,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "PROFILE INFORMATION :  ",
-                  style: GoogleFonts.akayaKanadaka(
+                  style: GoogleFonts.ptSans(
                       fontSize: width < 700 ? width / 28 : width / 45,
                       fontWeight: FontWeight.w500,
                       color: GlobalColors.black,
@@ -119,7 +119,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                       width: width * 0.3,
                       child: Text(
                         "Address",
-                        style: GoogleFonts.akayaKanadaka(
+                        style: GoogleFonts.ptSans(
                             fontSize: width < 700 ? width / 28 : width / 47,
                             fontWeight: FontWeight.w400,
                             color: GlobalColors.themeColor,
@@ -135,7 +135,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         child: Text(
                           "436,6th Cross .Chrttiar Thaneer Pandal,Vilankurichi Rd, near Allied castings,Peelamedu,B.S. Puram Industrial Estate, Coimbatore, Tamil Nadu.",
                           softWrap: true,
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               color: GlobalColors.black,

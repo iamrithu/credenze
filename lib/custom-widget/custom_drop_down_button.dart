@@ -49,7 +49,7 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
             value: value,
             child: Text(
               value,
-              style: GoogleFonts.akayaKanadaka(
+              style: GoogleFonts.ptSans(
                 color: GlobalColors.themeColor2,
                 fontSize: width < 700 ? width / 22 : width / 43,
                 fontWeight: FontWeight.w400,

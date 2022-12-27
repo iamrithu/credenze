@@ -45,7 +45,7 @@ class HomeScreen extends ConsumerWidget {
     demo();
     List<String> name = [
       "Dashboard",
-      "Installations",
+      "My Installations",
       "Attendence",
       "Leads",
       "Profile"
@@ -123,16 +123,16 @@ class HomeScreen extends ConsumerWidget {
                           _page == i
                               ? Text(
                                   name[i],
-                                  style: GoogleFonts.akayaKanadaka(
+                                  style: GoogleFonts.ptSans(
                                       fontSize:
-                                          width < 700 ? width / 34 : width / 45,
+                                          width < 700 ? width / 38 : width / 45,
                                       fontWeight: FontWeight.w400,
                                       letterSpacing: 0,
                                       color: GlobalColors.themeColor),
                                 )
                               : Text(
                                   "",
-                                  style: GoogleFonts.akayaKanadaka(
+                                  style: GoogleFonts.ptSans(
                                       fontSize: 0,
                                       fontWeight: FontWeight.w400,
                                       letterSpacing: 0,
@@ -159,8 +159,8 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           Text(
                             "More",
-                            style: GoogleFonts.akayaKanadaka(
-                                fontSize: width < 700 ? width / 34 : width / 45,
+                            style: GoogleFonts.ptSans(
+                                fontSize: width < 700 ? width / 35 : width / 45,
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: 0,
                                 color: GlobalColors.themeColor),

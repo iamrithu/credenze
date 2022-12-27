@@ -256,9 +256,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           top: height * 0.01),
                                       child: Text(
                                         "WELCOME ",
-                                        style: GoogleFonts.akayaKanadaka(
+                                        style: GoogleFonts.ptSans(
                                             fontSize: width < 700
-                                                ? width / 27
+                                                ? width / 30
                                                 : width / 40,
                                             fontWeight: FontWeight.w400,
                                             color: GlobalColors.themeColor2,
@@ -287,17 +287,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                                           (state) => _data.id!);
                                                   return Text(
                                                     _data.name!,
-                                                    style: GoogleFonts
-                                                        .akayaKanadaka(
-                                                            fontSize: width <
-                                                                    700
-                                                                ? width / 17
-                                                                : width / 40,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: GlobalColors
-                                                                .themeColor,
-                                                            letterSpacing: 0),
+                                                    style: GoogleFonts.ptSans(
+                                                        fontSize: width < 700
+                                                            ? width / 20
+                                                            : width / 40,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: GlobalColors
+                                                            .themeColor,
+                                                        letterSpacing: 0),
                                                   );
                                                 },
                                                 error: (err, s) => Text(
@@ -353,9 +351,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               children: [
                                 Text(
                                   "Today's Status ",
-                                  style: GoogleFonts.akayaKanadaka(
+                                  style: GoogleFonts.ptSans(
                                       fontSize:
-                                          width < 700 ? width / 21 : width / 48,
+                                          width < 700 ? width / 25 : width / 48,
                                       fontWeight: FontWeight.w400,
                                       color: GlobalColors.textColor,
                                       letterSpacing: 0),
@@ -377,9 +375,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     children: [
                                       Text(
                                         "Day In ",
-                                        style: GoogleFonts.akayaKanadaka(
+                                        style: GoogleFonts.ptSans(
                                             fontSize: width < 700
-                                                ? width / 18
+                                                ? width / 21
                                                 : width / 24,
                                             fontWeight: FontWeight.w400,
                                             color: GlobalColors.themeColor,
@@ -387,9 +385,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       ),
                                       Text(
                                         _dayIn ?? "--/--",
-                                        style: GoogleFonts.akayaKanadaka(
+                                        style: GoogleFonts.ptSans(
                                             fontSize: width < 700
-                                                ? width / 17
+                                                ? width / 20
                                                 : width / 23,
                                             fontWeight: FontWeight.w400,
                                             color: GlobalColors.themeColor2,
@@ -404,9 +402,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     children: [
                                       Text(
                                         "Day Out ",
-                                        style: GoogleFonts.akayaKanadaka(
+                                        style: GoogleFonts.ptSans(
                                             fontSize: width < 700
-                                                ? width / 18
+                                                ? width / 21
                                                 : width / 24,
                                             fontWeight: FontWeight.w400,
                                             color: GlobalColors.themeColor,
@@ -414,9 +412,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       ),
                                       Text(
                                         _dayOut ?? "--/--",
-                                        style: GoogleFonts.akayaKanadaka(
+                                        style: GoogleFonts.ptSans(
                                             fontSize: width < 700
-                                                ? width / 17
+                                                ? width / 20
                                                 : width / 23,
                                             fontWeight: FontWeight.w400,
                                             color: GlobalColors.themeColor2,
@@ -441,24 +439,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           child: RichText(
                             text: TextSpan(
                                 text: DateTime.now().day.toString(),
-                                style: GoogleFonts.akayaKanadaka(
+                                style: GoogleFonts.ptSans(
                                     fontSize:
-                                        width < 700 ? width / 16 : width / 22,
+                                        width < 700 ? width / 22 : width / 22,
                                     fontWeight: FontWeight.w400,
                                     color: GlobalColors.themeColor,
-                                    letterSpacing: 2),
+                                    letterSpacing: 0),
                                 children: [
                                   TextSpan(
                                     text: " " +
                                         DateFormat("MMMM yyyy")
                                             .format(DateTime.now()),
-                                    style: GoogleFonts.akayaKanadaka(
+                                    style: GoogleFonts.ptSans(
                                         fontSize: width < 700
-                                            ? width / 22
+                                            ? width / 24
                                             : width / 45,
                                         fontWeight: FontWeight.w400,
                                         color: GlobalColors.black,
-                                        letterSpacing: 2),
+                                        letterSpacing: 0),
                                   ),
                                 ]),
                           ),
@@ -479,13 +477,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   child: Text(
                                     DateFormat("hh:mm:ss a")
                                         .format(DateTime.now()),
-                                    style: GoogleFonts.akayaKanadaka(
+                                    style: GoogleFonts.ptSans(
                                         fontSize: width < 700
-                                            ? width / 22
+                                            ? width / 24
                                             : width / 45,
                                         fontWeight: FontWeight.w400,
                                         color: GlobalColors.black,
-                                        letterSpacing: 2),
+                                        letterSpacing: 0),
                                   ),
                                 );
                               }),
@@ -497,7 +495,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           horizontal: width * 0.025, vertical: height * 0.02),
                       elevation: 10,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(width * 0.1),
+                          borderRadius: BorderRadius.circular(4),
                           side: BorderSide(
                               color: GlobalColors.themeColor, width: 2)),
                       child: Container(
@@ -526,9 +524,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               children: [
                                 Text(
                                   "Logged In Time",
-                                  style: GoogleFonts.akayaKanadaka(
+                                  style: GoogleFonts.ptSans(
                                       fontSize:
-                                          width < 700 ? width / 28 : width / 42,
+                                          width < 700 ? width / 30 : width / 42,
                                       fontWeight: FontWeight.w400,
                                       color: GlobalColors.black,
                                       letterSpacing: 0),
@@ -536,8 +534,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 Card(
                                   elevation: 10,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(width * 0.03),
+                                    borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Padding(
                                     padding: EdgeInsets.all(width * 0.02),
@@ -545,7 +542,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       text: TextSpan(
                                           text:
                                               displayTimeWithoutSec.toString(),
-                                          style: GoogleFonts.akayaKanadaka(
+                                          style: GoogleFonts.ptSans(
                                               fontSize: width < 700
                                                   ? width / 20
                                                   : width / 24,
@@ -556,10 +553,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             TextSpan(
                                               text: " " +
                                                   displayTimeWithSec.toString(),
-                                              style: GoogleFonts.akayaKanadaka(
+                                              style: GoogleFonts.ptSans(
                                                   fontSize: width < 700
                                                       ? width / 12
-                                                      : width / 18,
+                                                      : width / 21,
                                                   fontWeight: FontWeight.w400,
                                                   color:
                                                       GlobalColors.themeColor,
@@ -596,7 +593,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     _action == "DayIn"
                                         ? "Slide To Day In"
                                         : "Slide To Day Out",
-                                    style: GoogleFonts.akayaKanadaka(
+                                    style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 28
                                             : width / 42,
@@ -604,7 +601,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                         color: GlobalColors.white,
                                         letterSpacing: 0),
                                   ),
-                                  borderRadius: 100,
+                                  borderRadius: 10,
                                   outerColor: GlobalColors.themeColor,
                                   innerColor: GlobalColors.white,
                                   elevation: 10,
@@ -637,7 +634,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     "YOU HAVE DONE A GOOD JOB TODAY 🤝🤝🤝",
-                                    style: GoogleFonts.akayaKanadaka(
+                                    style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 22
                                             : width / 48,

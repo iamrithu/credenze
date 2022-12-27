@@ -43,7 +43,7 @@ class _CustomeAttendenceSchedulaerState
                 child: RichText(
                   text: TextSpan(
                       text: widget.day.toString(),
-                      style: GoogleFonts.akayaKanadaka(
+                      style: GoogleFonts.ptSans(
                           fontSize: width < 700 ? width / 22 : width / 40,
                           fontWeight: FontWeight.w400,
                           color: GlobalColors.themeColor,
@@ -55,7 +55,7 @@ class _CustomeAttendenceSchedulaerState
                                   widget.newMonth.year,
                                   widget.newMonth.month,
                                   widget.day)),
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 32 : width / 48,
                               fontWeight: FontWeight.w400,
                               color: GlobalColors.black,

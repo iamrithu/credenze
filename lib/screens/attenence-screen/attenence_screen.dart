@@ -58,7 +58,7 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
                       Tab(
                         child: Text(
                           "Working Days",
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
@@ -71,7 +71,7 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
                       Tab(
                         child: Text(
                           "Holidays",
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
@@ -84,7 +84,7 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
                       Tab(
                         child: Text(
                           "Leaves",
-                          style: GoogleFonts.akayaKanadaka(
+                          style: GoogleFonts.ptSans(
                               fontSize: width < 700 ? width / 28 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),

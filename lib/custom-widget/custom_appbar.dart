@@ -54,15 +54,15 @@ class CustomAppBar extends ConsumerWidget {
             child: page == 0
                 ? Text(
                     "Dashboard",
-                    style: GoogleFonts.akayaKanadaka(
+                    style: GoogleFonts.ptSans(
                         fontSize: width < 700 ? width / 20 : width / 24,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0),
                   )
                 : page == 1
                     ? Text(
-                        "Installations",
-                        style: GoogleFonts.akayaKanadaka(
+                        "My Installations",
+                        style: GoogleFonts.ptSans(
                             fontSize: width < 700 ? width / 20 : width / 24,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 0),
@@ -70,7 +70,7 @@ class CustomAppBar extends ConsumerWidget {
                     : page == 2
                         ? Text(
                             "Attendence",
-                            style: GoogleFonts.akayaKanadaka(
+                            style: GoogleFonts.ptSans(
                                 fontSize: width < 700 ? width / 20 : width / 24,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0),
@@ -78,7 +78,7 @@ class CustomAppBar extends ConsumerWidget {
                         : page == 3
                             ? Text(
                                 "Leads",
-                                style: GoogleFonts.akayaKanadaka(
+                                style: GoogleFonts.ptSans(
                                     fontSize:
                                         width < 700 ? width / 20 : width / 24,
                                     fontWeight: FontWeight.w800,
@@ -87,7 +87,7 @@ class CustomAppBar extends ConsumerWidget {
                             : page == 4
                                 ? Text(
                                     "Profile",
-                                    style: GoogleFonts.akayaKanadaka(
+                                    style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 20
                                             : width / 24,
@@ -97,7 +97,7 @@ class CustomAppBar extends ConsumerWidget {
                                 : page == 5
                                     ? Text(
                                         "Lead Details",
-                                        style: GoogleFonts.akayaKanadaka(
+                                        style: GoogleFonts.ptSans(
                                             fontSize: width < 700
                                                 ? width / 20
                                                 : width / 24,
@@ -106,7 +106,7 @@ class CustomAppBar extends ConsumerWidget {
                                       )
                                     : Text(
                                         "Installation Details",
-                                        style: GoogleFonts.akayaKanadaka(
+                                        style: GoogleFonts.ptSans(
                                             fontSize: width < 700
                                                 ? width / 20
                                                 : width / 24,

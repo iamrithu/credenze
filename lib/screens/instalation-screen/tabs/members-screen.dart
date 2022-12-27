@@ -50,7 +50,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                           Center(
                             child: Text(
                               "No Information Available",
-                              style: GoogleFonts.akayaKanadaka(
+                              style: GoogleFonts.ptSans(
                                   color: GlobalColors.black,
                                   fontSize: widget.width! < 700
                                       ? widget.width! / 30
@@ -99,9 +99,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                                   text: TextSpan(
                                       text:
                                           _data[i].user!.name.toString() + " ",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           fontSize: widget.width! < 700
-                                              ? widget.width! / 23
+                                              ? widget.width! / 28
                                               : widget.width! / 46,
                                           fontWeight: FontWeight.w400,
                                           color: GlobalColors.themeColor,
@@ -110,22 +110,17 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                                         user_id == _data[i].user!.id
                                             ? TextSpan(
                                                 text: " it's you ",
-                                                style:
-                                                    GoogleFonts.akayaKanadaka(
-                                                        backgroundColor:
-                                                            GlobalColors
-                                                                .themeColor2,
-                                                        fontSize: widget
-                                                                    .width! <
-                                                                700
-                                                            ? widget.width! / 45
-                                                            : widget.width! /
-                                                                48,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color:
-                                                            GlobalColors.white,
-                                                        letterSpacing: 2),
+                                                style: GoogleFonts.ptSans(
+                                                    backgroundColor:
+                                                        GlobalColors
+                                                            .themeColor2,
+                                                    fontSize: widget.width! <
+                                                            700
+                                                        ? widget.width! / 45
+                                                        : widget.width! / 48,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: GlobalColors.white,
+                                                    letterSpacing: 2),
                                               )
                                             : TextSpan(),
                                       ]),
@@ -134,9 +129,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                                     ? Text(
                                         "In-charge",
                                         textAlign: TextAlign.start,
-                                        style: GoogleFonts.akayaKanadaka(
+                                        style: GoogleFonts.ptSans(
                                             fontSize: widget.width! < 700
-                                                ? widget.width! / 28
+                                                ? widget.width! / 30
                                                 : widget.width! / 42,
                                             fontWeight: FontWeight.w400,
                                             color: GlobalColors.green,
@@ -151,9 +146,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                                               .designation!
                                               .name! +
                                           "  ",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           fontSize: widget.width! < 700
-                                              ? widget.width! / 34
+                                              ? widget.width! / 35
                                               : widget.width! / 45,
                                           fontWeight: FontWeight.w400,
                                           color: GlobalColors.themeColor2,
@@ -163,9 +158,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                                         TextSpan(children: [
                                           TextSpan(
                                             text: "\nAssign Date : ",
-                                            style: GoogleFonts.akayaKanadaka(
+                                            style: GoogleFonts.ptSans(
                                                 fontSize: widget.width! < 700
-                                                    ? widget.width! / 34
+                                                    ? widget.width! / 35
                                                     : widget.width! / 45,
                                                 fontWeight: FontWeight.w400,
                                                 color: GlobalColors.themeColor2,
@@ -175,9 +170,9 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                                             text: DateFormat(
                                                     "dd - MMMM - yyyy ")
                                                 .format(_data[i].assignDate!),
-                                            style: GoogleFonts.akayaKanadaka(
+                                            style: GoogleFonts.ptSans(
                                                 fontSize: widget.width! < 700
-                                                    ? widget.width! / 34
+                                                    ? widget.width! / 35
                                                     : widget.width! / 45,
                                                 fontWeight: FontWeight.w400,
                                                 color: GlobalColors.black,

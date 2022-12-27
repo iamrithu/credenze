@@ -71,10 +71,10 @@ class _InstalationScreenState extends State<InstalationScreen> {
                               Center(
                                 child: Text(
                                   "No Information Available",
-                                  style: GoogleFonts.akayaKanadaka(
+                                  style: GoogleFonts.ptSans(
                                       color: GlobalColors.black,
                                       fontSize:
-                                          width < 700 ? width / 30 : width / 45,
+                                          width < 700 ? width / 35 : width / 45,
                                       fontWeight: FontWeight.w400,
                                       letterSpacing: 0),
                                 ),
@@ -130,119 +130,30 @@ class _InstalationScreenState extends State<InstalationScreen> {
                                                     width: width * 0.25,
                                                     child: Text(
                                                       "Installation Code",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color:
-                                                                  GlobalColors
-                                                                      .black,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .black,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
                                                     ),
                                                   ),
                                                   Container(
                                                     width: width * 0.45,
                                                     child: Text(
-                                                      " : ${_data[i].installationPrefix}${_data[i].installationNos}",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color: GlobalColors
-                                                                  .themeColor,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: width * 0.25,
-                                                    child: Text(
-                                                      "Branch Name",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color:
-                                                                  GlobalColors
-                                                                      .black,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: width * 0.45,
-                                                    child: Text(
-                                                      " : ${_data[i].branchId}",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color: GlobalColors
-                                                                  .themeColor,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: width * 0.25,
-                                                    child: Text(
-                                                      "Customer Name",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color:
-                                                                  GlobalColors
-                                                                      .black,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: width * 0.45,
-                                                    child: Text(
-                                                      " : ${_data[i].customerName}",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color: GlobalColors
-                                                                  .themeColor,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
+                                                      "${_data[i].installationPrefix}${_data[i].installationNos}",
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
                                                     ),
                                                   ),
                                                 ],
@@ -253,37 +164,98 @@ class _InstalationScreenState extends State<InstalationScreen> {
                                                     width: width * 0.25,
                                                     child: Text(
                                                       "Installation Name",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color:
-                                                                  GlobalColors
-                                                                      .black,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .black,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
                                                     ),
                                                   ),
                                                   Container(
                                                     width: width * 0.45,
                                                     child: Text(
-                                                      " : ${_data[i].installationName}",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color: GlobalColors
-                                                                  .themeColor,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
+                                                      "${_data[i].installationName}",
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width: width * 0.25,
+                                                    child: Text(
+                                                      "Customer Name",
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .black,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: width * 0.45,
+                                                    child: Text(
+                                                      "${_data[i].customerName}",
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width: width * 0.25,
+                                                    child: Text(
+                                                      "Branch Name",
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .black,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: width * 0.45,
+                                                    child: Text(
+                                                      "${_data[i].branchId}",
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
                                                     ),
                                                   ),
                                                 ],
@@ -294,37 +266,30 @@ class _InstalationScreenState extends State<InstalationScreen> {
                                                     width: width * 0.25,
                                                     child: Text(
                                                       "Installation Status",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color:
-                                                                  GlobalColors
-                                                                      .black,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .black,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
                                                     ),
                                                   ),
                                                   Container(
                                                     width: width * 0.45,
                                                     child: Text(
-                                                      " : ${_data[i].installationStatus}",
-                                                      style: GoogleFonts
-                                                          .akayaKanadaka(
-                                                              color: GlobalColors
-                                                                  .themeColor,
-                                                              fontSize: width <
-                                                                      700
-                                                                  ? width / 30
-                                                                  : width / 45,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              letterSpacing: 0),
+                                                      "${_data[i].installationStatus}",
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: width < 700
+                                                              ? width / 35
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0),
                                                     ),
                                                   ),
                                                 ],
@@ -380,9 +345,9 @@ class _InstalationScreenState extends State<InstalationScreen> {
             error: (err, s) => Center(
                   child: Text(
                     "No Information Available",
-                    style: GoogleFonts.akayaKanadaka(
+                    style: GoogleFonts.ptSans(
                         color: GlobalColors.black,
-                        fontSize: width < 700 ? width / 30 : width / 45,
+                        fontSize: width < 700 ? width / 35 : width / 45,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 0),
                   ),

@@ -9,6 +9,8 @@ import 'package:credenze/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/file-model.dart';
+
 class Api {
   final dio = Dio(BaseOptions(
     connectTimeout: 30000,
@@ -73,7 +75,7 @@ class Api {
     }
   }
 
-  Future ClockIn({
+  Future<String> ClockIn({
     required String? token,
     required int? id,
     required String? latitude,
@@ -95,17 +97,13 @@ class Api {
         data: jsonEncode(params),
       );
 
-      print("demo" + response.toString());
-
-      return response;
+      return response.toString();
     } on DioError catch (e) {
-      print("demo" + e.message.toString());
-
-      return e.response;
+      return e.response.toString();
     }
   }
 
-  Future ClockOut({
+  Future<String> ClockOut({
     required String? token,
     required int? id,
     required String? latitude,
@@ -122,10 +120,10 @@ class Api {
 
       print("red" + response.toString());
 
-      return response;
+      return response.toString();
     } on DioError catch (e) {
       print("err" + e.toString());
-      return e.response;
+      return e.response.toString();
     }
   }
 
@@ -140,6 +138,38 @@ class Api {
       return response;
     } on DioError catch (e) {
       return e.response;
+    }
+  }
+
+  Future<String> AddFile({
+    required String? token,
+    required int? id,
+    required File file,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      String fileName = file.path.split('/').last;
+      print(fileName);
+
+      FormData data = FormData.fromMap({
+        "file": await MultipartFile.fromFile(
+          file.path,
+          filename: fileName,
+        ),
+      });
+
+      Response response = await dio.post(
+        "installation/3/files/add",
+        data: data,
+      );
+
+      print("red" + response.toString());
+
+      return response.toString();
+    } on DioError catch (e) {
+      print("err" + e.toString());
+      return e.response.toString();
     }
   }
 }
@@ -232,6 +262,24 @@ class ProviderApi {
         tasks.add(TaskModel.fromJson(e));
       }).toList();
       return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<FileModel>> Files(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "installation/$id/files",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<FileModel> installations = [];
+      data.map((e) {
+        installations.add(FileModel.fromJson(e));
+      }).toList();
+      return installations;
     } else {
       throw Exception(response.statusMessage);
     }

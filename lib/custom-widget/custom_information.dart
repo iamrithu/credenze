@@ -36,8 +36,8 @@ class _CustomInformationScreenState extends State<CustomInformationScreen> {
             width: width * 0.35,
             child: Text(
               widget.label,
-              style: GoogleFonts.akayaKanadaka(
-                  fontSize: width < 700 ? width / 28 : width / 47,
+              style: GoogleFonts.ptSans(
+                  fontSize: width < 700 ? width / 35 : width / 47,
                   fontWeight: FontWeight.w400,
                   color: GlobalColors.themeColor,
                   letterSpacing: 0),
@@ -51,8 +51,8 @@ class _CustomInformationScreenState extends State<CustomInformationScreen> {
               width: width * 0.6,
               child: Text(
                 "${widget.text} ",
-                style: GoogleFonts.akayaKanadaka(
-                    fontSize: width < 700 ? width / 28 : width / 45,
+                style: GoogleFonts.ptSans(
+                    fontSize: width < 700 ? width / 35 : width / 45,
                     fontWeight: FontWeight.w400,
                     color: GlobalColors.black,
                     letterSpacing: 0),

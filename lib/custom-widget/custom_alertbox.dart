@@ -42,7 +42,7 @@ class CustomAlertBox extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 msg,
-                style: GoogleFonts.akayaKanadaka(
+                style: GoogleFonts.ptSans(
                     fontSize: width < 700 ? width / 27 : width / 45,
                     fontWeight: FontWeight.w400,
                     color: success ? GlobalColors.black : GlobalColors.white,

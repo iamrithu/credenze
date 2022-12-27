@@ -45,10 +45,10 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.25,
                                     child: Text(
                                       "Lead Id",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           color: GlobalColors.themeColor2,
                                           fontSize: width < 700
-                                              ? width / 30
+                                              ? width / 35
                                               : width / 45,
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: 0),
@@ -58,10 +58,10 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.45,
                                     child: Text(
                                       "#1",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           color: GlobalColors.black,
                                           fontSize: width < 700
-                                              ? width / 30
+                                              ? width / 35
                                               : width / 45,
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: 0),
@@ -75,10 +75,10 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.25,
                                     child: Text(
                                       "Follow Up Date",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           color: GlobalColors.themeColor2,
                                           fontSize: width < 700
-                                              ? width / 30
+                                              ? width / 35
                                               : width / 45,
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: 0),
@@ -88,10 +88,10 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.45,
                                     child: Text(
                                       "14 Dec 2022",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           color: GlobalColors.black,
                                           fontSize: width < 700
-                                              ? width / 30
+                                              ? width / 35
                                               : width / 45,
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: 0),
@@ -105,10 +105,10 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.25,
                                     child: Text(
                                       "Follow Up Time",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           color: GlobalColors.themeColor2,
                                           fontSize: width < 700
-                                              ? width / 30
+                                              ? width / 35
                                               : width / 45,
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: 0),
@@ -118,10 +118,10 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.45,
                                     child: Text(
                                       "2:30 AM",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           color: GlobalColors.black,
                                           fontSize: width < 700
-                                              ? width / 30
+                                              ? width / 35
                                               : width / 45,
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: 0),
@@ -135,10 +135,10 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.25,
                                     child: Text(
                                       "Remarks",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           color: GlobalColors.themeColor2,
                                           fontSize: width < 700
-                                              ? width / 30
+                                              ? width / 35
                                               : width / 45,
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: 0),
@@ -148,10 +148,10 @@ class _FollowUpListScreenState extends State<FollowUpListScreen> {
                                     width: width * 0.45,
                                     child: Text(
                                       "Need a conversation for understading thier products",
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                           color: GlobalColors.black,
                                           fontSize: width < 700
-                                              ? width / 30
+                                              ? width / 35
                                               : width / 45,
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: 0),

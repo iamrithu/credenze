@@ -32,9 +32,9 @@ class _LeadCustomInputState extends State<LeadCustomInput> {
           controller: widget.controller,
           decoration: InputDecoration(
             hintText: widget.label,
-            hintStyle: GoogleFonts.akayaKanadaka(
+            hintStyle: GoogleFonts.ptSans(
                 color: GlobalColors.themeColor2,
-                fontSize: width < 700 ? width / 28 : width / 45,
+                fontSize: width < 700 ? width / 35 : width / 45,
                 fontWeight: FontWeight.w400,
                 letterSpacing: 0),
             border: InputBorder.none,

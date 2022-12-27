@@ -51,7 +51,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                           Center(
                             child: Text(
                               "No Information Available",
-                              style: GoogleFonts.akayaKanadaka(
+                              style: GoogleFonts.ptSans(
                                   color: GlobalColors.black,
                                   fontSize: widget.width! < 700
                                       ? widget.width! / 30
@@ -70,13 +70,15 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                         elevation: 10,
                         shape: RoundedRectangleBorder(
                             side: BorderSide(color: GlobalColors.themeColor2),
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(4)),
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                width: widget.width! * 0.8,
+                                width: widget.width! * 0.9,
                                 child: Column(
                                   children: [
                                     TextRowWidget(
@@ -101,44 +103,41 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                       value:
                                           "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
                                     ),
+                                    Divider(
+                                      thickness: 1,
+                                    ),
                                     Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
                                           width: widget.width! * 0.27,
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                                left: widget.width! * 0.03),
-                                            child: Text(
-                                              "Category",
-                                              style: GoogleFonts.akayaKanadaka(
-                                                  fontSize: widget.width! < 700
-                                                      ? widget.width! / 32
-                                                      : widget.width! / 45,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      GlobalColors.themeColor2,
-                                                  letterSpacing: 0),
-                                            ),
+                                          child: Text(
+                                            "Category",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: widget.width! < 700
+                                                    ? widget.width! / 32
+                                                    : widget.width! / 45,
+                                                fontWeight: FontWeight.w400,
+                                                color: GlobalColors.themeColor2,
+                                                letterSpacing: 0),
                                           ),
                                         ),
                                         Padding(
                                           padding: EdgeInsets.only(
                                               left: widget.width! * 0.02),
                                           child: Container(
-                                            width: widget.width! * 0.45,
+                                            width: widget.width! * 0.6,
                                             child: HtmlWidget(
                                               "${_data[i].categoryName!}",
-                                              textStyle:
-                                                  GoogleFonts.akayaKanadaka(
-                                                      fontSize: widget.width! <
-                                                              700
-                                                          ? widget.width! / 32
-                                                          : widget.width! / 45,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: GlobalColors
-                                                          .themeColor,
-                                                      letterSpacing: 0),
+                                              textStyle: GoogleFonts.ptSans(
+                                                  fontSize: widget.width! < 700
+                                                      ? widget.width! / 32
+                                                      : widget.width! / 45,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      GlobalColors.themeColor,
+                                                  letterSpacing: 0),
                                             ),
                                           ),
                                         ),

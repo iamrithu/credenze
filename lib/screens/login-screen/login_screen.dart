@@ -267,7 +267,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           Text(
                             "LOGIN",
-                            style: GoogleFonts.akayaKanadaka(
+                            style: GoogleFonts.ptSans(
                                 color: GlobalColors.themeColor,
                                 fontSize: width * 0.04,
                                 fontWeight: FontWeight.bold,
@@ -297,7 +297,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               Text(
                                 "Stay Logged In",
-                                style: GoogleFonts.akayaKanadaka(
+                                style: GoogleFonts.ptSans(
                                     color: GlobalColors.themeColor2,
                                     fontSize: width * 0.028,
                                     fontWeight: FontWeight.normal,

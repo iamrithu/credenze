@@ -51,7 +51,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                 children: [
                   Text(
                     "Follow Up",
-                    style: GoogleFonts.akayaKanadaka(
+                    style: GoogleFonts.ptSans(
                       color: GlobalColors.themeColor2,
                       fontSize: width < 700 ? width / 20 : width / 41,
                       fontWeight: FontWeight.w500,
@@ -71,7 +71,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Next Follow Up Date",
-                        style: GoogleFonts.akayaKanadaka(
+                        style: GoogleFonts.ptSans(
                           color: GlobalColors.black,
                           fontSize: width < 700 ? width / 27 : width / 44,
                           fontWeight: FontWeight.w400,
@@ -89,7 +89,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                         child: RichText(
                           text: TextSpan(
                               text: _selectedDate.day.toString() + " ",
-                              style: GoogleFonts.akayaKanadaka(
+                              style: GoogleFonts.ptSans(
                                   fontSize:
                                       width < 700 ? width / 22 : width / 40,
                                   fontWeight: FontWeight.w400,
@@ -99,7 +99,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                                 TextSpan(
                                   text: DateFormat("MMMM yyyy")
                                       .format(_selectedDate),
-                                  style: GoogleFonts.akayaKanadaka(
+                                  style: GoogleFonts.ptSans(
                                     fontSize:
                                         width < 700 ? width / 28 : width / 49,
                                     fontWeight: FontWeight.w400,
@@ -171,7 +171,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Next Follow Up Time",
-                        style: GoogleFonts.akayaKanadaka(
+                        style: GoogleFonts.ptSans(
                           color: GlobalColors.black,
                           fontSize: width < 700 ? width / 27 : width / 44,
                           fontWeight: FontWeight.w400,
@@ -189,7 +189,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                         child: RichText(
                           text: TextSpan(
                               text: _time.format(context).toString(),
-                              style: GoogleFonts.akayaKanadaka(
+                              style: GoogleFonts.ptSans(
                                   fontSize:
                                       width < 700 ? width / 28 : width / 40,
                                   fontWeight: FontWeight.w400,
@@ -198,7 +198,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                               children: [
                                 TextSpan(
                                   text: "",
-                                  style: GoogleFonts.akayaKanadaka(
+                                  style: GoogleFonts.ptSans(
                                     fontSize:
                                         width < 700 ? width / 28 : width / 49,
                                     fontWeight: FontWeight.w400,
@@ -246,7 +246,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Remarks",
-                      style: GoogleFonts.akayaKanadaka(
+                      style: GoogleFonts.ptSans(
                         color: GlobalColors.black,
                         fontSize: width < 700 ? width / 25 : width / 44,
                         fontWeight: FontWeight.w400,
@@ -288,7 +288,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                     icon: Icon(Icons.cancel),
                     label: Text(
                       " Cancel",
-                      style: GoogleFonts.akayaKanadaka(
+                      style: GoogleFonts.ptSans(
                           fontSize: width < 700 ? width / 28 : width / 45,
                           fontWeight: FontWeight.w400,
                           letterSpacing: 0),
@@ -303,7 +303,7 @@ class _AddFollowUpScreenState extends State<AddFollowUpScreen> {
                       icon: Icon(Icons.add),
                       label: Text(
                         "Add ",
-                        style: GoogleFonts.akayaKanadaka(
+                        style: GoogleFonts.ptSans(
                             fontSize: width < 700 ? width / 28 : width / 45,
                             fontWeight: FontWeight.w400,
                             letterSpacing: 0),

@@ -83,7 +83,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                 children: [
                   Text(
                     "Leave Form",
-                    style: GoogleFonts.akayaKanadaka(
+                    style: GoogleFonts.ptSans(
                       color: GlobalColors.themeColor2,
                       fontSize: width < 700 ? width / 20 : width / 41,
                       fontWeight: FontWeight.w500,
@@ -104,7 +104,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Leave Type",
-                      style: GoogleFonts.akayaKanadaka(
+                      style: GoogleFonts.ptSans(
                         color: GlobalColors.black,
                         fontSize: width < 700 ? width / 25 : width / 44,
                         fontWeight: FontWeight.w400,
@@ -130,7 +130,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Leave Duration",
-                      style: GoogleFonts.akayaKanadaka(
+                      style: GoogleFonts.ptSans(
                         color: GlobalColors.black,
                         fontSize: width < 700 ? width / 25 : width / 44,
                         fontWeight: FontWeight.w400,
@@ -156,7 +156,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                     child: singleday
                         ? Text(
                             "Selected Date",
-                            style: GoogleFonts.akayaKanadaka(
+                            style: GoogleFonts.ptSans(
                               color: GlobalColors.black,
                               fontSize: width < 700 ? width / 25 : width / 44,
                               fontWeight: FontWeight.w400,
@@ -165,7 +165,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                           )
                         : Text(
                             "Selected Date " + "(${_selectedDateList.length})",
-                            style: GoogleFonts.akayaKanadaka(
+                            style: GoogleFonts.ptSans(
                               color: GlobalColors.black,
                               fontSize: width < 700 ? width / 25 : width / 44,
                               fontWeight: FontWeight.w400,
@@ -185,7 +185,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                             child: RichText(
                               text: TextSpan(
                                   text: _selectedDate.day.toString() + " ",
-                                  style: GoogleFonts.akayaKanadaka(
+                                  style: GoogleFonts.ptSans(
                                       fontSize:
                                           width < 700 ? width / 22 : width / 40,
                                       fontWeight: FontWeight.w400,
@@ -195,7 +195,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                                     TextSpan(
                                       text: DateFormat("MMMM yyyy")
                                           .format(_selectedDate),
-                                      style: GoogleFonts.akayaKanadaka(
+                                      style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 28
                                             : width / 49,
@@ -228,7 +228,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                                                   .day
                                                   .toString() +
                                               " ",
-                                          style: GoogleFonts.akayaKanadaka(
+                                          style: GoogleFonts.ptSans(
                                               fontSize: width < 700
                                                   ? width / 22
                                                   : width / 40,
@@ -239,7 +239,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                                             TextSpan(
                                               text: DateFormat("MMMM yyyy")
                                                   .format(_selectedDateList[i]),
-                                              style: GoogleFonts.akayaKanadaka(
+                                              style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
                                                     ? width / 28
                                                     : width / 49,
@@ -318,7 +318,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Reason",
-                        style: GoogleFonts.akayaKanadaka(
+                        style: GoogleFonts.ptSans(
                           color: GlobalColors.black,
                           fontSize: width < 700 ? width / 25 : width / 44,
                           fontWeight: FontWeight.w400,
@@ -358,7 +358,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                     icon: Icon(Icons.add),
                     label: Text(
                       "Add Leave",
-                      style: GoogleFonts.akayaKanadaka(
+                      style: GoogleFonts.ptSans(
                           fontSize: width < 700 ? width / 28 : width / 45,
                           fontWeight: FontWeight.w400,
                           letterSpacing: 0),

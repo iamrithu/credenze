@@ -38,7 +38,7 @@ class _CustomInputFormState extends State<CustomInputForm> {
                 decoration: InputDecoration(
                   label: Text(
                     widget.label,
-                    style: GoogleFonts.akayaKanadaka(
+                    style: GoogleFonts.ptSans(
                         color: GlobalColors.themeColor2,
                         fontSize: width < 700 ? width / 28 : width / 45,
                         fontWeight: FontWeight.w400,
