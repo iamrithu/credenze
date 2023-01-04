@@ -190,10 +190,12 @@ class Api {
         "category_id": category_id,
         "amount": amount,
         "notes": note,
-        "attachment": await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-        ),
+        "attachment": file == null
+            ? await MultipartFile.fromFile(
+                file.path,
+                filename: fileName,
+              )
+            : File(""),
         "from_place": fromPlace,
         "distance": distance
       });

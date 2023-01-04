@@ -197,7 +197,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                         TextRowWidget(
                                           width: widget.width!,
                                           lable: "Amount",
-                                          value: "${_data[i].amount!}",
+                                          value: "${_data[i].amount!} Rs",
                                         ),
                                         TextRowWidget(
                                           width: widget.width!,
@@ -283,27 +283,6 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                     ),
                                     SizedBox(
                                       width: widget.width! * 0.06,
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {});
-                                      },
-                                      child: Card(
-                                        elevation: 10,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(100)),
-                                        child: Container(
-                                          padding: EdgeInsets.all(4),
-                                          child: Icon(
-                                            Icons.delete,
-                                            color: GlobalColors.themeColor,
-                                            size: widget.width! < 700
-                                                ? widget.width! / 18
-                                                : widget.width! / 45,
-                                          ),
-                                        ),
-                                      ),
                                     ),
                                   ],
                                 ),

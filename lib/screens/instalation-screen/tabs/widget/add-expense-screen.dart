@@ -61,7 +61,7 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
     });
 
     final list = widget.data;
-    var newdata = list.firstWhere(((element) => element.name == "Petrol"));
+    var newdata = list.firstWhere(((element) => element.name == _category));
     setState(() {
       _categoryId = newdata.id!;
     });
@@ -399,18 +399,21 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                       String? token = await prefs.getString('token');
                       final id = ref.watch(overViewId);
 
+                      print(" _placeId${newFile}");
                       Api()
                           .AddExpense(
                         token: token!,
                         id: id,
                         category_id: _categoryId,
-                        file: newFile!,
+                        file: newFile == null ? File("") : newFile!,
                         date:
                             "${DateFormat("dd - MMMM - yyyy ").format(_selectedDate)}",
-                        note: _note.text,
+                        note: _note.text.isEmpty ? "--" : _note.text,
                         amount: _amount.text,
                         fromPlace: _placeId,
-                        distance: int.parse(_distance.text),
+                        distance: _distance.text.isEmpty
+                            ? 0
+                            : int.parse(_distance.text),
                       )
                           .then((value) {
                         Map<String, dynamic> data = jsonDecode(value);
