@@ -110,18 +110,26 @@ class _FileScreenState extends ConsumerState<FileScreen> {
                 child: Stack(
                   children: [
                     _data.isEmpty
-                        ? Center(
-                            child: Text(
-                              "Not Available",
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.themeColor2,
-                                  fontSize: widget.width! < 700
-                                      ? widget.width! / 34
-                                      : widget.width! / 45,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0),
-                            ),
+                        ? ListView(
+                            children: [
+                              Container(
+                                width: widget.width,
+                                height: widget.height,
+                                child: Center(
+                                  child: Text(
+                                    "Not Available",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.ptSans(
+                                        color: GlobalColors.themeColor2,
+                                        fontSize: widget.width! < 700
+                                            ? widget.width! / 34
+                                            : widget.width! / 45,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0),
+                                  ),
+                                ),
+                              ),
+                            ],
                           )
                         : GridView.count(
                             crossAxisCount: widget.width! < 500 ? 3 : 4,
@@ -344,8 +352,42 @@ class _FileScreenState extends ConsumerState<FileScreen> {
                   ],
                 ));
           },
-          error: (err, s) =>
-              Text("Not authenticated to perform this request   $err"),
+          error: (err, s) => RefreshIndicator(
+                color: Colors.white,
+                backgroundColor: GlobalColors.themeColor,
+                strokeWidth: 4.0,
+                onRefresh: () async {
+                  return Future<void>.delayed(const Duration(seconds: 2), () {
+                    return ref.refresh(fileProvider);
+                  });
+                },
+                child: ListView(
+                  children: [
+                    Container(
+                      width: widget.width,
+                      height: widget.height,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Text(
+                              "No Information Available",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize: widget.width! < 700
+                                      ? widget.width! / 30
+                                      : widget.width! / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
           loading: () => const Center(
                 child: CircularProgressIndicator.adaptive(),
               )),

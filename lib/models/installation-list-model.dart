@@ -1,13 +1,13 @@
 // To parse this JSON data, do
 //
-//     final InstallationModel = InstallationModelFromJson(jsonString);
+//     final installationModel = installationModelFromJson(jsonString);
 
 import 'dart:convert';
 
-InstallationModel InstallationModelFromJson(String str) =>
+InstallationModel installationModelFromJson(String str) =>
     InstallationModel.fromJson(json.decode(str));
 
-String InstallationModelToJson(InstallationModel data) =>
+String installationModelToJson(InstallationModel data) =>
     json.encode(data.toJson());
 
 class InstallationModel {
@@ -37,6 +37,8 @@ class InstallationModel {
     required this.installationId,
     required this.assignDate,
     required this.installationCode,
+    required this.customerAddressinfo,
+    required this.statusinfo,
   });
 
   int? id;
@@ -64,6 +66,8 @@ class InstallationModel {
   int? installationId;
   DateTime? assignDate;
   String? installationCode;
+  CustomerAddressinfo? customerAddressinfo;
+  Statusinfo? statusinfo;
 
   factory InstallationModel.fromJson(Map<String, dynamic> json) =>
       InstallationModel(
@@ -111,6 +115,12 @@ class InstallationModel {
         installationCode: json["installation_code"] == null
             ? null
             : json["installation_code"],
+        customerAddressinfo: json["customer_addressinfo"] == null
+            ? null
+            : CustomerAddressinfo.fromJson(json["customer_addressinfo"]),
+        statusinfo: json["statusinfo"] == null
+            ? null
+            : Statusinfo.fromJson(json["statusinfo"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -143,5 +153,143 @@ class InstallationModel {
             ? null
             : "${assignDate!.year.toString().padLeft(4, '0')}-${assignDate!.month.toString().padLeft(2, '0')}-${assignDate!.day.toString().padLeft(2, '0')}",
         "installation_code": installationCode == null ? null : installationCode,
+        "customer_addressinfo":
+            customerAddressinfo == null ? null : customerAddressinfo!.toJson(),
+        "statusinfo": statusinfo == null ? null : statusinfo!.toJson(),
+      };
+}
+
+class CustomerAddressinfo {
+  CustomerAddressinfo({
+    required this.id,
+    required this.customerId,
+    required this.landmark,
+    required this.address,
+    required this.city,
+    required this.district,
+    required this.stateId,
+    required this.pincode,
+    required this.addressDetails,
+    required this.districtinfo,
+    required this.stateinfo,
+  });
+
+  int? id;
+  int? customerId;
+  dynamic landmark;
+  String? address;
+  String? city;
+  int? district;
+  int? stateId;
+  String? pincode;
+  String? addressDetails;
+  Districtinfo? districtinfo;
+  Stateinfo? stateinfo;
+
+  factory CustomerAddressinfo.fromJson(Map<String, dynamic> json) =>
+      CustomerAddressinfo(
+        id: json["id"] == null ? null : json["id"],
+        customerId: json["customer_id"] == null ? null : json["customer_id"],
+        landmark: json["landmark"],
+        address: json["address"] == null ? null : json["address"],
+        city: json["city"] == null ? null : json["city"],
+        district: json["district"] == null ? null : json["district"],
+        stateId: json["state_id"] == null ? null : json["state_id"],
+        pincode: json["pincode"] == null ? null : json["pincode"],
+        addressDetails:
+            json["address_details"] == null ? null : json["address_details"],
+        districtinfo: json["districtinfo"] == null
+            ? null
+            : Districtinfo.fromJson(json["districtinfo"]),
+        stateinfo: json["stateinfo"] == null
+            ? null
+            : Stateinfo.fromJson(json["stateinfo"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
+        "customer_id": customerId == null ? null : customerId,
+        "landmark": landmark,
+        "address": address == null ? null : address,
+        "city": city == null ? null : city,
+        "district": district == null ? null : district,
+        "state_id": stateId == null ? null : stateId,
+        "pincode": pincode == null ? null : pincode,
+        "address_details": addressDetails == null ? null : addressDetails,
+        "districtinfo": districtinfo == null ? null : districtinfo!.toString(),
+        "stateinfo": stateinfo == null ? null : stateinfo!.toString(),
+      };
+}
+
+class Districtinfo {
+  Districtinfo({
+    required this.id,
+    required this.name,
+    required this.stateId,
+    required this.addedBy,
+    required this.lastUpdatedBy,
+  });
+
+  int? id;
+  String? name;
+  int? stateId;
+  int? addedBy;
+  int? lastUpdatedBy;
+
+  factory Districtinfo.fromJson(Map<String, dynamic> json) => Districtinfo(
+        id: json["id"] == null ? null : json["id"],
+        name: json["name"] == null ? null : json["name"],
+        stateId: json["state_id"] == null ? null : json["state_id"],
+        addedBy: json["added_by"] == null ? null : json["added_by"],
+        lastUpdatedBy:
+            json["last_updated_by"] == null ? null : json["last_updated_by"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
+        "name": name == null ? null : name,
+        "state_id": stateId == null ? null : stateId,
+        "added_by": addedBy == null ? null : addedBy,
+        "last_updated_by": lastUpdatedBy == null ? null : lastUpdatedBy,
+      };
+}
+
+class Stateinfo {
+  Stateinfo({
+    required this.id,
+    required this.stateName,
+  });
+
+  int? id;
+  String? stateName;
+
+  factory Stateinfo.fromJson(Map<String, dynamic> json) => Stateinfo(
+        id: json["id"] == null ? null : json["id"],
+        stateName: json["state_name"] == null ? null : json["state_name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
+        "state_name": stateName == null ? null : stateName,
+      };
+}
+
+class Statusinfo {
+  Statusinfo({
+    required this.id,
+    required this.statusName,
+  });
+
+  int? id;
+  String? statusName;
+
+  factory Statusinfo.fromJson(Map<String, dynamic> json) => Statusinfo(
+        id: json["id"] == null ? null : json["id"],
+        statusName: json["status_name"] == null ? null : json["status_name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
+        "status_name": statusName == null ? null : statusName,
       };
 }

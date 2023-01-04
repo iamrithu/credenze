@@ -24,11 +24,11 @@ class CustomAppBar extends ConsumerWidget {
           leading: page > 0
               ? IconButton(
                   onPressed: () {
-                    ref.read(pageIndex.notifier).update((state) => page == 5
-                        ? 3
-                        : page == 6
-                            ? 1
-                            : 0);
+                    ref.read(pageIndex.notifier).update((state) => page == 4
+                        // ? 3
+                        // : page == 6
+                        ? 1
+                        : 0);
                   },
                   color: GlobalColors.white,
                   icon: Icon(
@@ -75,44 +75,42 @@ class CustomAppBar extends ConsumerWidget {
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0),
                           )
+                        // : page == 3
+                        // ? Text(
+                        // "Leads",
+                        // style: GoogleFonts.ptSans(
+                        // fontSize:
+                        // width < 700 ? width / 20 : width / 24,
+                        // fontWeight: FontWeight.w800,
+                        // letterSpacing: 0),
+                        // )
                         : page == 3
                             ? Text(
-                                "Leads",
+                                "Profile",
                                 style: GoogleFonts.ptSans(
                                     fontSize:
                                         width < 700 ? width / 20 : width / 24,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 0),
                               )
-                            : page == 4
-                                ? Text(
-                                    "Profile",
-                                    style: GoogleFonts.ptSans(
-                                        fontSize: width < 700
-                                            ? width / 20
-                                            : width / 24,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0),
-                                  )
-                                : page == 5
-                                    ? Text(
-                                        "Lead Details",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 20
-                                                : width / 24,
-                                            fontWeight: FontWeight.w800,
-                                            letterSpacing: 0),
-                                      )
-                                    : Text(
-                                        "Installation Details",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 20
-                                                : width / 24,
-                                            fontWeight: FontWeight.w800,
-                                            letterSpacing: 0),
-                                      ),
+                            // : page == 5
+                            // ? Text(
+                            // "Lead Details",
+                            // style: GoogleFonts.ptSans(
+                            // fontSize: width < 700
+                            // ? width / 20
+                            // : width / 24,
+                            // fontWeight: FontWeight.w800,
+                            // letterSpacing: 0),
+                            // )
+                            : Text(
+                                "Installation Details",
+                                style: GoogleFonts.ptSans(
+                                    fontSize:
+                                        width < 700 ? width / 20 : width / 24,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0),
+                              ),
           ),
           actions: [],
         ),

@@ -24,7 +24,7 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Container(
-      width: width * 0.66,
+      width: width * 0.65,
       height: height * 0.05,
       padding: EdgeInsets.only(left: width * 0.08, right: width * 0.057),
       alignment: AlignmentDirectional.center,
@@ -51,7 +51,7 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
               value,
               style: GoogleFonts.ptSans(
                 color: GlobalColors.themeColor2,
-                fontSize: width < 700 ? width / 22 : width / 43,
+                fontSize: width < 700 ? width / 35 : width / 43,
                 fontWeight: FontWeight.w400,
                 letterSpacing: 0,
               ),

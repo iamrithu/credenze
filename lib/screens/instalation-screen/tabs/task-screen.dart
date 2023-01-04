@@ -41,118 +41,143 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                 return ref.refresh(taskProvider);
               });
             },
-            child: ListView(
-              children: [
-                _data.isEmpty
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: Text(
-                              "No Information Available",
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.black,
-                                  fontSize: widget.width! < 700
-                                      ? widget.width! / 30
-                                      : widget.width! / 45,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Text(""),
-                for (var i = 0; i < _data.length; i++)
-                  Container(
-                    width: widget.width,
-                    child: Card(
-                        elevation: 10,
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(color: GlobalColors.themeColor2),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+            child: _data.isEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          "No Information Available",
+                          style: GoogleFonts.ptSans(
+                              color: GlobalColors.themeColor2,
+                              fontSize: widget.width! < 700
+                                  ? widget.width! / 30
+                                  : widget.width! / 45,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0),
+                        ),
+                      ),
+                    ],
+                  )
+                : ListView(
+                    children: [
+                      for (var i = 0; i < _data.length; i++)
+                        Container(
+                          width: widget.width,
+                          child: Column(
                             children: [
-                              Container(
-                                width: widget.width! * 0.9,
-                                child: Column(
-                                  children: [
-                                    TextRowWidget(
-                                      width: widget.width!,
-                                      lable: "Task Id",
-                                      value: "#${_data[i].id!}",
-                                    ),
-                                    TextRowWidget(
-                                      width: widget.width!,
-                                      lable: "Description",
-                                      value: "${_data[i].description!}",
-                                    ),
-                                    TextRowWidget(
-                                      width: widget.width!,
-                                      lable: "Start Date",
-                                      value:
-                                          "${DateFormat("dd - MMMM - yyyy ").format(_data[i].startDate!)}",
-                                    ),
-                                    TextRowWidget(
-                                      width: widget.width!,
-                                      lable: "End Date",
-                                      value:
-                                          "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
-                                    ),
-                                    Divider(
-                                      thickness: 1,
-                                    ),
-                                    Row(
+                              Card(
+                                  elevation: 1,
+                                  shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: GlobalColors.themeColor,
+                                          width: 1,
+                                          strokeAlign: StrokeAlign.center,
+                                          style: BorderStyle.solid),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                          width: widget.width! * 0.27,
-                                          child: Text(
-                                            "Category",
-                                            style: GoogleFonts.ptSans(
-                                                fontSize: widget.width! < 700
-                                                    ? widget.width! / 32
-                                                    : widget.width! / 45,
-                                                fontWeight: FontWeight.w400,
+                                          width: widget.width! * 0.9,
+                                          child: Column(
+                                            children: [
+                                              TextRowWidget(
+                                                width: widget.width!,
+                                                lable: "Task Id",
+                                                value: "#${_data[i].id!}",
+                                              ),
+                                              TextRowWidget(
+                                                width: widget.width!,
+                                                lable: "Description",
+                                                value:
+                                                    "${_data[i].description!}",
+                                              ),
+                                              TextRowWidget(
+                                                width: widget.width!,
+                                                lable: "Start Date",
+                                                value:
+                                                    "${DateFormat("dd - MMMM - yyyy ").format(_data[i].startDate!)}",
+                                              ),
+                                              TextRowWidget(
+                                                width: widget.width!,
+                                                lable: "End Date",
+                                                value:
+                                                    "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
+                                              ),
+                                              Divider(
+                                                thickness: 1,
                                                 color: GlobalColors.themeColor2,
-                                                letterSpacing: 0),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Container(
+                                                    width: widget.width! * 0.27,
+                                                    child: Text(
+                                                      "Category",
+                                                      style: GoogleFonts.ptSans(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  32
+                                                              : widget.width! /
+                                                                  45,
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          color: GlobalColors
+                                                              .themeColor2,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: widget.width! *
+                                                            0.02),
+                                                    child: Container(
+                                                      width:
+                                                          widget.width! * 0.6,
+                                                      child: HtmlWidget(
+                                                        "${_data[i].categoryName!}",
+                                                        textStyle: GoogleFonts.ptSans(
+                                                            fontSize: widget
+                                                                        .width! <
+                                                                    700
+                                                                ? widget.width! /
+                                                                    32
+                                                                : widget.width! /
+                                                                    45,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: GlobalColors
+                                                                .themeColor,
+                                                            letterSpacing: 0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
                                           ),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: widget.width! * 0.02),
-                                          child: Container(
-                                            width: widget.width! * 0.6,
-                                            child: HtmlWidget(
-                                              "${_data[i].categoryName!}",
-                                              textStyle: GoogleFonts.ptSans(
-                                                  fontSize: widget.width! < 700
-                                                      ? widget.width! / 32
-                                                      : widget.width! / 45,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      GlobalColors.themeColor,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                        ),
+                                        Spacer(),
                                       ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Spacer(),
+                                    ),
+                                  )),
                             ],
                           ),
-                        )),
+                        ),
+                    ],
                   ),
-              ],
-            ),
           );
         },
         error: (err, s) =>

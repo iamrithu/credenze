@@ -23,11 +23,13 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
   @override
   void initState() {
     super.initState();
+    return ref.refresh(membersProvider);
   }
 
   @override
   Widget build(BuildContext) {
     final memberDetails = ref.watch(membersProvider);
+
     final user_id = ref.watch(userId);
     return memberDetails.when(
         data: (_data) {
@@ -66,7 +68,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                   Stack(
                     children: [
                       Card(
-                        elevation: 5,
+                        elevation: 1,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -80,7 +82,7 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Card(
-                            elevation: 5,
+                            elevation: 1,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),

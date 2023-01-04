@@ -24,7 +24,7 @@ class TextRowWidget extends StatelessWidget {
               lable!,
               style: GoogleFonts.ptSans(
                   fontSize: width < 700 ? width / 35 : width / 45,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w800,
                   color: GlobalColors.themeColor2,
                   letterSpacing: 0),
             ),
@@ -36,7 +36,7 @@ class TextRowWidget extends StatelessWidget {
               style: GoogleFonts.ptSans(
                   fontSize: width < 700 ? width / 35 : width / 45,
                   fontWeight: FontWeight.w400,
-                  color: GlobalColors.black,
+                  color: GlobalColors.themeColor,
                   letterSpacing: 0),
             ),
           ),

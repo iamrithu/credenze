@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -30,6 +31,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String? _dayIn;
   String? _dayOut;
   bool _dayCompleted = false;
+  late Duration _loggedInHr;
 
   attendenceDetails() async {
     final prefs = await SharedPreferences.getInstance();
@@ -37,7 +39,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     Api().todayLogin(token).then((value) {
       if (value.data["message"]["attendance"].length == 0) {
-        print(value.data["message"]["attendance"].length.toString());
         setState(() {
           _dayIn = null;
           _dayOut = null;
@@ -56,8 +57,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               DateTime dt2 = DateTime.parse(
                       value.data["message"]["attendance"][i]["clock_in_time"])
                   .toLocal();
+
               DateTime dt1 = DateTime.now();
               Duration diff = dt1.difference(dt2);
+              _loggedInHr = diff;
 
               _stopWatchTimer.onStopTimer();
 
@@ -124,7 +127,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             _action = "DayOut";
             visible = true;
             success = value.data["success"];
-            // _dayIn = DateFormat("hh:mm:ss a").format(DateTime.now()).toString();
             msg = value.data["data"];
             _dayOut = null;
           });
@@ -163,58 +165,97 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     dayOut() async {
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
-      Api().DayOut(token).then((value) async {
-        if (value.data["success"]) {
-          setState(() {
-            _action = "DayIn";
-            // _dayCompleted = true;
-            visible = true;
-            // _dayOut =
-            //     DateFormat("hh:mm:ss a").format(DateTime.now()).toString();
-            success = value.data["success"];
-            msg = value.data["data"];
-          });
 
-          // await prefs.setString('dayOut', _dayOut.toString());
+      print(_loggedInHr.toString());
 
-          // _stopWatchTimer.onStopTimer();
-          attendenceDetails();
-
-          if (visible) {
-            Timer(const Duration(milliseconds: 1500), () {
-              setState(() {
-                visible = false;
-                success = false;
-              });
+      if (_loggedInHr.inHours.abs() < 10) {
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Are you sure to clock out",
+          confirmBtnText: "Ok",
+          cancelBtnText: "Cancel",
+          showCancelBtn: true,
+          autoCloseDuration: null,
+          onCancelBtnTap: () {
+            Navigator.pop(context);
+          },
+          onConfirmBtnTap: () {
+            Api().DayOut(token).then((value) async {
+              if (value.data["success"]) {
+                setState(() {
+                  _action = "DayIn";
+                  visible = true;
+                  success = value.data["success"];
+                  msg = value.data["data"];
+                });
+                attendenceDetails();
+                if (visible) {
+                  Timer(const Duration(milliseconds: 1500), () {
+                    setState(() {
+                      visible = false;
+                      success = false;
+                    });
+                  });
+                }
+              } else {
+                attendenceDetails();
+                setState(() {
+                  _action = "DayOut";
+                  visible = true;
+                  success = value.data["success"];
+                  msg = value.data["message"];
+                });
+                if (visible) {
+                  Timer(const Duration(milliseconds: 1500), () {
+                    setState(() {
+                      visible = false;
+                      success = false;
+                    });
+                  });
+                }
+              }
             });
-          }
-          // Api().attdToday(token).then((value) {
-          //  if(value.data["message"]["remaining_clock_in"]==0){
-          //   setState(() {
-
-          //   });
-          //  }
-          // });
-        } else {
-          attendenceDetails();
-          setState(() {
-            _action = "DayIn";
-            _dayCompleted = false;
-            visible = true;
-            success = value.data["success"];
-            msg = value.data["message"];
-          });
-
-          if (visible) {
-            Timer(const Duration(milliseconds: 1500), () {
-              setState(() {
-                visible = false;
-                success = false;
-              });
+            Navigator.pop(context);
+          },
+        );
+      } else {
+        Api().DayOut(token).then((value) async {
+          if (value.data["success"]) {
+            setState(() {
+              _action = "DayIn";
+              visible = true;
+              success = value.data["success"];
+              msg = value.data["data"];
             });
+            attendenceDetails();
+            if (visible) {
+              Timer(const Duration(milliseconds: 1500), () {
+                setState(() {
+                  visible = false;
+                  success = false;
+                });
+              });
+            }
+          } else {
+            attendenceDetails();
+            setState(() {
+              _action = "DayOut";
+              visible = true;
+              success = value.data["success"];
+              msg = value.data["message"];
+            });
+            if (visible) {
+              Timer(const Duration(milliseconds: 1500), () {
+                setState(() {
+                  visible = false;
+                  success = false;
+                });
+              });
+            }
           }
-        }
-      });
+        });
+      }
     }
 
     action() {
@@ -495,12 +536,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           horizontal: width * 0.025, vertical: height * 0.02),
                       elevation: 10,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(width * 0.5),
                           side: BorderSide(
                               color: GlobalColors.themeColor, width: 2)),
                       child: Container(
-                        width: width < 500 ? width * 0.4 : width * 0.3,
-                        height: width < 500 ? width * 0.4 : width * 0.3,
+                        width: width < 500 ? width * 0.45 : width * 0.35,
+                        height: width < 500 ? width * 0.45 : width * 0.35,
                         child: Center(
                             child: StreamBuilder(
                           stream: _stopWatchTimer.rawTime,
@@ -527,14 +568,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   style: GoogleFonts.ptSans(
                                       fontSize:
                                           width < 700 ? width / 30 : width / 42,
-                                      fontWeight: FontWeight.w400,
-                                      color: GlobalColors.black,
+                                      fontWeight: FontWeight.w600,
+                                      color: GlobalColors.themeColor,
                                       letterSpacing: 0),
                                 ),
                                 Card(
                                   elevation: 10,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
+                                    borderRadius:
+                                        BorderRadius.circular(width * 0.1),
                                   ),
                                   child: Padding(
                                     padding: EdgeInsets.all(width * 0.02),
@@ -544,7 +586,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                               displayTimeWithoutSec.toString(),
                                           style: GoogleFonts.ptSans(
                                               fontSize: width < 700
-                                                  ? width / 20
+                                                  ? width / 25
                                                   : width / 24,
                                               fontWeight: FontWeight.w400,
                                               color: GlobalColors.themeColor2,
@@ -555,7 +597,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                                   displayTimeWithSec.toString(),
                                               style: GoogleFonts.ptSans(
                                                   fontSize: width < 700
-                                                      ? width / 12
+                                                      ? width / 20
                                                       : width / 21,
                                                   fontWeight: FontWeight.w400,
                                                   color:
@@ -598,12 +640,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             ? width / 28
                                             : width / 42,
                                         fontWeight: FontWeight.w400,
-                                        color: GlobalColors.white,
+                                        color: GlobalColors.themeColor,
                                         letterSpacing: 0),
                                   ),
                                   borderRadius: 10,
-                                  outerColor: GlobalColors.themeColor,
-                                  innerColor: GlobalColors.white,
+                                  outerColor: GlobalColors.white,
+                                  innerColor: GlobalColors.themeColor,
                                   elevation: 10,
                                   key: _key,
                                   onSubmit: () {

@@ -23,13 +23,18 @@ class _LeadCustomInputState extends State<LeadCustomInput> {
     return Container(
       width: width * 0.65,
       alignment: AlignmentDirectional.center,
-      padding: EdgeInsets.symmetric(horizontal: width * 0.03),
+      padding: EdgeInsets.only(left: width * 0.08),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: GlobalColors.themeColor2),
       ),
       child: TextFormField(
           controller: widget.controller,
+          style: GoogleFonts.ptSans(
+              color: GlobalColors.themeColor2,
+              fontSize: width < 700 ? width / 30 : width / 45,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0),
           decoration: InputDecoration(
             hintText: widget.label,
             hintStyle: GoogleFonts.ptSans(

@@ -1,4 +1,6 @@
 import 'package:credenze/apis/api.dart';
+import 'package:credenze/models/expense-category-model.dart';
+import 'package:credenze/models/expenses-model.dart';
 import 'package:credenze/models/file-model.dart';
 import 'package:credenze/models/installation-list-model.dart';
 import 'package:credenze/models/installation-overview-model.dart';
@@ -13,6 +15,8 @@ final userId = StateProvider<int>((ref) => 0);
 final netWorkConnectivity = StateProvider<bool>((ref) => true);
 final InstallationClockIn = StateProvider<bool>((ref) => true);
 final overViewId = StateProvider<int>((ref) => 0);
+final inChargeId = StateProvider<int>((ref) => 0);
+
 final userDataProvider = FutureProvider<UserModel>((ref) {
   String? token = ref.watch(newToken);
   return ref.watch(provider).UserData(token);
@@ -31,14 +35,28 @@ final InsttalationOverVIewProvider =
 final membersProvider = FutureProvider<List<MemberModel>>((ref) {
   String? token = ref.watch(newToken);
   int? id = ref.watch(overViewId);
+  int? userCheckid = ref.watch(userId);
 
-  return ref.watch(provider).Members(token, id);
+  return ref.watch(provider).Members(token, id, userCheckid!);
 });
 final taskProvider = FutureProvider<List<TaskModel>>((ref) {
   String? token = ref.watch(newToken);
   int? id = ref.watch(overViewId);
 
   return ref.watch(provider).Tasks(token, id);
+});
+final expenseProvider = FutureProvider<List<ExpensesModel>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(overViewId);
+
+  return ref.watch(provider).Expenses(token, id);
+});
+final expenseCategoryProvider =
+    FutureProvider<List<ExpenseCategoryModel>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(overViewId);
+
+  return ref.watch(provider).ExpensesCategory(token, id);
 });
 final fileProvider = FutureProvider<List<FileModel>>((ref) {
   String? token = ref.watch(newToken);

@@ -23,9 +23,9 @@ class HomeScreen extends ConsumerWidget {
 
   List<IconData> navigationIcon = [
     FontAwesomeIcons.clock,
-    Icons.install_desktop,
+    Icons.settings,
     FontAwesomeIcons.calendarDays,
-    FontAwesomeIcons.chartBar,
+    // FontAwesomeIcons.chartBar,
     Icons.settings_applications,
   ];
 
@@ -47,16 +47,16 @@ class HomeScreen extends ConsumerWidget {
       "Dashboard",
       "My Installations",
       "Attendence",
-      "Leads",
+      // "Leads",
       "Profile"
     ];
     List<Widget> pages = [
       DashboardScreen(),
       InstalationScreen(),
       AttendenceScreen(),
-      LeadScreen(),
+      // LeadScreen(),
       ProfileScreen(),
-      LeadDetailsScreen(),
+      // LeadDetailsScreen(),
       InstallationDetailScreen()
     ];
     return Scaffold(
@@ -110,6 +110,7 @@ class HomeScreen extends ConsumerWidget {
                         children: [
                           IconButton(
                             onPressed: () {
+                              print(i.toString());
                               ref.read(pageIndex.notifier).update((state) => i);
                             },
                             color: _page == i

@@ -1,4 +1,5 @@
 import 'package:credenze/const/global_colors.dart';
+import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/instalation-screen/tabs/file-screen.dart';
 import 'package:credenze/screens/instalation-screen/tabs/members-screen.dart';
 
@@ -6,10 +7,15 @@ import 'package:credenze/screens/instalation-screen/tabs/overview-screen.dart';
 import 'package:credenze/screens/instalation-screen/tabs/task-screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class InstallationDetailScreen extends StatefulWidget {
+import 'tabs/expenses-screen.dart';
+
+class InstallationDetailScreen extends ConsumerStatefulWidget {
   const InstallationDetailScreen({Key? key}) : super(key: key);
 
   @override
@@ -17,11 +23,44 @@ class InstallationDetailScreen extends StatefulWidget {
       _InstallationDetailScreenState();
 }
 
-class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
+class _InstallationDetailScreenState
+    extends ConsumerState<InstallationDetailScreen> {
+  String? inCharge = "";
+  getIncharge() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? newID = await prefs.getString('inChargeId');
+
+    setState(() {
+      inCharge = newID;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ref.refresh(membersProvider);
+
+    getIncharge();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    List<String> tabName = [
+      "Overview",
+      "Task",
+      "Members",
+      "Files",
+      if (ref.watch(InstallationClockIn) == false) "Expenses",
+    ];
+    List<IconData> tabIcon = [
+      Icons.view_comfy,
+      Icons.task_sharp,
+      Icons.person_add,
+      Icons.file_upload_outlined,
+      if (ref.watch(InstallationClockIn) == false) FontAwesomeIcons.moneyBills,
+    ];
 
     return Container(
       width: width,
@@ -29,7 +68,7 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
       child: LayoutBuilder(builder: ((context, constraints) {
         return DefaultTabController(
           initialIndex: 0,
-          length: 4,
+          length: tabName.length,
           child: Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -51,58 +90,20 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                     }),
                     splashBorderRadius: BorderRadius.circular(4),
                     tabs: <Widget>[
-                      Tab(
-                        child: Text(
-                          "Overview",
-                          style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 28 : width / 45,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0),
+                      for (var i = 0; i < tabName.length; i++)
+                        Tab(
+                          child: Text(
+                            "${tabName[i]}",
+                            style: GoogleFonts.ptSans(
+                                fontSize: width < 700 ? width / 35 : width / 45,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0),
+                          ),
+                          icon: Icon(
+                            tabIcon[i],
+                            size: width < 700 ? width / 35 : width / 45,
+                          ),
                         ),
-                        icon: Icon(
-                          Icons.view_comfy,
-                          size: width < 700 ? width / 28 : width / 45,
-                        ),
-                      ),
-                      Tab(
-                        child: Text(
-                          "Task",
-                          style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 28 : width / 45,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0),
-                        ),
-                        icon: Icon(
-                          Icons.task_sharp,
-                          size: width < 700 ? width / 28 : width / 45,
-                        ),
-                      ),
-                      Tab(
-                        child: Text(
-                          "Members",
-                          style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 28 : width / 45,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0),
-                        ),
-                        icon: Icon(
-                          Icons.person_add,
-                          size: width < 700 ? width / 28 : width / 45,
-                        ),
-                      ),
-                      Tab(
-                        child: Text(
-                          "Files",
-                          style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 28 : width / 45,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0),
-                        ),
-                        icon: Icon(
-                          Icons.file_upload_outlined,
-                          size: width < 700 ? width / 28 : width / 45,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -183,6 +184,26 @@ class _InstallationDetailScreenState extends State<InstallationDetailScreen> {
                       )
                     ],
                   ),
+                  if (ref.watch(InstallationClockIn) == false)
+                    Column(
+                      children: [
+                        Container(
+                          width: width,
+                          height: width < 400
+                              ? height * 0.67
+                              : width < 700
+                                  ? height * 0.69
+                                  : height * 0.7,
+                          child:
+                              LayoutBuilder(builder: ((context, constraints) {
+                            return ExpenseScreen(
+                              height: constraints.maxHeight,
+                              width: constraints.maxWidth,
+                            );
+                          })),
+                        )
+                      ],
+                    ),
                 ],
               ),
             ),

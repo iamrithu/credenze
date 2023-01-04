@@ -62,283 +62,330 @@ class _InstalationScreenState extends State<InstalationScreen> {
                 },
                 child: Container(
                   width: width,
-                  child: ListView(children: [
-                    _data.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Center(
-                                child: Text(
-                                  "No Information Available",
-                                  style: GoogleFonts.ptSans(
-                                      color: GlobalColors.black,
-                                      fontSize:
-                                          width < 700 ? width / 35 : width / 45,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0),
-                                ),
+                  child: _data.isEmpty
+                      ? ListView(
+                          children: [
+                            Center(
+                              child: Text(
+                                "No Information Available",
+                                style: GoogleFonts.ptSans(
+                                    color: GlobalColors.black,
+                                    fontSize:
+                                        width < 700 ? width / 35 : width / 45,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0),
                               ),
-                            ],
-                          )
-                        : Text(""),
-                    for (var i = 0; i < _data.length; i++)
-                      Stack(
-                        children: [
-                          Card(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
                             ),
-                            color: GlobalColors.themeColor,
-                            child: Container(
-                              width: width,
-                              height: height * 0.18,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  ref
-                                      .read(pageIndex.notifier)
-                                      .update((state) => 6);
-
-                                  ref.read(overViewId.notifier).update(
-                                      (state) => _data[i].installationId!);
-                                },
-                                child: Card(
+                          ],
+                        )
+                      : ListView(children: [
+                          for (var i = 0; i < _data.length; i++)
+                            Stack(
+                              children: [
+                                Card(
+                                  elevation: 5,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),
                                   ),
+                                  color: GlobalColors.themeColor,
                                   child: Container(
-                                    padding: EdgeInsets.all(width * 0.03),
-                                    width: width * 0.965,
-                                    height: height * 0.18,
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: width * 0.7,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
+                                    width: width,
+                                    height: height * 0.2,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        ref
+                                            .read(pageIndex.notifier)
+                                            .update((state) => 4);
+                                        ref.read(overViewId.notifier).update(
+                                            (state) =>
+                                                _data[i].installationId!);
+                                        return ref.refresh(membersProvider);
+                                      },
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Container(
+                                          padding: EdgeInsets.all(width * 0.03),
+                                          width: width * 0.965,
+                                          height: height * 0.2,
+                                          child: Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: width * 0.25,
-                                                    child: Text(
-                                                      "Installation Code",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .black,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
+                                              Container(
+                                                width: width * 0.7,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: width * 0.25,
+                                                          child: Text(
+                                                            "Installation Code",
+                                                            style: GoogleFonts.ptSans(
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: width * 0.45,
+                                                          child: Text(
+                                                            "${_data[i].installationPrefix}${_data[i].installationNos}",
+                                                            style: GoogleFonts.ptSans(
+                                                                color: GlobalColors
+                                                                    .themeColor,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  Container(
-                                                    width: width * 0.45,
-                                                    child: Text(
-                                                      "${_data[i].installationPrefix}${_data[i].installationNos}",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .themeColor,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: width * 0.25,
+                                                          child: Text(
+                                                            "Installation Name",
+                                                            style: GoogleFonts.ptSans(
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: width * 0.45,
+                                                          child: Text(
+                                                            "${_data[i].installationName}",
+                                                            style: GoogleFonts.ptSans(
+                                                                color: GlobalColors
+                                                                    .themeColor,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                ],
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: width * 0.25,
+                                                          child: Text(
+                                                            "Customer Name",
+                                                            style: GoogleFonts.ptSans(
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: width * 0.45,
+                                                          child: Text(
+                                                            "${_data[i].customerName}",
+                                                            style: GoogleFonts.ptSans(
+                                                                color: GlobalColors
+                                                                    .themeColor,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: width * 0.25,
+                                                          child: Text(
+                                                            "Branch ",
+                                                            style: GoogleFonts.ptSans(
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: width * 0.45,
+                                                          child: Text(
+                                                            "${_data[i].customerAddressinfo!.addressDetails!}",
+                                                            style: GoogleFonts.ptSans(
+                                                                color: GlobalColors
+                                                                    .themeColor,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          width: width * 0.25,
+                                                          child: Text(
+                                                            "Installation Status",
+                                                            style: GoogleFonts.ptSans(
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: width * 0.45,
+                                                          child: Text(
+                                                            "${_data[i].statusinfo!.statusName!}",
+                                                            style: GoogleFonts.ptSans(
+                                                                color: GlobalColors
+                                                                    .themeColor,
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        45,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: width * 0.25,
-                                                    child: Text(
-                                                      "Installation Name",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .black,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
-                                                    ),
+                                              InkWell(
+                                                onTap: () {
+                                                  MapsAndLocation()
+                                                      .openMapsSheet(
+                                                          context,
+                                                          double.parse(_data[i]
+                                                              .siteLatitude!),
+                                                          double.parse(_data[i]
+                                                              .siteLongitude!));
+                                                },
+                                                child: Container(
+                                                  width: width * 0.2,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Container(
+                                                        width: width * 0.1,
+                                                        child: Card(
+                                                          margin:
+                                                              EdgeInsets.all(2),
+                                                          elevation: 10,
+                                                          child: Image(
+                                                            image: AssetImage(
+                                                                "Assets/images/map.png"),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Container(
-                                                    width: width * 0.45,
-                                                    child: Text(
-                                                      "${_data[i].installationName}",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .themeColor,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: width * 0.25,
-                                                    child: Text(
-                                                      "Customer Name",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .black,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: width * 0.45,
-                                                    child: Text(
-                                                      "${_data[i].customerName}",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .themeColor,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: width * 0.25,
-                                                    child: Text(
-                                                      "Branch Name",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .black,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: width * 0.45,
-                                                    child: Text(
-                                                      "${_data[i].branchId}",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .themeColor,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: width * 0.25,
-                                                    child: Text(
-                                                      "Installation Status",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .black,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: width * 0.45,
-                                                    child: Text(
-                                                      "${_data[i].installationStatus}",
-                                                      style: GoogleFonts.ptSans(
-                                                          color: GlobalColors
-                                                              .themeColor,
-                                                          fontSize: width < 700
-                                                              ? width / 35
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        InkWell(
-                                          onTap: () {
-                                            MapsAndLocation().openMapsSheet(
-                                                context,
-                                                double.parse(
-                                                    _data[i].siteLatitude!),
-                                                double.parse(
-                                                    _data[i].siteLongitude!));
-                                          },
-                                          child: Container(
-                                            width: width * 0.2,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Container(
-                                                  width: width * 0.1,
-                                                  child: Card(
-                                                    margin: EdgeInsets.all(2),
-                                                    elevation: 10,
-                                                    child: Image(
-                                                      image: AssetImage(
-                                                          "Assets/images/map.png"),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                  ]),
+                              ],
+                            ),
+                        ]),
                 ),
               );
             },
