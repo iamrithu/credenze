@@ -209,6 +209,44 @@ class Api {
     }
   }
 
+  Future<String> updateExpense(
+      {required String? token,
+      required int? id,
+      required int? expenseId,
+      required int? category_id,
+      required File file,
+      required String? date,
+      required String? amount,
+      required String? note,
+      required int? fromPlace,
+      required int? distance}) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    try {
+      String fileName = file.path.split('/').last;
+      FormData data = FormData.fromMap({
+        "date": date,
+        "category_id": category_id,
+        "amount": amount,
+        "notes": note,
+        "attachment": file == null
+            ? await MultipartFile.fromFile(
+                file.path,
+                filename: fileName,
+              )
+            : File(""),
+        "from_place": fromPlace,
+        "distance": distance
+      });
+      Response response = await dio.post(
+        "installation/$id/expense/$expenseId/update",
+        data: data,
+      );
+      return response.toString();
+    } on DioError catch (e) {
+      return e.response.toString();
+    }
+  }
+
   Future<String> DeleteFile({
     required String? token,
     required int? id,
@@ -225,6 +263,72 @@ class Api {
     } on DioError catch (e) {
       return e.response.toString();
     }
+  }
+
+  Future workUpdate(String? token, int? id, String? date) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    try {
+      var response = await dio.get(
+        "installation/datewiseparticipants/$id/$date",
+      );
+      return response.data;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future addWorkUpdate(
+      String? token,
+      int? installation_id,
+      int? category_id,
+      String? date,
+      int? participants,
+      String? description,
+      int? site_incharge,
+      List itemList) async {
+    var formData = FormData.fromMap({
+      'installation_id': installation_id,
+      'category_id': category_id,
+      'work_date': date,
+      'site_incharge': site_incharge,
+      'participants[0]': participants,
+      'description': description
+    });
+    itemList.map((e) {
+      print(e["product_id"].toString());
+      formData.fields.add(MapEntry(
+          "items[${e["product_id"]}][product_id]", e["product_id"].toString()));
+      formData.fields.add(MapEntry(
+          "items[${e["product_id"]}][unit_id]", e["unit_id"].toString()));
+      formData.fields.add(MapEntry(
+          "items[${e["product_id"]}][quantity]", e["quantity"].toString()));
+      formData.fields.add(MapEntry(
+          "items[${e["product_id"]}][enable_serial_no]",
+          e["enable_serial_no"].toString()));
+    }).toList();
+    dio.options.headers["Authorization"] = "Bearer $token";
+    try {
+      var response = await dio.post(
+          "installation/$installation_id/workupdate/create",
+          data: formData);
+      return response.data;
+    } on DioError catch (e) {
+      return e.response;
+    }
+
+    // print("$token");
+    // print("$installation_id");
+
+    // print("$category_id");
+
+    // print("$date");
+
+    // print("$participants");
+    // print("$description");
+
+    // print("$site_incharge");
+
+    // print("$itemList");
   }
 }
 
@@ -266,6 +370,31 @@ class ProviderApi {
     }
   }
 
+  Future<List<InstallationModel>> InstalationModelList(
+      String? token, String? date) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    print(date);
+    var params = {
+      "date": date,
+    };
+    Response response = await dio.post(
+      "installation/listbydate",
+      data: jsonEncode(params),
+    );
+
+    print(response.toString());
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<InstallationModel> installations = [];
+      data.map((e) {
+        installations.add(InstallationModel.fromJson(e));
+      }).toList();
+      return installations;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
   Future<InstallationOverViewModel> InstallationOverView(
       String? token, int? id) async {
     dio.options.headers["Authorization"] = "Bearer $token";
@@ -293,12 +422,6 @@ class ProviderApi {
 
       var newdata =
           data.firstWhere(((element) => element["site_incharge"] != null));
-
-      if (newdata["user"]["id"] == checkId) {
-        await prefs.setString('inChargeId', "yes");
-      } else {
-        await prefs.setString('inChargeId', "no");
-      }
 
       List<MemberModel> members = [];
       data.map((e) {

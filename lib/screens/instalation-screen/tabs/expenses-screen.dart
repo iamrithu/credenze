@@ -48,13 +48,17 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                   showModalBottomSheet<void>(
                     context: context,
                     builder: (context) {
-                      return ExpenseAddScreen(cat: cat, data: _data);
+                      return ExpenseAddScreen(
+                          cat: cat, data: _data, type: "add", updateData: null);
                     },
                   );
                 },
                 icon: Icon(
                   Icons.add,
                   color: GlobalColors.white,
+                  size: widget.width! < 700
+                      ? widget.width! / 30
+                      : widget.width! / 45,
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: GlobalColors.themeColor,
@@ -67,7 +71,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                   style: GoogleFonts.ptSans(
                       color: GlobalColors.white,
                       fontSize: widget.width! < 700
-                          ? widget.width! / 28
+                          ? widget.width! / 35
                           : widget.width! / 45,
                       fontWeight: FontWeight.w400,
                       letterSpacing: 0),
@@ -121,7 +125,9 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                           color: GlobalColors.themeColor,
                           child: Container(
                             width: widget.width,
-                            height: widget.height! * 0.3,
+                            height: _data[i].categoryId == 1
+                                ? widget.height! * 0.25
+                                : widget.height! * 0.18,
                           ),
                         ),
                         Row(
@@ -141,7 +147,9 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                   // borderRadius: BorderRadius.circular(4)),
                                   child: Container(
                                     width: widget.width! * 0.97,
-                                    height: widget.height! * 0.3,
+                                    height: _data[i].categoryId == 1
+                                        ? widget.height! * 0.25
+                                        : widget.height! * 0.18,
                                     padding: EdgeInsets.only(
                                         left: widget.width! * 0.03),
                                     child: Column(
@@ -150,11 +158,6 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        TextRowWidget(
-                                          width: widget.width!,
-                                          lable: "Expense Id",
-                                          value: "#${_data[i].id!}",
-                                        ),
                                         TextRowWidget(
                                           width: widget.width!,
                                           lable: "Expense Date",
@@ -212,82 +215,129 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                         ),
                         Visibility(
                           visible: _data[i].id == selectedId,
-                          child: InkWell(
-                            onTap: (() {
-                              setState(() {
-                                selectedId = null;
-                              });
-                            }),
-                            child: Card(
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              color: Color.fromARGB(154, 249, 243, 243),
-                              child: Container(
-                                width: widget.width,
-                                height: widget.height! * 0.3,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          setState(() {
-                                            selectedId = null;
-                                          });
-                                        });
-                                      },
-                                      child: Card(
-                                        elevation: 10,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(100)),
-                                        child: Container(
-                                          padding: EdgeInsets.all(4),
-                                          child: Icon(
-                                            Icons.cancel_sharp,
-                                            color: GlobalColors.themeColor2,
-                                            size: widget.width! < 700
-                                                ? widget.width! / 18
-                                                : widget.width! / 45,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                onTap: (() {
+                                  setState(() {
+                                    selectedId = null;
+                                  });
+                                }),
+                                child: Card(
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  color: Color.fromARGB(208, 205, 203, 203),
+                                  child: Container(
+                                    width: widget.width! * 0.97,
+                                    height: _data[i].categoryId == 1
+                                        ? widget.height! * 0.25
+                                        : widget.height! * 0.18,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              setState(() {
+                                                selectedId = null;
+                                              });
+                                            });
+                                          },
+                                          child: Card(
+                                            shadowColor: GlobalColors.black,
+                                            elevation: 10,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(100)),
+                                            child: Container(
+                                              padding: EdgeInsets.all(4),
+                                              child: Icon(
+                                                Icons.cancel_sharp,
+                                                color: GlobalColors.themeColor2,
+                                                size: widget.width! < 700
+                                                    ? widget.width! / 18
+                                                    : widget.width! / 45,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: widget.width! * 0.06,
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {});
-                                      },
-                                      child: Card(
-                                        elevation: 10,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(100)),
-                                        child: Container(
-                                          padding: EdgeInsets.all(4),
-                                          child: Icon(
-                                            FontAwesomeIcons.pencil,
-                                            color: Color.fromARGB(
-                                                255, 13, 51, 205),
-                                            size: widget.width! < 700
-                                                ? widget.width! / 18
-                                                : widget.width! / 45,
-                                          ),
+                                        SizedBox(
+                                          width: widget.width! * 0.06,
                                         ),
-                                      ),
+                                        Consumer(
+                                            builder: ((context, ref, child) {
+                                          final data = ref
+                                              .watch(expenseCategoryProvider);
+                                          return data.when(
+                                              data: ((_data1) {
+                                                cat = [];
+                                                for (var i = 0;
+                                                    i < _data1.length;
+                                                    i++) {
+                                                  cat.add(_data1[i].name!);
+                                                }
+                                                return InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedId = null;
+                                                    });
+                                                    showModalBottomSheet<void>(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return ExpenseAddScreen(
+                                                            cat: cat,
+                                                            data: _data1,
+                                                            type: "update",
+                                                            updateData:
+                                                                _data[i]);
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Card(
+                                                    elevation: 10,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100)),
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.all(4),
+                                                      child: Icon(
+                                                        FontAwesomeIcons
+                                                            .penToSquare,
+                                                        color: GlobalColors
+                                                            .themeColor,
+                                                        size: widget.width! <
+                                                                700
+                                                            ? widget.width! / 20
+                                                            : widget.width! /
+                                                                45,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                              error: ((error, stackTrace) =>
+                                                  Text("")),
+                                              loading: (() => Text("")));
+                                        })),
+                                        SizedBox(
+                                          width: widget.width! * 0.06,
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: widget.width! * 0.06,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ],

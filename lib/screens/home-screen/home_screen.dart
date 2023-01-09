@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import '../dashboard-screen/dashboard_screen.dart';
@@ -26,7 +27,7 @@ class HomeScreen extends ConsumerWidget {
     Icons.settings,
     FontAwesomeIcons.calendarDays,
     // FontAwesomeIcons.chartBar,
-    Icons.settings_applications,
+    Icons.person,
   ];
 
   @override
@@ -110,8 +111,10 @@ class HomeScreen extends ConsumerWidget {
                         children: [
                           IconButton(
                             onPressed: () {
-                              print(i.toString());
                               ref.read(pageIndex.notifier).update((state) => i);
+                              ref.read(selectedDate.notifier).update((state) =>
+                                  DateFormat("dd-MM-yyyy")
+                                      .format(DateTime.now()));
                             },
                             color: _page == i
                                 ? GlobalColors.themeColor

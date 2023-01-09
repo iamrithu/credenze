@@ -35,6 +35,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   double long = 0.0;
   bool detailVisible = false;
   bool loading = false;
+  int? totalAmount = 0;
   String? clockInlat = "";
   String? clockInlong = "";
   String? clockOutlat = "";
@@ -81,6 +82,8 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
     String? token = await prefs.getString('token');
 
     final id = ref.watch(overViewId);
+
+    ref.refresh(InstallationClockIn);
     Api().InstallationAttendence(token!, id).then((value) {
       List data = value.data["data"];
 
@@ -90,6 +93,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
           clockOut = null;
         });
       } else {
+        print("rithi");
         ref.read(InstallationClockIn.notifier).update((state) => true);
 
         var newdata = data
@@ -165,55 +169,65 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   }
 
   installationClockIn(int? id) async {
-    setState(() {
-      loading = true;
-      detailVisible = true;
-    });
-    final prefs = await SharedPreferences.getInstance();
-    String? token = await prefs.getString('token');
-    MapsAndLocation().getCamera().then((value) {
-      if (value == null) {
-        setState(() {
-          loading = false;
-          detailVisible = false;
-        });
-      } else {
-        setState(() {
-          newImage = value;
-        });
-        MapsAndLocation().locationPermisson().then((value) {
+    if (ref.watch(Installavailable) == true) {
+      setState(() {
+        loading = true;
+        detailVisible = true;
+      });
+      final prefs = await SharedPreferences.getInstance();
+      String? token = await prefs.getString('token');
+      MapsAndLocation().getCamera().then((value) {
+        if (value == null) {
           setState(() {
-            lat = value.latitude;
-            long = value.longitude;
+            loading = false;
+            detailVisible = false;
           });
-          Api()
-              .ClockIn(
-                  token: token!,
-                  id: id!,
-                  latitude: lat.toString(),
-                  longitude: long.toString(),
-                  photo: newImage!)
-              .then((value) {
-            Map<String, dynamic> data = jsonDecode(value);
-            if (data["success"]) {
-              getInstallationAttendence();
-            } else {
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.error,
-                title: "${data["message"]}",
-                autoCloseDuration: null,
-              );
+        } else {
+          setState(() {
+            newImage = value;
+          });
+          MapsAndLocation().locationPermisson().then((value) {
+            setState(() {
+              lat = value.latitude;
+              long = value.longitude;
+            });
+            Api()
+                .ClockIn(
+                    token: token!,
+                    id: id!,
+                    latitude: lat.toString(),
+                    longitude: long.toString(),
+                    photo: newImage!)
+                .then((value) {
+              Map<String, dynamic> data = jsonDecode(value);
+              if (data["success"]) {
+                ref.read(Installavailable.notifier).update((state) => false);
+                getInstallationAttendence();
+              } else {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "${data["message"]}",
+                  autoCloseDuration: null,
+                );
 
-              setState(() {
-                loading = false;
-                detailVisible = false;
-              });
-            }
+                setState(() {
+                  loading = false;
+                  detailVisible = false;
+                });
+              }
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    } else {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Please Complete Previous Installation",
+        autoCloseDuration: null,
+      );
+    }
   }
 
   installationClockOut(int? id) async {
@@ -238,6 +252,8 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
           .then((value) {
         Map<String, dynamic> data = jsonDecode(value);
         if (data["success"]) {
+          ref.read(Installavailable.notifier).update((state) => true);
+
           getInstallationAttendence();
         } else {
           QuickAlert.show(
@@ -602,7 +618,8 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                         TextRowWidget(
                                           width: widget.width!,
                                           lable: "Branch Name",
-                                          value: "${_data.branchId}",
+                                          value:
+                                              "${_data.branchinfo!.location}",
                                         ),
                                         TextRowWidget(
                                           width: widget.width!,
@@ -815,15 +832,17 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                               fontSize: widget
                                                                           .width! <
                                                                       700
-                                                                  ? widget.width! /
-                                                                      35
-                                                                  : widget.width! /
+                                                                  ? widget
+                                                                          .width! /
+                                                                      38
+                                                                  : widget
+                                                                          .width! /
                                                                       42,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w400,
+                                                                      .w600,
                                                               color: GlobalColors
-                                                                  .themeColor2,
+                                                                  .themeColor,
                                                               letterSpacing: 0),
                                                           children: [
                                                             TextSpan(
@@ -833,12 +852,12 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                                               .width! <
                                                                           700
                                                                       ? widget.width! /
-                                                                          35
+                                                                          38
                                                                       : widget.width! /
                                                                           42,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w600,
                                                                   color:
                                                                       GlobalColors
                                                                           .black,
@@ -857,13 +876,13 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                                         .width! <
                                                                     700
                                                                 ? widget.width! /
-                                                                    35
+                                                                    38
                                                                 : widget.width! /
                                                                     42,
                                                             fontWeight:
-                                                                FontWeight.w400,
+                                                                FontWeight.w600,
                                                             color: GlobalColors
-                                                                .themeColor2,
+                                                                .themeColor,
                                                             letterSpacing: 0),
                                                       ),
                                                       Text(
@@ -875,11 +894,11 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                                         .width! <
                                                                     700
                                                                 ? widget.width! /
-                                                                    35
+                                                                    38
                                                                 : widget.width! /
                                                                     42,
                                                             fontWeight:
-                                                                FontWeight.w400,
+                                                                FontWeight.w600,
                                                             letterSpacing: 0),
                                                       ),
                                                     ],
@@ -890,25 +909,33 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                           : Row(
                                               children: [
                                                 !installationComplete
-                                                    ? Center(
-                                                        child: Text(
-                                                          "Clock Out Detail Not Available ...",
-                                                          textAlign:
-                                                              TextAlign.start,
-                                                          style: GoogleFonts.ptSans(
-                                                              fontSize: widget.width! <
-                                                                      700
-                                                                  ? widget.width! /
-                                                                      35
-                                                                  : widget.width! /
-                                                                      42,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color:
-                                                                  GlobalColors
-                                                                      .black,
-                                                              letterSpacing: 0),
+                                                    ? Container(
+                                                        width:
+                                                            widget.width! * 0.9,
+                                                        height: widget.height! *
+                                                            0.1,
+                                                        child: Center(
+                                                          child: Text(
+                                                            "Clock Out Detail Not Available ...",
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            style: GoogleFonts.ptSans(
+                                                                fontSize: widget
+                                                                            .width! <
+                                                                        700
+                                                                    ? widget.width! /
+                                                                        35
+                                                                    : widget.width! /
+                                                                        42,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
                                                         ),
                                                       )
                                                     : Container(
@@ -934,14 +961,14 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                                     fontSize: widget.width! <
                                                                             700
                                                                         ? widget.width! /
-                                                                            35
+                                                                            38
                                                                         : widget.width! /
                                                                             42,
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .w400,
+                                                                            .w600,
                                                                     color: GlobalColors
-                                                                        .themeColor2,
+                                                                        .themeColor,
                                                                     letterSpacing:
                                                                         0),
                                                                 children: [
@@ -951,7 +978,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                                     style: GoogleFonts.ptSans(
                                                                         fontSize: widget.width! < 700
                                                                             ? widget.width! /
-                                                                                35
+                                                                                38
                                                                             : widget.width! /
                                                                                 42,
                                                                         fontWeight:
@@ -974,14 +1001,14 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                                   fontSize: widget.width! <
                                                                           700
                                                                       ? widget.width! /
-                                                                          35
+                                                                          38
                                                                       : widget.width! /
                                                                           42,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w600,
                                                                   color: GlobalColors
-                                                                      .themeColor2,
+                                                                      .themeColor,
                                                                   letterSpacing:
                                                                       0),
                                                             ),
@@ -1013,6 +1040,230 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                   )),
                         ),
                       ),
+                      Visibility(
+                          visible: installationComplete,
+                          child: Consumer(
+                            builder: ((context, ref, child) {
+                              final cat = ref.watch(expenseProvider);
+                              return cat.when(
+                                  data: ((_data) {
+                                    return Container(
+                                      width: widget.width,
+                                      child: Card(
+                                        elevation: 5,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Card(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4)),
+                                                  elevation: 1,
+                                                  margin: EdgeInsets.only(
+                                                      left:
+                                                          widget.width! * 0.03,
+                                                      bottom: 10),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            4.0),
+                                                    child: Text(
+                                                      "My Expenses",
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: GoogleFonts.ptSans(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Text(
+                                                  "S.NO",
+                                                  textAlign: TextAlign.start,
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: widget.width! <
+                                                              700
+                                                          ? widget.width! / 35
+                                                          : widget.width! / 42,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: GlobalColors
+                                                          .themeColor2,
+                                                      letterSpacing: 0),
+                                                ),
+                                                Text(
+                                                  "Category",
+                                                  textAlign: TextAlign.start,
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: widget.width! <
+                                                              700
+                                                          ? widget.width! / 35
+                                                          : widget.width! / 42,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: GlobalColors
+                                                          .themeColor2,
+                                                      letterSpacing: 0),
+                                                ),
+                                                Text(
+                                                  "Amount",
+                                                  textAlign: TextAlign.start,
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: widget.width! <
+                                                              700
+                                                          ? widget.width! / 35
+                                                          : widget.width! / 42,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: GlobalColors
+                                                          .themeColor2,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ],
+                                            ),
+                                            for (var i = 0;
+                                                i < _data.length;
+                                                i++)
+                                              Container(
+                                                width: widget.width,
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 5),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    Text(
+                                                      "${i + 1}",
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: GoogleFonts.ptSans(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .black,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                    Text(
+                                                      _data[i].categoryId == 1
+                                                          ? "Petrol"
+                                                          : "Food",
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: GoogleFonts.ptSans(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .black,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                    Text(
+                                                      "${_data[i].amount} Rs",
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: GoogleFonts.ptSans(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .black,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            Divider(),
+                                            // Padding(
+                                            //   padding:
+                                            //       const EdgeInsets.symmetric(
+                                            //           vertical: 8.0),
+                                            //   child: Row(
+                                            //     mainAxisAlignment:
+                                            //         MainAxisAlignment
+                                            //             .spaceEvenly,
+                                            //     children: [
+                                            //       Text(
+                                            //         "Total",
+                                            //         textAlign: TextAlign.start,
+                                            //         style: GoogleFonts.ptSans(
+                                            //             fontSize: widget
+                                            //                         .width! <
+                                            //                     700
+                                            //                 ? widget.width! / 35
+                                            //                 : widget.width! /
+                                            //                     42,
+                                            //             fontWeight:
+                                            //                 FontWeight.w400,
+                                            //             color: GlobalColors
+                                            //                 .themeColor,
+                                            //             letterSpacing: 0),
+                                            //       ),
+                                            //       Text(
+                                            //         "${totalAmount}",
+                                            //         textAlign: TextAlign.start,
+                                            //         style: GoogleFonts.ptSans(
+                                            //             fontSize: widget
+                                            //                         .width! <
+                                            //                     700
+                                            //                 ? widget.width! / 35
+                                            //                 : widget.width! /
+                                            //                     42,
+                                            //             fontWeight:
+                                            //                 FontWeight.w400,
+                                            //             color: GlobalColors
+                                            //                 .themeColor,
+                                            //             letterSpacing: 0),
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                  error: ((error, stackTrace) => Text("")),
+                                  loading: (() => Text("")));
+                            }),
+                          ))
                     ],
                   ),
                 ),

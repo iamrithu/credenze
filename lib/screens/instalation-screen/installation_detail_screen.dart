@@ -5,13 +5,13 @@ import 'package:credenze/screens/instalation-screen/tabs/members-screen.dart';
 
 import 'package:credenze/screens/instalation-screen/tabs/overview-screen.dart';
 import 'package:credenze/screens/instalation-screen/tabs/task-screen.dart';
+import 'package:credenze/screens/instalation-screen/tabs/work_update.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'tabs/expenses-screen.dart';
 
@@ -25,22 +25,9 @@ class InstallationDetailScreen extends ConsumerStatefulWidget {
 
 class _InstallationDetailScreenState
     extends ConsumerState<InstallationDetailScreen> {
-  String? inCharge = "";
-  getIncharge() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? newID = await prefs.getString('inChargeId');
-
-    setState(() {
-      inCharge = newID;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    ref.refresh(membersProvider);
-
-    getIncharge();
   }
 
   @override
@@ -52,6 +39,8 @@ class _InstallationDetailScreenState
       "Task",
       "Members",
       "Files",
+      if (ref.watch(InstallationClockIn) == false)
+        if (ref.watch(inChargeId) == ref.watch(userId)) "Workupdate",
       if (ref.watch(InstallationClockIn) == false) "Expenses",
     ];
     List<IconData> tabIcon = [
@@ -59,6 +48,8 @@ class _InstallationDetailScreenState
       Icons.task_sharp,
       Icons.person_add,
       Icons.file_upload_outlined,
+      if (ref.watch(InstallationClockIn) == false)
+        if (ref.watch(inChargeId) == ref.watch(userId)) Icons.work_history,
       if (ref.watch(InstallationClockIn) == false) FontAwesomeIcons.moneyBills,
     ];
 
@@ -82,6 +73,7 @@ class _InstallationDetailScreenState
                     unselectedLabelColor: GlobalColors.themeColor2,
                     indicatorSize: TabBarIndicatorSize.label,
                     dragStartBehavior: DragStartBehavior.start,
+                    isScrollable: tabName.length > 5 ? true : false,
                     overlayColor: MaterialStateProperty.resolveWith((states) {
                       if (states.contains(MaterialState.pressed)) {
                         return GlobalColors.themeColor2;
@@ -95,7 +87,13 @@ class _InstallationDetailScreenState
                           child: Text(
                             "${tabName[i]}",
                             style: GoogleFonts.ptSans(
-                                fontSize: width < 700 ? width / 35 : width / 45,
+                                fontSize: tabName.length > 5
+                                    ? width < 700
+                                        ? width / 40
+                                        : width / 45
+                                    : width < 700
+                                        ? width / 35
+                                        : width / 45,
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: 0),
                           ),
@@ -184,6 +182,27 @@ class _InstallationDetailScreenState
                       )
                     ],
                   ),
+                  if (ref.watch(InstallationClockIn) == false)
+                    if (ref.watch(inChargeId) == ref.watch(userId))
+                      Column(
+                        children: [
+                          Container(
+                            width: width,
+                            height: width < 400
+                                ? height * 0.67
+                                : width < 700
+                                    ? height * 0.69
+                                    : height * 0.7,
+                            child:
+                                LayoutBuilder(builder: ((context, constraints) {
+                              return WorkUpdateScreen(
+                                height: constraints.maxHeight,
+                                width: constraints.maxWidth,
+                              );
+                            })),
+                          )
+                        ],
+                      ),
                   if (ref.watch(InstallationClockIn) == false)
                     Column(
                       children: [

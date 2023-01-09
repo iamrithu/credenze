@@ -29,21 +29,22 @@ class _LeadCustomInputState extends State<LeadCustomInput> {
         border: Border.all(color: GlobalColors.themeColor2),
       ),
       child: TextFormField(
-          controller: widget.controller,
-          style: GoogleFonts.ptSans(
+        controller: widget.controller,
+        style: GoogleFonts.ptSans(
+            color: GlobalColors.themeColor2,
+            fontSize: width < 700 ? width / 30 : width / 45,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0),
+        decoration: InputDecoration(
+          hintText: widget.label,
+          hintStyle: GoogleFonts.ptSans(
               color: GlobalColors.themeColor2,
-              fontSize: width < 700 ? width / 30 : width / 45,
+              fontSize: width < 700 ? width / 35 : width / 45,
               fontWeight: FontWeight.w400,
               letterSpacing: 0),
-          decoration: InputDecoration(
-            hintText: widget.label,
-            hintStyle: GoogleFonts.ptSans(
-                color: GlobalColors.themeColor2,
-                fontSize: width < 700 ? width / 35 : width / 45,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0),
-            border: InputBorder.none,
-          )),
+          border: InputBorder.none,
+        ),
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/custom-widget/custom_drop_down_button.dart';
 import 'package:credenze/custom-widget/custom_input.dart';
 import 'package:credenze/models/expense-category-model.dart';
+import 'package:credenze/models/expenses-model.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +24,16 @@ import '../../../lead-screen/tabs/widgets/lead_custom_lable.dart';
 List<String> place = ["Office", "Home"];
 
 class ExpenseAddScreen extends ConsumerStatefulWidget {
+  final String? type;
   final List<String> cat;
   final List<ExpenseCategoryModel> data;
-  const ExpenseAddScreen({Key? key, required this.cat, required this.data})
+  final ExpensesModel? updateData;
+  ExpenseAddScreen(
+      {Key? key,
+      required this.cat,
+      required this.data,
+      required this.type,
+      required this.updateData})
       : super(key: key);
 
   @override
@@ -82,6 +90,30 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
     setState(() {
       _category = widget.cat[0];
     });
+
+    if (widget.type == "add") {
+      setState(() {
+        _category = widget.cat[0];
+      });
+    } else {
+      final list = widget.data;
+      var newdata = list.firstWhere(
+          ((element) => element.id == widget.updateData!.categoryId!));
+
+      DateTime newDate =
+          DateFormat("dd-MM-yyyy").parse(widget.updateData!.date!);
+
+      print(DateTime.parse(newDate.toString()));
+      setState(() {
+        _category = newdata.name!;
+        _category == "Petrol" ? _categoryId = 1 : _categoryId = 0;
+        _selectedDate = newDate;
+        selectedPlace = widget.updateData!.fromPlace == 1 ? "Office" : "Home";
+        _amount.text = widget.updateData!.amount!;
+        _note.text = widget.updateData!.notes!;
+        _distance.text = widget.updateData!.distance.toString();
+      });
+    }
   }
 
   @override
@@ -97,25 +129,6 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                 top: BorderSide(color: GlobalColors.themeColor, width: 3))),
         child: Column(
           children: [
-            Container(
-              width: width,
-              height: height * 0.03,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Leave Form",
-                    style: GoogleFonts.ptSans(
-                      color: GlobalColors.themeColor2,
-                      fontSize: width < 700 ? width / 20 : width / 41,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Container(
               width: width,
               height: height * 0.06,
@@ -165,33 +178,32 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                       width: width * 0.49,
                       height: height * 0.05,
                       margin: EdgeInsets.only(left: 5, right: 2),
+                      padding: EdgeInsets.only(left: width * 0.07),
+                      alignment: Alignment.centerLeft,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(color: GlobalColors.themeColor2)),
-                      child: Center(
-                        child: RichText(
-                          text: TextSpan(
-                              text: _selectedDate.day.toString() + " ",
-                              style: GoogleFonts.ptSans(
+                      child: RichText(
+                        text: TextSpan(
+                            text: _selectedDate.day.toString(),
+                            style: GoogleFonts.ptSans(
+                                fontSize: width < 700 ? width / 22 : width / 40,
+                                fontWeight: FontWeight.w400,
+                                color: GlobalColors.themeColor,
+                                letterSpacing: 2),
+                            children: [
+                              TextSpan(
+                                text: DateFormat("-MM-yyyy")
+                                    .format(_selectedDate),
+                                style: GoogleFonts.ptSans(
                                   fontSize:
-                                      width < 700 ? width / 22 : width / 40,
+                                      width < 700 ? width / 28 : width / 49,
                                   fontWeight: FontWeight.w400,
-                                  color: GlobalColors.themeColor,
-                                  letterSpacing: 2),
-                              children: [
-                                TextSpan(
-                                  text: DateFormat("MMMM yyyy")
-                                      .format(_selectedDate),
-                                  style: GoogleFonts.ptSans(
-                                    fontSize:
-                                        width < 700 ? width / 28 : width / 49,
-                                    fontWeight: FontWeight.w400,
-                                    color: GlobalColors.black,
-                                    letterSpacing: 2,
-                                  ),
+                                  color: GlobalColors.black,
+                                  letterSpacing: 2,
                                 ),
-                              ]),
-                        ),
+                              ),
+                            ]),
                       )),
                   GestureDetector(
                     onTap: () {
@@ -325,17 +337,16 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                         border: Border.all(color: GlobalColors.themeColor2)),
                     child: Container(
                       width: width * 0.2,
+                      padding: EdgeInsets.only(left: width * 0.07),
+                      alignment: Alignment.centerLeft,
                       child: newFile == null
-                          ? Center(
-                              child: Text(
-                                "Choose File ",
-                                style: GoogleFonts.ptSans(
-                                  color: GlobalColors.themeColor2,
-                                  fontSize:
-                                      width < 700 ? width / 35 : width / 44,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0,
-                                ),
+                          ? Text(
+                              "Choose File ",
+                              style: GoogleFonts.ptSans(
+                                color: GlobalColors.themeColor2,
+                                fontSize: width < 700 ? width / 35 : width / 44,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0,
                               ),
                             )
                           : Image.file(
@@ -400,42 +411,82 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                       final id = ref.watch(overViewId);
 
                       print(" _placeId${newFile}");
-                      Api()
-                          .AddExpense(
-                        token: token!,
-                        id: id,
-                        category_id: _categoryId,
-                        file: newFile == null ? File("") : newFile!,
-                        date:
-                            "${DateFormat("dd - MMMM - yyyy ").format(_selectedDate)}",
-                        note: _note.text.isEmpty ? "--" : _note.text,
-                        amount: _amount.text,
-                        fromPlace: _placeId,
-                        distance: _distance.text.isEmpty
-                            ? 0
-                            : int.parse(_distance.text),
-                      )
-                          .then((value) {
-                        Map<String, dynamic> data = jsonDecode(value);
-                        print(value.toString());
-                        if (data["success"]) {
-                          Navigator.pop(context);
+                      widget.type == "add"
+                          ? Api()
+                              .AddExpense(
+                              token: token!,
+                              id: id,
+                              category_id: _categoryId,
+                              file: newFile == null ? File("") : newFile!,
+                              date:
+                                  "${DateFormat("dd-MM-yyyy ").format(_selectedDate)}",
+                              note: _note.text.isEmpty ? "--" : _note.text,
+                              amount: _amount.text.isEmpty
+                                  ? 0.toString()
+                                  : _amount.text,
+                              fromPlace: _placeId,
+                              distance: _distance.text.isEmpty
+                                  ? 1
+                                  : int.parse(_distance.text),
+                            )
+                              .then((value) {
+                              Map<String, dynamic> data = jsonDecode(value);
+                              print(value.toString());
+                              if (data["success"]) {
+                                Navigator.pop(context);
 
-                          return ref.refresh(expenseProvider);
-                        } else {
-                          Navigator.pop(context);
+                                return ref.refresh(expenseProvider);
+                              } else {
+                                Navigator.pop(context);
 
-                          QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.error,
-                              title: "${data["message"]}",
-                              autoCloseDuration: null);
-                        }
-                      });
+                                QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.error,
+                                    title: "${data["message"]}",
+                                    autoCloseDuration: null);
+                              }
+                            })
+                          : Api()
+                              .updateExpense(
+                              token: token!,
+                              id: id,
+                              expenseId: widget.updateData!.id,
+                              category_id: _categoryId,
+                              file: newFile == null ? File("") : newFile!,
+                              date:
+                                  "${DateFormat("dd-MM-yyyy ").format(_selectedDate)}",
+                              note: _note.text.isEmpty ? "--" : _note.text,
+                              amount: _amount.text.isEmpty
+                                  ? 0.toString()
+                                  : _amount.text,
+                              fromPlace: _placeId == null ? 1 : _placeId,
+                              distance: _distance.text.isEmpty
+                                  ? 1
+                                  : int.parse(_distance.text),
+                            )
+                              .then((value) {
+                              Map<String, dynamic> data = jsonDecode(value);
+                              print(value.toString());
+                              if (data["success"]) {
+                                Navigator.pop(context);
+
+                                return ref.refresh(expenseProvider);
+                              } else {
+                                Navigator.pop(context);
+
+                                QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.error,
+                                    title: "${data["message"]}",
+                                    autoCloseDuration: null);
+                              }
+                            });
                     },
-                    icon: Icon(Icons.add),
+                    icon: widget.type == "add"
+                        ? Icon(Icons.add)
+                        : Icon(Icons.update),
                     label: Text(
-                      "Add Expense",
+                      widget.type == "add" ? "Add Expense" : "Update",
                       style: GoogleFonts.ptSans(
                           fontSize: width < 700 ? width / 28 : width / 45,
                           fontWeight: FontWeight.w400,

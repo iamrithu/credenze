@@ -15,7 +15,7 @@ class TextRowWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
@@ -23,9 +23,9 @@ class TextRowWidget extends StatelessWidget {
             child: Text(
               lable!,
               style: GoogleFonts.ptSans(
-                  fontSize: width < 700 ? width / 35 : width / 45,
+                  fontSize: width < 700 ? width / 38 : width / 45,
                   fontWeight: FontWeight.w800,
-                  color: GlobalColors.themeColor2,
+                  color: GlobalColors.black,
                   letterSpacing: 0),
             ),
           ),
@@ -34,7 +34,7 @@ class TextRowWidget extends StatelessWidget {
             child: Text(
               value!,
               style: GoogleFonts.ptSans(
-                  fontSize: width < 700 ? width / 35 : width / 45,
+                  fontSize: width < 700 ? width / 38 : width / 45,
                   fontWeight: FontWeight.w400,
                   color: GlobalColors.themeColor,
                   letterSpacing: 0),
