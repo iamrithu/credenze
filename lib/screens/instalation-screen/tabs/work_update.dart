@@ -47,6 +47,7 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
               return ElevatedButton.icon(
                 onPressed: () {
                   showModalBottomSheet<void>(
+                    isScrollControlled: true,
                     context: context,
                     builder: (context) {
                       return AddWorkUpdate(

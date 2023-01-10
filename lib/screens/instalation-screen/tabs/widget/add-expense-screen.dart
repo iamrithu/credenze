@@ -466,7 +466,6 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                             )
                               .then((value) {
                               Map<String, dynamic> data = jsonDecode(value);
-                              print(value.toString());
                               if (data["success"]) {
                                 Navigator.pop(context);
 

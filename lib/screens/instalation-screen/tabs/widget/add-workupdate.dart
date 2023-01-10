@@ -129,62 +129,6 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
     return GlobalColors.themeColor;
   }
 
-  addWorkUpdate() async {
-    final int? id = ref.watch(overViewId);
-    final int? siteIncharge = ref.watch(inChargeId);
-    final String? token = ref.watch(newToken);
-    print(DateFormat("dd-MM-yyyy").format(_selectedDate));
-    print(_participants);
-    print(_category);
-    print(selectedCheckBox.toString());
-    print(selectedCheckBoxVlue.toString());
-    print(_controllers.toString());
-    selectedItems = [];
-
-    for (var i = 0; i < selectedCheckBox.length; i++) {
-      selectedItems.add({
-        "product_id": workItemObject[selectedCheckBoxVlue[i]]["product_id"],
-        "unit_id": workItemObject[selectedCheckBoxVlue[i]]["unit_id"],
-        "quantity": _controllers[selectedCheckBox[i]].text.toString(),
-        "enable_serial_no": workItemObject[selectedCheckBoxVlue[i]]
-            ["enable_serial_no"],
-      });
-    }
-    print(participantObj.toString());
-    if (_participants == "Choose") {
-      return print("please add value");
-    }
-    if (_category == "Choose") {
-      return print("please add value");
-    }
-
-    print(" ia m workinfg");
-
-    Map<String, dynamic> newParticipant = participantObj
-        .firstWhere((element) => element["name"] == _participants);
-    Map<String, dynamic> newCategory =
-        categoryObj.firstWhere((element) => element["name"] == _category);
-
-    // print("$token");
-    // print("$id");
-    // print("${newCategory["id"]}");
-    // print("${newParticipant["userid"]}");
-    // print("${DateFormat("dd-MM-yyyy").format(_selectedDate)}");
-    // print("${_note.text}");
-    // print("$siteIncharge");
-    // print(selectedItems.toString());
-
-    Api().addWorkUpdate(
-        token,
-        id,
-        newCategory["id"],
-        DateFormat("dd-MM-yyyy").format(_selectedDate),
-        newParticipant["userid"],
-        _note.text,
-        siteIncharge,
-        selectedItems);
-  }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -196,11 +140,131 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
     getWorkUpdateDetails();
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    addWorkUpdate() async {
+      final int? id = ref.watch(overViewId);
+      final int? siteIncharge = ref.watch(inChargeId);
+      final String? token = ref.watch(newToken);
+      print(DateFormat("dd-MM-yyyy").format(_selectedDate));
+      print(_participants);
+      print(_category);
+      print(selectedCheckBox.toString());
+      print(selectedCheckBoxVlue.toString());
+      print(_controllers.toString());
+      selectedItems = [];
+
+      for (var i = 0; i < selectedCheckBox.length; i++) {
+        if (_controllers[selectedCheckBox[i]].text.isEmpty) {
+          return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            widget: Text(
+              "Please enter some quantity for  ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) .",
+              style: GoogleFonts.ptSans(
+                color: GlobalColors.black,
+                fontSize: width < 700 ? width / 35 : width / 44,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0,
+              ),
+            ),
+            autoCloseDuration: null,
+          );
+        }
+
+        if ((int.parse(_controllers[selectedCheckBox[i]].text)) >
+            workItemObject[selectedCheckBoxVlue[i]]["quantity"]) {
+          return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            widget: Text(
+              "The available product ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) quantity is ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]}, so you cad add ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]} or add less than ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]} ",
+              style: GoogleFonts.ptSans(
+                color: GlobalColors.black,
+                fontSize: width < 700 ? width / 35 : width / 44,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0,
+              ),
+            ),
+            autoCloseDuration: null,
+          );
+        }
+
+        selectedItems.add({
+          "product_id": workItemObject[selectedCheckBoxVlue[i]]["product_id"],
+          "unit_id": workItemObject[selectedCheckBoxVlue[i]]["unit_id"],
+          "quantity": _controllers[selectedCheckBox[i]].text.toString(),
+          "enable_serial_no": workItemObject[selectedCheckBoxVlue[i]]
+              ["enable_serial_no"],
+        });
+      }
+      print(participantObj.toString());
+      if (_participants == "Choose") {
+        return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          widget: Text(
+            "Please Choose One Participant",
+            style: GoogleFonts.ptSans(
+              color: GlobalColors.black,
+              fontSize: width < 700 ? width / 35 : width / 44,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0,
+            ),
+          ),
+          autoCloseDuration: null,
+        );
+      }
+      if (_category == "Choose") {
+        return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          widget: Text(
+            "Please Choose One Taskcategory",
+            style: GoogleFonts.ptSans(
+              color: GlobalColors.black,
+              fontSize: width < 700 ? width / 35 : width / 44,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0,
+            ),
+          ),
+          autoCloseDuration: null,
+        );
+      }
+
+      Map<String, dynamic> newParticipant = participantObj
+          .firstWhere((element) => element["name"] == _participants);
+      Map<String, dynamic> newCategory =
+          categoryObj.firstWhere((element) => element["name"] == _category);
+
+      Api()
+          .addWorkUpdate(
+              token,
+              id,
+              newCategory["id"],
+              DateFormat("dd-MM-yyyy").format(_selectedDate),
+              newParticipant["userid"],
+              _note.text,
+              siteIncharge,
+              selectedItems)
+          .then((value) {
+        print(value.toString());
+        // Map<String, dynamic> data = jsonDecode(value);
+        // if (data["success"]) {
+        // Navigator.pop(context);
+        // } else {
+        // Navigator.pop(context);
+        // QuickAlert.show(
+        // context: context,
+        // type: QuickAlertType.error,
+        // title: "${data["message"]}",
+        // autoCloseDuration: null);
+        // }
+      });
+    }
 
     return Container(
         width: width,
         height: height,
-        padding: EdgeInsets.only(right: 4, left: 8),
+        padding: EdgeInsets.only(right: 4, top: 20, left: 8),
         decoration: BoxDecoration(
             border: Border(
                 top: BorderSide(color: GlobalColors.themeColor, width: 3))),
@@ -557,9 +621,24 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
               width: width,
               height: height * 0.07,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: GlobalColors.themeColor2),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.cancel),
+                    label: Text(
+                      " Cancel",
+                      style: GoogleFonts.ptSans(
+                          fontSize: width < 700 ? width / 28 : width / 45,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0),
+                    ),
+                  ),
                   ElevatedButton.icon(
                     onPressed: () {
                       addWorkUpdate();

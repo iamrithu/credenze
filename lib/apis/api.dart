@@ -292,7 +292,7 @@ class Api {
       'work_date': date,
       'site_incharge': site_incharge,
       'participants[0]': participants,
-      'description': description
+      'description': description!.isEmpty ? "--" : description
     });
     itemList.map((e) {
       print(e["product_id"].toString());
@@ -315,20 +315,6 @@ class Api {
     } on DioError catch (e) {
       return e.response;
     }
-
-    // print("$token");
-    // print("$installation_id");
-
-    // print("$category_id");
-
-    // print("$date");
-
-    // print("$participants");
-    // print("$description");
-
-    // print("$site_incharge");
-
-    // print("$itemList");
   }
 }
 

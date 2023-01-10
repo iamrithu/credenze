@@ -92,7 +92,7 @@ class _InstallationDetailScreenState
                                         ? width / 40
                                         : width / 45
                                     : width < 700
-                                        ? width / 35
+                                        ? width / 38
                                         : width / 45,
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: 0),
