@@ -387,11 +387,19 @@ class _InstalationScreenState extends ConsumerState<InstalationScreen> {
                                             .read(pageIndex.notifier)
                                             .update((state) => 4);
 
-                                        ref.read(inChargeId.notifier).update(
-                                            (state) => _data[i]
-                                                .siteInchargeToday!
-                                                .user!
-                                                .id!);
+                                        if (_data[i].siteInchargeToday ==
+                                            null) {
+                                          ref
+                                              .read(inChargeId.notifier)
+                                              .update((state) => 0);
+                                        } else {
+                                          ref.read(inChargeId.notifier).update(
+                                              (state) => _data[i]
+                                                  .siteInchargeToday!
+                                                  .user!
+                                                  .id!);
+                                        }
+
                                         ref.read(overViewId.notifier).update(
                                             (state) =>
                                                 _data[i].installationId!);

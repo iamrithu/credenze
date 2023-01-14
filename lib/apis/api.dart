@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/expense-category-model.dart';
 import '../models/file-model.dart';
+import '../models/work-update-model.dart';
 
 class Api {
   final dio = Dio(BaseOptions(
@@ -180,7 +181,7 @@ class Api {
       required String? date,
       required String? amount,
       required String? note,
-      required int? fromPlace,
+      required String? fromPlace,
       required int? distance}) async {
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
@@ -234,8 +235,8 @@ class Api {
                 filename: fileName,
               )
             : File(""),
-        "from_place": fromPlace,
-        "distance": distance
+        "from_place": "",
+        "distance": 0
       });
       Response response = await dio.post(
         "installation/$id/expense/$expenseId/update",
@@ -265,6 +266,22 @@ class Api {
     }
   }
 
+  Future<String> ExpensePlace({
+    required String? token,
+    required int? id,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    try {
+      Response response = await dio.get(
+        "installation/$id/expense/checkplace",
+      );
+
+      return response.toString();
+    } on DioError catch (e) {
+      return e.response.toString();
+    }
+  }
+
   Future workUpdate(String? token, int? id, String? date) async {
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
@@ -282,18 +299,29 @@ class Api {
       int? installation_id,
       int? category_id,
       String? date,
-      int? participants,
+      List<int> participants,
       String? description,
       int? site_incharge,
-      List itemList) async {
-    var formData = FormData.fromMap({
+      List itemList,
+      List serialList) async {
+    final formData = FormData.fromMap({
       'installation_id': installation_id,
       'category_id': category_id,
       'work_date': date,
       'site_incharge': site_incharge,
-      'participants[0]': participants,
+      'participants[0]':
+          "${participants.toString().replaceAll("[", "").replaceAll("]", "")}",
       'description': description!.isEmpty ? "--" : description
     });
+
+    print("serialValue" + serialList.toString());
+    serialList.map((e) {
+      print(e["product_id"].toString());
+      formData.fields.add(MapEntry(
+          "serial_no[${e["productId"]}][${e["serial_no"]}]",
+          e["value"].toString()));
+    }).toList();
+
     itemList.map((e) {
       print(e["product_id"].toString());
       formData.fields.add(MapEntry(
@@ -306,13 +334,19 @@ class Api {
           "items[${e["product_id"]}][enable_serial_no]",
           e["enable_serial_no"].toString()));
     }).toList();
+
+    print("fielsds" + formData.fields.toString());
+
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
       var response = await dio.post(
           "installation/$installation_id/workupdate/create",
           data: formData);
-      return response.data;
+      print("demoxx" + response.toString());
+
+      return response.toString();
     } on DioError catch (e) {
+      print("demoxx" + e.response.toString());
       return e.response;
     }
   }
@@ -405,10 +439,6 @@ class ProviderApi {
     );
     if (response.statusCode == 200) {
       List data = response.data["data"];
-
-      var newdata =
-          data.firstWhere(((element) => element["site_incharge"] != null));
-
       List<MemberModel> members = [];
       data.map((e) {
         members.add(MemberModel.fromJson(e));
@@ -461,6 +491,7 @@ class ProviderApi {
     Response response = await dio.get(
       "installation/$id/expense",
     );
+
     if (response.statusCode == 200) {
       List data = response.data["data"];
       List<ExpensesModel> tasks = [];
@@ -485,6 +516,25 @@ class ProviderApi {
       List<ExpenseCategoryModel> tasks = [];
       data.map((e) {
         tasks.add(ExpenseCategoryModel.fromJson(e));
+      }).toList();
+      return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<WorkUpdateMode>> WorkUpdate(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "installation/$id/workupdate/list",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      print("new" + data.toString());
+      List<WorkUpdateMode> tasks = [];
+      data.map((e) {
+        tasks.add(WorkUpdateMode.fromJson(e));
       }).toList();
       return tasks;
     } else {

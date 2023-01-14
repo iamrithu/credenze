@@ -180,8 +180,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                   ),
           );
         },
-        error: (err, s) =>
-            Text("Not authenticated to perform this request   $err"),
+        error: (err, s) => Center(child: Text("No Datas Available")),
         loading: () => const Center(
               child: CircularProgressIndicator.adaptive(),
             ));

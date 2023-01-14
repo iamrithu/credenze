@@ -4,18 +4,13 @@ import 'dart:io';
 import 'package:credenze/apis/api.dart';
 import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/custom-widget/custom_drop_down_button.dart';
-import 'package:credenze/custom-widget/custom_input.dart';
-import 'package:credenze/models/expense-category-model.dart';
-import 'package:credenze/models/expenses-model.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../../lead-screen/tabs/widgets/lead_custom_input.dart';
@@ -28,36 +23,48 @@ List<String> taskcat = [
 List<Map<String, dynamic>> participantObj = [];
 List<Map<String, dynamic>> categoryObj = [];
 
-List<String> participants = [
-  "Choose",
-];
+List<String> participants = [];
 List workItemKey = [];
 List selectedCheckBox = [];
 List selectedCheckBoxVlue = [];
 List selectedItems = [];
+List<String> _selectedItems = [];
+List<int> _selectedUser = [];
+List serialList = [];
+List serialItemList = [];
 
 Map<dynamic, dynamic> workItemObject = {};
 
 class AddWorkUpdate extends ConsumerStatefulWidget {
-  final List<String> cat;
-  final List<ExpenseCategoryModel> data;
-  final ExpensesModel? updateData;
-  AddWorkUpdate(
-      {Key? key,
-      required this.cat,
-      required this.data,
-      required this.updateData})
-      : super(key: key);
+  AddWorkUpdate({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _AddWorkUpdateState createState() => _AddWorkUpdateState();
 }
 
 class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
+  void _dialogBuilder(BuildContext context) async {
+    final List<String> result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelect(
+          tems: participants,
+          onclick: getUser,
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedItems = result;
+      });
+    }
+  }
+
   late String _category = taskcat[0];
   late String _participants = participants[0];
-
-  String selectedPlace = place[0];
 
   DateTime _selectedDate = DateTime.now();
   late TextEditingController _note = TextEditingController();
@@ -83,6 +90,13 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
     Navigator.pop(context);
   }
 
+  getUser(List<String>? value) {
+    print(value!.length.toString());
+    setState(() {
+      _selectedItems = value;
+    });
+  }
+
   getWorkUpdateDetails() async {
     final int? id = ref.watch(overViewId);
     final String? date = ref.watch(selectedDate);
@@ -91,12 +105,13 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
     categoryObj = [];
 
     Api().workUpdate(token, id, date).then((value) {
+      participantObj = [];
+
       var dataList = value["data"];
       for (var i = 0; i < dataList["taskcategories"].length; i++) {
         categoryObj.add(dataList["taskcategories"][i]);
         taskcat.add(dataList["taskcategories"][i]["name"]);
       }
-      print("categoryObj $categoryObj");
       taskcat = taskcat.toSet().toList();
       for (var i = 0; i < dataList["participants"].length; i++) {
         participantObj.add(dataList["participants"][i]);
@@ -129,10 +144,24 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
     return GlobalColors.themeColor;
   }
 
+  getSerialWidget(int id, int productId, int value) {
+    if (serialList.isEmpty) return;
+
+    serialList.add({"id": id, "productId": productId, "value": value});
+
+    print("mahesh$serialList");
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controllers.forEach((controller) => controller.dispose());
+    super.dispose();
+    // TODO: implement dispose
   }
 
   @override
@@ -144,65 +173,14 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
       final int? id = ref.watch(overViewId);
       final int? siteIncharge = ref.watch(inChargeId);
       final String? token = ref.watch(newToken);
-      print(DateFormat("dd-MM-yyyy").format(_selectedDate));
-      print(_participants);
-      print(_category);
-      print(selectedCheckBox.toString());
-      print(selectedCheckBoxVlue.toString());
-      print(_controllers.toString());
       selectedItems = [];
 
-      for (var i = 0; i < selectedCheckBox.length; i++) {
-        if (_controllers[selectedCheckBox[i]].text.isEmpty) {
-          return QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            widget: Text(
-              "Please enter some quantity for  ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) .",
-              style: GoogleFonts.ptSans(
-                color: GlobalColors.black,
-                fontSize: width < 700 ? width / 35 : width / 44,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0,
-              ),
-            ),
-            autoCloseDuration: null,
-          );
-        }
-
-        if ((int.parse(_controllers[selectedCheckBox[i]].text)) >
-            workItemObject[selectedCheckBoxVlue[i]]["quantity"]) {
-          return QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            widget: Text(
-              "The available product ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) quantity is ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]}, so you cad add ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]} or add less than ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]} ",
-              style: GoogleFonts.ptSans(
-                color: GlobalColors.black,
-                fontSize: width < 700 ? width / 35 : width / 44,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0,
-              ),
-            ),
-            autoCloseDuration: null,
-          );
-        }
-
-        selectedItems.add({
-          "product_id": workItemObject[selectedCheckBoxVlue[i]]["product_id"],
-          "unit_id": workItemObject[selectedCheckBoxVlue[i]]["unit_id"],
-          "quantity": _controllers[selectedCheckBox[i]].text.toString(),
-          "enable_serial_no": workItemObject[selectedCheckBoxVlue[i]]
-              ["enable_serial_no"],
-        });
-      }
-      print(participantObj.toString());
-      if (_participants == "Choose") {
+      if (_selectedItems.length < 1) {
         return QuickAlert.show(
           context: context,
           type: QuickAlertType.error,
           widget: Text(
-            "Please Choose One Participant",
+            "Please choose one or more Participant",
             style: GoogleFonts.ptSans(
               color: GlobalColors.black,
               fontSize: width < 700 ? width / 35 : width / 44,
@@ -229,9 +207,94 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
           autoCloseDuration: null,
         );
       }
+      for (var i = 0; i < selectedCheckBox.length; i++) {
+        double totalQty = double.parse(
+            workItemObject[selectedCheckBoxVlue[i]]["quantity"].toString());
+        if (totalQty < 1) {
+          return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            widget: Text(
+              "The product ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) quantity is ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]}. ",
+              style: GoogleFonts.ptSans(
+                color: GlobalColors.black,
+                fontSize: width < 700 ? width / 35 : width / 44,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0,
+              ),
+            ),
+            autoCloseDuration: null,
+          );
+        }
+        if (_controllers[selectedCheckBox[i]].text.isEmpty) {
+          return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            widget: Text(
+              "Please enter some quantity for  ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) .",
+              style: GoogleFonts.ptSans(
+                color: GlobalColors.black,
+                fontSize: width < 700 ? width / 35 : width / 44,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0,
+              ),
+            ),
+            autoCloseDuration: null,
+          );
+        }
 
-      Map<String, dynamic> newParticipant = participantObj
-          .firstWhere((element) => element["name"] == _participants);
+        double usedQty = double.parse(_controllers[selectedCheckBox[i]].text);
+
+        if (usedQty > totalQty) {
+          return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            widget: Text(
+              "The available product ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) quantity is ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]}, so you cad add ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]} or add less than ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]} ",
+              style: GoogleFonts.ptSans(
+                color: GlobalColors.black,
+                fontSize: width < 700 ? width / 35 : width / 44,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0,
+              ),
+            ),
+            autoCloseDuration: null,
+          );
+        }
+
+        selectedItems.add({
+          "product_id": workItemObject[selectedCheckBoxVlue[i]]["product_id"],
+          "unit_id": workItemObject[selectedCheckBoxVlue[i]]["unit_id"],
+          "quantity": _controllers[selectedCheckBox[i]].text.toString(),
+          "enable_serial_no": workItemObject[selectedCheckBoxVlue[i]]
+              ["enable_serial_no"],
+        });
+      }
+
+      if (selectedItems.isEmpty) {
+        return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          widget: Text(
+            "Please add one or more products",
+            style: GoogleFonts.ptSans(
+              color: GlobalColors.black,
+              fontSize: width < 700 ? width / 35 : width / 44,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0,
+            ),
+          ),
+          autoCloseDuration: null,
+        );
+      }
+      _selectedUser = [];
+
+      _selectedItems.map((e) {
+        Map<String, dynamic> newParticipant =
+            participantObj.firstWhere((element) => element["name"] == e);
+        _selectedUser.add(newParticipant["userid"]);
+      }).toList();
+
       Map<String, dynamic> newCategory =
           categoryObj.firstWhere((element) => element["name"] == _category);
 
@@ -241,23 +304,35 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
               id,
               newCategory["id"],
               DateFormat("dd-MM-yyyy").format(_selectedDate),
-              newParticipant["userid"],
+              _selectedUser,
               _note.text,
               siteIncharge,
-              selectedItems)
+              selectedItems,
+              serialItemList)
           .then((value) {
-        print(value.toString());
-        // Map<String, dynamic> data = jsonDecode(value);
-        // if (data["success"]) {
-        // Navigator.pop(context);
-        // } else {
-        // Navigator.pop(context);
-        // QuickAlert.show(
-        // context: context,
-        // type: QuickAlertType.error,
-        // title: "${data["message"]}",
-        // autoCloseDuration: null);
-        // }
+        Map<String, dynamic> data = jsonDecode(value);
+
+        if (data["success"]) {
+          _selectedItems = [];
+          selectedCheckBox = [];
+          selectedCheckBoxVlue = [];
+          serialList = [];
+          serialItemList = [];
+          Navigator.pop(context);
+          return ref.refresh(workUpdateProvider);
+        } else {
+          _selectedItems = [];
+          selectedCheckBox = [];
+          selectedCheckBoxVlue = [];
+          serialList = [];
+          serialItemList = [];
+          Navigator.pop(context);
+          QuickAlert.show(
+              context: context,
+              type: QuickAlertType.error,
+              title: "${data["message"]}",
+              autoCloseDuration: null);
+        }
       });
     }
 
@@ -390,13 +465,41 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                       ),
                     ),
                   ),
-                  CustomDropDownButton(
-                      leaveType: _participants,
-                      leaveTypeList: participants,
-                      function: participantType)
+                  Container(
+                    width: width * 0.6,
+                    alignment: Alignment.centerLeft,
+                    child: ElevatedButton(
+                      child: Text("Choose Particiapnt"),
+                      onPressed: (() => _dialogBuilder(context)),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                    ),
+                  ),
                 ],
               ),
             ),
+            if (_selectedItems.length > 0)
+              Wrap(
+                children: _selectedItems
+                    .map((e) => Chip(
+                          onDeleted: (() {
+                            _selectedItems.remove(e);
+
+                            setState(() {
+                              _selectedItems = _selectedItems;
+                            });
+                          }),
+                          label: Text(
+                            "$e",
+                            style: GoogleFonts.ptSans(
+                              color: GlobalColors.black,
+                              fontSize: width < 700 ? width / 35 : width / 44,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
             Container(
               width: width,
               height: height * 0.06,
@@ -501,101 +604,237 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                   for (var i = 0; i < workItemKey.length; i++)
                     Container(
                       margin: EdgeInsets.symmetric(vertical: height * 0.01),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      child: Column(
                         children: [
-                          Checkbox(
-                            checkColor: Colors.white,
-                            fillColor:
-                                MaterialStateProperty.resolveWith(getColor),
-                            value:
-                                selectedCheckBoxVlue.contains(workItemKey[i]),
-                            onChanged: (bool? value) async {
-                              setState(() {
-                                // selectedCheckBox.add(workItemKey[i]);
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Checkbox(
+                                checkColor: Colors.white,
+                                fillColor:
+                                    MaterialStateProperty.resolveWith(getColor),
+                                value: selectedCheckBoxVlue
+                                    .contains(workItemKey[i]),
+                                onChanged: (bool? value) async {
+                                  setState(() {
+                                    // selectedCheckBox.add(workItemKey[i]);
 
-                                if (selectedCheckBoxVlue
-                                        .contains(workItemKey[i]) ==
-                                    false) {
-                                  selectedCheckBox.add(i);
-                                  selectedCheckBoxVlue.add(workItemKey[i]);
-                                } else {
-                                  selectedCheckBoxVlue.remove(workItemKey[i]);
-                                  selectedCheckBox.remove(i);
-                                }
+                                    if (selectedCheckBoxVlue
+                                            .contains(workItemKey[i]) ==
+                                        false) {
+                                      selectedCheckBox.add(i);
+                                      selectedCheckBoxVlue.add(workItemKey[i]);
+                                    } else {
+                                      selectedCheckBoxVlue
+                                          .remove(workItemKey[i]);
+                                      selectedCheckBox.remove(i);
+                                    }
 
-                                print(selectedCheckBox.toString());
-                                print(selectedCheckBoxVlue.toString());
-                              });
-                            },
-                          ),
-                          Container(
-                            width: width * 0.35,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "${workItemObject[workItemKey[i]]["product_name"]}",
-                              style: GoogleFonts.ptSans(
-                                color: GlobalColors.black,
-                                fontSize: width < 700 ? width / 35 : width / 44,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0,
+                                    print(selectedCheckBox.toString());
+                                    print(selectedCheckBoxVlue.toString());
+                                  });
+                                },
                               ),
-                            ),
-                          ),
-                          Container(
-                            width: width * 0.1,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "${workItemObject[workItemKey[i]]["unit_name"]}",
-                              style: GoogleFonts.ptSans(
-                                color: GlobalColors.black,
-                                fontSize: width < 700 ? width / 35 : width / 44,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: width * 0.1,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "${workItemObject[workItemKey[i]]["quantity"]}",
-                              style: GoogleFonts.ptSans(
-                                color: GlobalColors.black,
-                                fontSize: width < 700 ? width / 35 : width / 44,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 0,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: width * 0.15,
-                            height: height * 0.032,
-                            child: TextFormField(
-                              controller: _controllers.length > 0
-                                  ? _controllers[i]
-                                  : null,
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              readOnly: !selectedCheckBoxVlue
-                                  .contains(workItemKey[i]),
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.themeColor,
-                                  fontSize:
-                                      width < 700 ? width / 30 : width / 45,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0),
-                              decoration: InputDecoration(
-                                hintText: "",
-                                hintStyle: GoogleFonts.ptSans(
-                                    color: GlobalColors.themeColor,
+                              Container(
+                                width: width * 0.35,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "${workItemObject[workItemKey[i]]["product_name"]}",
+                                  style: GoogleFonts.ptSans(
+                                    color: GlobalColors.black,
                                     fontSize:
-                                        width < 700 ? width / 35 : width / 45,
+                                        width < 700 ? width / 35 : width / 44,
                                     fontWeight: FontWeight.w400,
-                                    letterSpacing: 0),
+                                    letterSpacing: 0,
+                                  ),
+                                ),
                               ),
-                            ),
+                              Container(
+                                width: width * 0.1,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "${workItemObject[workItemKey[i]]["unit_name"]}",
+                                  style: GoogleFonts.ptSans(
+                                    color: GlobalColors.black,
+                                    fontSize:
+                                        width < 700 ? width / 35 : width / 44,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: width * 0.1,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "${workItemObject[workItemKey[i]]["quantity"]}",
+                                  style: GoogleFonts.ptSans(
+                                    color: GlobalColors.black,
+                                    fontSize:
+                                        width < 700 ? width / 35 : width / 44,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: width * 0.15,
+                                height: height * 0.032,
+                                child: TextField(
+                                  onChanged: (text) {
+                                    if (text.isEmpty) {
+                                      serialList.removeWhere(
+                                          (element) => element["id"] == i);
+                                    } else {
+                                      setState(() {
+                                        if (serialList.isEmpty) {
+                                          serialList.add({
+                                            "id": i,
+                                            "productId": workItemObject[
+                                                    selectedCheckBoxVlue[i]]
+                                                ["product_id"],
+                                            "value": int.parse(text)
+                                          });
+                                        } else {
+                                          bool isContain = serialList.any(
+                                              (element) => element["id"] == i);
+                                          if (isContain) {
+                                            serialList.removeWhere((element) =>
+                                                element["id"] == i);
+                                            serialList.add({
+                                              "id": i,
+                                              "productId": workItemObject[
+                                                      selectedCheckBoxVlue[i]]
+                                                  ["product_id"],
+                                              "value": int.parse(text)
+                                            });
+                                          } else {
+                                            serialList.add({
+                                              "id": i,
+                                              "productId": workItemObject[
+                                                      selectedCheckBoxVlue[i]]
+                                                  ["product_id"],
+                                              "value": int.parse(text)
+                                            });
+                                          }
+                                        }
+                                        print("id1$serialList");
+                                      });
+                                    }
+                                  },
+                                  controller: _controllers.length > 0
+                                      ? _controllers[i]
+                                      : null,
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  readOnly: !selectedCheckBoxVlue
+                                      .contains(workItemKey[i]),
+                                  style: GoogleFonts.ptSans(
+                                      color: GlobalColors.themeColor,
+                                      fontSize:
+                                          width < 700 ? width / 30 : width / 45,
+                                      fontWeight: FontWeight.w400,
+                                      letterSpacing: 0),
+                                  decoration: InputDecoration(
+                                    hintText: "",
+                                    hintStyle: GoogleFonts.ptSans(
+                                        color: GlobalColors.themeColor,
+                                        fontSize: width < 700
+                                            ? width / 35
+                                            : width / 45,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          if (workItemObject[workItemKey[i]]
+                                  ["enable_serial_no"] ==
+                              1)
+                            if (serialList.isNotEmpty)
+                              for (var j = 0; j < serialList.length; j++)
+                                if (serialList[j]["id"] == i)
+                                  for (var k = 0;
+                                      k < serialList[j]["value"];
+                                      k++)
+                                    Padding(
+                                      padding: EdgeInsets.all(5),
+                                      child: TextField(
+                                        onChanged: ((text) {
+                                          print("id3$text");
+                                          if (text.isEmpty) {
+                                            serialItemList.removeWhere((element) =>
+                                                element["serial_no"] == k &&
+                                                element["productId"] ==
+                                                    workItemObject[
+                                                        selectedCheckBoxVlue[
+                                                            i]]["product_id"]);
+                                          } else {
+                                            if (serialItemList.isEmpty) {
+                                              serialItemList.add({
+                                                "id": i,
+                                                "serial_no": k,
+                                                "productId": workItemObject[
+                                                        selectedCheckBoxVlue[i]]
+                                                    ["product_id"],
+                                                "value": text
+                                              });
+                                            } else {
+                                              bool isContain = serialItemList
+                                                  .any((element) =>
+                                                      element["serial_no"] ==
+                                                          k &&
+                                                      element["productId"] ==
+                                                          workItemObject[
+                                                                  selectedCheckBoxVlue[
+                                                                      i]]
+                                                              ["product_id"]);
+
+                                              if (isContain) {
+                                                serialItemList.removeWhere(
+                                                    (element) =>
+                                                        element["serial_no"] ==
+                                                            k &&
+                                                        element["productId"] ==
+                                                            workItemObject[
+                                                                    selectedCheckBoxVlue[
+                                                                        i]]
+                                                                ["product_id"]);
+                                                setState(() {
+                                                  serialItemList.add({
+                                                    "id": i,
+                                                    "serial_no": k,
+                                                    "productId": workItemObject[
+                                                        selectedCheckBoxVlue[
+                                                            i]]["product_id"],
+                                                    "value": text
+                                                  });
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  serialItemList.add({
+                                                    "id": i,
+                                                    "serial_no": k,
+                                                    "productId": workItemObject[
+                                                        selectedCheckBoxVlue[
+                                                            i]]["product_id"],
+                                                    "value": text
+                                                  });
+                                                });
+                                              }
+                                            }
+                                          }
+
+                                          print("id3$serialItemList");
+                                        }),
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Enter Serial No ${k}',
+                                        ),
+                                      ),
+                                    ),
                         ],
                       ),
                     ),
@@ -628,6 +867,11 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: GlobalColors.themeColor2),
                     onPressed: () {
+                      _selectedItems = [];
+                      selectedCheckBox = [];
+                      selectedCheckBoxVlue = [];
+                      serialList = [];
+                      serialItemList = [];
                       Navigator.pop(context);
                     },
                     icon: Icon(Icons.cancel),
@@ -657,5 +901,77 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
             ),
           ],
         ));
+  }
+}
+
+class MultiSelect extends StatefulWidget {
+  final List<String> tems;
+  final Function onclick;
+
+  const MultiSelect({Key? key, required this.tems, required this.onclick})
+      : super(key: key);
+
+  @override
+  _MultiSelectState createState() => _MultiSelectState();
+}
+
+class _MultiSelectState extends State<MultiSelect> {
+  _itemChange(String item, bool isSelected) {
+    setState(() {
+      if (isSelected) {
+        _selectedItems.add(item);
+      } else {
+        _selectedItems.remove(item);
+      }
+    });
+    widget.onclick(_selectedItems);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Participants'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: participants
+              .map((item) => CheckboxListTile(
+                    value: _selectedItems.contains(item),
+                    title: Text(item),
+                    onChanged: (isChecked) {
+                      _itemChange(item, isChecked!);
+                    },
+                  ))
+              .toList(),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          style: TextButton.styleFrom(
+            textStyle: Theme.of(context).textTheme.labelLarge,
+          ),
+          child: const Text('Cancel'),
+          onPressed: () {
+            _selectedItems = [];
+            selectedCheckBox = [];
+            selectedCheckBoxVlue = [];
+
+            widget.onclick(_selectedItems);
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          style: TextButton.styleFrom(
+            textStyle: Theme.of(context).textTheme.labelLarge,
+          ),
+          child: const Text('Ok'),
+          onPressed: () {
+            setState(() {
+              _selectedItems = _selectedItems;
+            });
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
   }
 }

@@ -196,8 +196,18 @@ class _MemberScreenState extends ConsumerState<MemberScreen> {
             ),
           );
         },
-        error: (err, s) =>
-            Text("Not authenticated to perform this request   $err"),
+        error: (err, s) => Center(
+              child: Text(
+                "No Informations Available",
+                style: GoogleFonts.ptSans(
+                    color: GlobalColors.black,
+                    fontSize: widget.width! < 700
+                        ? widget.width! / 30
+                        : widget.width! / 45,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0),
+              ),
+            ),
         loading: () => const Center(
               child: CircularProgressIndicator.adaptive(),
             ));

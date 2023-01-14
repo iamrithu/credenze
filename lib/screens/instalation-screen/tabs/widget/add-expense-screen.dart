@@ -21,19 +21,21 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../../lead-screen/tabs/widgets/lead_custom_input.dart';
 import '../../../lead-screen/tabs/widgets/lead_custom_lable.dart';
 
-List<String> place = ["Office", "Home"];
+List<String> place = ["Office", "Home", "Others"];
 
 class ExpenseAddScreen extends ConsumerStatefulWidget {
   final String? type;
   final List<String> cat;
   final List<ExpenseCategoryModel> data;
   final ExpensesModel? updateData;
+  final int? count;
   ExpenseAddScreen(
       {Key? key,
       required this.cat,
       required this.data,
       required this.type,
-      required this.updateData})
+      required this.updateData,
+      required this.count})
       : super(key: key);
 
   @override
@@ -70,6 +72,7 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
 
     final list = widget.data;
     var newdata = list.firstWhere(((element) => element.name == _category));
+    print(newdata.toString());
     setState(() {
       _categoryId = newdata.id!;
     });
@@ -100,14 +103,10 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
       var newdata = list.firstWhere(
           ((element) => element.id == widget.updateData!.categoryId!));
 
-      DateTime newDate =
-          DateFormat("dd-MM-yyyy").parse(widget.updateData!.date!);
-
-      print(DateTime.parse(newDate.toString()));
       setState(() {
         _category = newdata.name!;
         _category == "Petrol" ? _categoryId = 1 : _categoryId = 0;
-        _selectedDate = newDate;
+        _selectedDate = widget.updateData!.date!;
         selectedPlace = widget.updateData!.fromPlace == 1 ? "Office" : "Home";
         _amount.text = widget.updateData!.amount!;
         _note.text = widget.updateData!.notes!;
@@ -275,40 +274,42 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                 ),
               ),
             if (_categoryId == 1)
-              Container(
-                width: width,
-                height: height * 0.057,
-                child: Row(
-                  children: [
-                    LeadCustomlabel(
-                      label: "From Place",
-                      start: "*",
-                    ),
-                    CustomDropDownButton(
-                        leaveType: selectedPlace,
-                        leaveTypeList: place,
-                        function: placeType),
-                  ],
+              if (widget.count! <= 1)
+                Container(
+                  width: width,
+                  height: height * 0.057,
+                  child: Row(
+                    children: [
+                      LeadCustomlabel(
+                        label: "From Place",
+                        start: "*",
+                      ),
+                      CustomDropDownButton(
+                          leaveType: selectedPlace,
+                          leaveTypeList: place,
+                          function: placeType),
+                    ],
+                  ),
                 ),
-              ),
             if (_categoryId == 1)
-              Container(
-                width: width,
-                height: height * 0.057,
-                margin: EdgeInsets.symmetric(vertical: height * 0.01),
-                child: Row(
-                  children: [
-                    LeadCustomlabel(
-                      label: "Enter KM",
-                      start: "*",
-                    ),
-                    LeadCustomInput(
-                      label: "Eg: 12",
-                      controller: _distance,
-                    ),
-                  ],
+              if (widget.count! <= 1)
+                Container(
+                  width: width,
+                  height: height * 0.057,
+                  margin: EdgeInsets.symmetric(vertical: height * 0.01),
+                  child: Row(
+                    children: [
+                      LeadCustomlabel(
+                        label: "Enter KM",
+                        start: "*",
+                      ),
+                      LeadCustomInput(
+                        label: "Eg: 12",
+                        controller: _distance,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             Container(
               width: width,
               height: height * 0.06,
@@ -424,7 +425,7 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                               amount: _amount.text.isEmpty
                                   ? 0.toString()
                                   : _amount.text,
-                              fromPlace: _placeId,
+                              fromPlace: selectedPlace,
                               distance: _distance.text.isEmpty
                                   ? 1
                                   : int.parse(_distance.text),

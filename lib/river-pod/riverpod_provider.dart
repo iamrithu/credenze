@@ -10,6 +10,8 @@ import 'package:credenze/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../models/work-update-model.dart';
+
 final newToken = StateProvider<String?>((ref) => "");
 final selectedDate = StateProvider<String?>(
     (ref) => DateFormat("dd-MM-yyyy").format(DateTime.now()));
@@ -76,4 +78,11 @@ final fileProvider = FutureProvider<List<FileModel>>((ref) {
   int? id = ref.watch(overViewId);
 
   return ref.watch(provider).Files(token, id);
+});
+
+final workUpdateProvider = FutureProvider<List<WorkUpdateMode>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(overViewId);
+
+  return ref.watch(provider).WorkUpdate(token, id);
 });

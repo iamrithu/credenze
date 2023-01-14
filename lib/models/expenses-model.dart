@@ -2,13 +2,6 @@
 //
 //     final expensesModel = expensesModelFromJson(jsonString);
 
-import 'dart:convert';
-
-ExpensesModel expensesModelFromJson(String str) =>
-    ExpensesModel.fromJson(json.decode(str));
-
-String expensesModelToJson(ExpensesModel data) => json.encode(data.toJson());
-
 class ExpensesModel {
   ExpensesModel({
     required this.id,
@@ -28,10 +21,10 @@ class ExpensesModel {
 
   int? id;
   int? installationId;
-  String? date;
+  DateTime? date;
   int? categoryId;
-  int? fromPlace;
-  int? toPlace;
+  String? fromPlace;
+  String? toPlace;
   int? distance;
   String? amount;
   dynamic attachment;
@@ -44,7 +37,7 @@ class ExpensesModel {
         id: json["id"] == null ? null : json["id"],
         installationId:
             json["installation_id"] == null ? null : json["installation_id"],
-        date: json["date"] == null ? null : json["date"],
+        date: json["date"] == null ? null : DateTime.parse(json["date"]),
         categoryId: json["category_id"] == null ? null : json["category_id"],
         fromPlace: json["from_place"] == null ? null : json["from_place"],
         toPlace: json["to_place"] == null ? null : json["to_place"],
@@ -64,7 +57,7 @@ class ExpensesModel {
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
         "installation_id": installationId == null ? null : installationId,
-        "date": date == null ? null : date,
+        "date": date == null ? null : date.toString(),
         "category_id": categoryId == null ? null : categoryId,
         "from_place": fromPlace == null ? null : fromPlace,
         "to_place": toPlace == null ? null : toPlace,

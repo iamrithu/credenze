@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../../../const/global_colors.dart';
 import 'widget/add-expense-screen.dart';
 
@@ -34,56 +35,39 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
 
   @override
   Widget build(BuildContext) {
-    final expenseDetail = ref.watch(expenseProvider);
+    final data = ref.watch(workUpdateProvider);
     return Scaffold(
-      floatingActionButton: Consumer(builder: ((context, ref, child) {
-        final data = ref.watch(expenseCategoryProvider);
-        return data.when(
-            data: ((_data) {
-              cat = [];
-              for (var i = 0; i < _data.length; i++) {
-                cat.add(_data[i].name!);
-              }
-              return ElevatedButton.icon(
-                onPressed: () {
-                  showModalBottomSheet<void>(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (context) {
-                      return AddWorkUpdate(
-                          cat: cat, data: _data, updateData: null);
-                    },
-                  );
-                },
-                icon: Icon(
-                  Icons.work,
-                  color: GlobalColors.white,
-                  size: widget.width! < 700
-                      ? widget.width! / 30
-                      : widget.width! / 45,
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: GlobalColors.themeColor,
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4)),
-                ),
-                label: Text(
-                  "Work",
-                  style: GoogleFonts.ptSans(
-                      color: GlobalColors.white,
-                      fontSize: widget.width! < 700
-                          ? widget.width! / 35
-                          : widget.width! / 45,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0),
-                ),
-              );
-            }),
-            error: ((error, stackTrace) => Text("")),
-            loading: (() => Text("")));
-      })),
-      body: expenseDetail.when(
+      floatingActionButton: ElevatedButton.icon(
+        onPressed: () {
+          showModalBottomSheet<void>(
+            isScrollControlled: true,
+            context: context,
+            builder: (context) {
+              return AddWorkUpdate();
+            },
+          );
+        },
+        icon: Icon(
+          Icons.work,
+          color: GlobalColors.white,
+          size: widget.width! < 700 ? widget.width! / 30 : widget.width! / 45,
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: GlobalColors.themeColor,
+          elevation: 10,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        ),
+        label: Text(
+          "Work",
+          style: GoogleFonts.ptSans(
+              color: GlobalColors.white,
+              fontSize:
+                  widget.width! < 700 ? widget.width! / 35 : widget.width! / 45,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0),
+        ),
+      ),
+      body: data.when(
           data: (_data) {
             return RefreshIndicator(
               color: Colors.white,
@@ -91,7 +75,7 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
               strokeWidth: 4.0,
               onRefresh: () async {
                 return Future<void>.delayed(const Duration(seconds: 2), () {
-                  return ref.refresh(expenseProvider);
+                  return ref.refresh(workUpdateProvider);
                 });
               },
               child: ListView(
@@ -116,7 +100,270 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
                           ],
                         )
                       : Text(""),
-                  for (var i = 0; i < _data.length; i++) Text("data")
+                  for (var i = 0; i < _data.length; i++)
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onLongPress: (() {
+                                setState(() {
+                                  selectedId = _data[i].id!;
+                                });
+                              }),
+                              child: Card(
+                                  elevation: 10,
+                                  child: Container(
+                                    width: widget.width! * 0.97,
+                                    padding: EdgeInsets.only(
+                                        left: widget.width! * 0.03),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Participant",
+                                          value:
+                                              "${_data[i].participantsName!}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Siteincharge",
+                                          value:
+                                              "${_data[i].siteincharge!.name!}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Date",
+                                          value: DateFormat("dd-MM-yyyy")
+                                              .format(DateTime.parse(
+                                                  _data[i].reportDate!)),
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "category",
+                                          value: _data[i].taskcategory!.name,
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Description",
+                                          value: "${_data[i].description!}",
+                                        ),
+                                        Divider(),
+                                        Text(
+                                          "Items",
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.ptSans(
+                                              color: GlobalColors.black,
+                                              fontSize: widget.width! < 700
+                                                  ? widget.width! / 34
+                                                  : widget.width! / 45,
+                                              fontWeight: FontWeight.w800,
+                                              letterSpacing: 0),
+                                        ),
+                                        Container(
+                                          width: widget.width,
+                                          child: Card(
+                                            elevation: 10,
+                                            child: Column(children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 5.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    Container(
+                                                      width:
+                                                          widget.width! * 0.6,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Text(
+                                                        "Product Name",
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  44,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width:
+                                                          widget.width! * 0.15,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        "unit",
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  44,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width:
+                                                          widget.width! * 0.15,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        "Used Qty",
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  44,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          letterSpacing: 0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              for (var j = 0;
+                                                  j < _data[i].items!.length;
+                                                  j++)
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 5.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Container(
+                                                        width:
+                                                            widget.width! * 0.6,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Text(
+                                                          _data[i]
+                                                              .items![j]!
+                                                              .product!
+                                                              .name!,
+                                                          style: GoogleFonts
+                                                              .ptSans(
+                                                            color: GlobalColors
+                                                                .themeColor2,
+                                                            fontSize: widget
+                                                                        .width! <
+                                                                    700
+                                                                ? widget.width! /
+                                                                    35
+                                                                : widget.width! /
+                                                                    44,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            letterSpacing: 0,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: widget.width! *
+                                                            0.15,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Text(
+                                                          _data[i]
+                                                              .items![j]!
+                                                              .unit!
+                                                              .shortName!,
+                                                          style: GoogleFonts
+                                                              .ptSans(
+                                                            color: GlobalColors
+                                                                .themeColor2,
+                                                            fontSize: widget
+                                                                        .width! <
+                                                                    700
+                                                                ? widget.width! /
+                                                                    35
+                                                                : widget.width! /
+                                                                    44,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            letterSpacing: 0,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: widget.width! *
+                                                            0.15,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Text(
+                                                          _data[i]
+                                                              .items![j]!
+                                                              .quantity!,
+                                                          style: GoogleFonts
+                                                              .ptSans(
+                                                            color: GlobalColors
+                                                                .themeColor2,
+                                                            fontSize: widget
+                                                                        .width! <
+                                                                    700
+                                                                ? widget.width! /
+                                                                    35
+                                                                : widget.width! /
+                                                                    44,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            letterSpacing: 0,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                            ]),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  Container(
+                    width: widget.width,
+                    height: widget.height! * 0.1,
+                    child: Text(""),
+                  )
                 ],
               ),
             );
@@ -141,7 +388,7 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
                         children: [
                           Center(
                             child: Text(
-                              "Not Available",
+                              "Not Available $err",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor2,

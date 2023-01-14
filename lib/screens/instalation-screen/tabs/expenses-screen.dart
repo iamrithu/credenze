@@ -1,9 +1,14 @@
+import 'dart:convert';
+
+import 'package:credenze/apis/api.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/text-row-widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:quickalert/quickalert.dart';
 import '../../../const/global_colors.dart';
 import '../../../models/expense-category-model.dart';
 import 'widget/add-expense-screen.dart';
@@ -34,6 +39,8 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   @override
   Widget build(BuildContext) {
     final expenseDetail = ref.watch(expenseProvider);
+    final token = ref.watch(newToken);
+    final id = ref.watch(overViewId);
     return Scaffold(
       floatingActionButton: Consumer(builder: ((context, ref, child) {
         final data = ref.watch(expenseCategoryProvider);
@@ -45,13 +52,21 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
               }
               return ElevatedButton.icon(
                 onPressed: () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    builder: (context) {
-                      return ExpenseAddScreen(
-                          cat: cat, data: _data, type: "add", updateData: null);
-                    },
-                  );
+                  Api().ExpensePlace(token: token, id: id).then((value) {
+                    Map<String, dynamic> data = jsonDecode(value);
+
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (context) {
+                        return ExpenseAddScreen(
+                            cat: cat,
+                            data: _data,
+                            type: "add",
+                            updateData: null,
+                            count: data["count"]);
+                      },
+                    );
+                  });
                 },
                 icon: Icon(
                   Icons.add,
@@ -126,7 +141,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                           child: Container(
                             width: widget.width,
                             height: _data[i].categoryId == 1
-                                ? widget.height! * 0.25
+                                ? widget.height! * 0.3
                                 : widget.height! * 0.18,
                           ),
                         ),
@@ -148,7 +163,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                   child: Container(
                                     width: widget.width! * 0.97,
                                     height: _data[i].categoryId == 1
-                                        ? widget.height! * 0.25
+                                        ? widget.height! * 0.3
                                         : widget.height! * 0.18,
                                     padding: EdgeInsets.only(
                                         left: widget.width! * 0.03),
@@ -161,7 +176,8 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                         TextRowWidget(
                                           width: widget.width!,
                                           lable: "Expense Date",
-                                          value: "${_data[i].date!}",
+                                          value: DateFormat("dd-MM-yyyy")
+                                              .format(_data[i].date!),
                                         ),
                                         Consumer(
                                             builder: ((context, ref, child) {
@@ -187,9 +203,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                           TextRowWidget(
                                             width: widget.width!,
                                             lable: "Place",
-                                            value: _data[i].fromPlace == 1
-                                                ? "Office"
-                                                : "Home",
+                                            value: _data[i].fromPlace,
                                           ),
                                         if (_data[i].categoryId == 1)
                                           TextRowWidget(
@@ -233,7 +247,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                   child: Container(
                                     width: widget.width! * 0.97,
                                     height: _data[i].categoryId == 1
-                                        ? widget.height! * 0.25
+                                        ? widget.height! * 0.3
                                         : widget.height! * 0.18,
                                     child: Row(
                                       mainAxisAlignment:
@@ -287,17 +301,53 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                                     setState(() {
                                                       selectedId = null;
                                                     });
-                                                    showModalBottomSheet<void>(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return ExpenseAddScreen(
+
+                                                    print(_data[i]
+                                                        .categoryId
+                                                        .toString());
+
+                                                    if (_data[i].categoryId ==
+                                                        1) {
+                                                      QuickAlert.show(
+                                                        context: context,
+                                                        type: QuickAlertType
+                                                            .error,
+                                                        widget: Text(
+                                                          "You con not edit this details. Please contact  admin",
+                                                          style: GoogleFonts
+                                                              .ptSans(
+                                                            color: GlobalColors
+                                                                .black,
+                                                            fontSize: widget
+                                                                        .width! <
+                                                                    700
+                                                                ? widget.width! /
+                                                                    35
+                                                                : widget.width! /
+                                                                    44,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            letterSpacing: 0,
+                                                          ),
+                                                        ),
+                                                        autoCloseDuration: null,
+                                                      );
+                                                    } else {
+                                                      showModalBottomSheet<
+                                                          void>(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return ExpenseAddScreen(
                                                             cat: cat,
                                                             data: _data1,
                                                             type: "update",
                                                             updateData:
-                                                                _data[i]);
-                                                      },
-                                                    );
+                                                                _data[i],
+                                                            count: null,
+                                                          );
+                                                        },
+                                                      );
+                                                    }
                                                   },
                                                   child: Card(
                                                     elevation: 10,
