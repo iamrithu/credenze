@@ -43,7 +43,7 @@ class ExpensesModel {
         toPlace: json["to_place"] == null ? null : json["to_place"],
         distance: json["distance"] == null ? null : json["distance"],
         amount: json["amount"] == null ? null : json["amount"],
-        attachment: json["attachment"],
+        attachment: json["attachment"] ?? null,
         notes: json["notes"],
         status: json["status"] == null ? null : json["status"],
         createdAt: json["created_at"] == null

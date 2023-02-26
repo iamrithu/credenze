@@ -2,6 +2,7 @@ import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/custom-widget/custom_appbar.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/attenence-screen/attenence_screen.dart';
+import 'package:credenze/screens/instalation-screen/tabs/taskDetailsSCreen.dart';
 import 'package:credenze/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,7 +59,8 @@ class HomeScreen extends ConsumerWidget {
       // LeadScreen(),
       ProfileScreen(),
       // LeadDetailsScreen(),
-      InstallationDetailScreen()
+      InstallationDetailScreen(),
+      TaskDetailsSCreen(),
     ];
     return Scaffold(
       appBar: PreferredSize(

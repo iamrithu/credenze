@@ -6,6 +6,7 @@ import 'package:credenze/screens/instalation-screen/tabs/widget/text-row-widget.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:quickalert/quickalert.dart';
@@ -169,65 +170,126 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   }
 
   installationClockIn(int? id) async {
-    if (ref.watch(Installavailable) == true) {
-      setState(() {
-        loading = true;
-        detailVisible = true;
-      });
-      final prefs = await SharedPreferences.getInstance();
-      String? token = await prefs.getString('token');
-      MapsAndLocation().getCamera().then((value) {
-        if (value == null) {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = await prefs.getString('token');
+    await Geolocator.isLocationServiceEnabled().then((value) {
+      if (!value) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(
+              "Location Access :",
+              textAlign: TextAlign.start,
+              style: GoogleFonts.ptSans(
+                  fontSize: widget.width! < 700
+                      ? widget.width! / 25
+                      : widget.width! / 42,
+                  fontWeight: FontWeight.w600,
+                  color: GlobalColors.black,
+                  letterSpacing: 0),
+            ),
+            content: Text(
+              "We need your current location for attendence, So enable your location accsess.",
+              textAlign: TextAlign.start,
+              style: GoogleFonts.ptSans(
+                  fontSize: widget.width! < 700
+                      ? widget.width! / 30
+                      : widget.width! / 42,
+                  fontWeight: FontWeight.w500,
+                  color: GlobalColors.themeColor2,
+                  letterSpacing: 0),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  Geolocator.openLocationSettings();
+                },
+                child: Card(
+                  elevation: 3,
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    child: Text(
+                      "Enable",
+                      textAlign: TextAlign.start,
+                      style: GoogleFonts.ptSans(
+                          fontSize: widget.width! < 700
+                              ? widget.width! / 35
+                              : widget.width! / 42,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blue,
+                          letterSpacing: 0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      } else {
+        if (ref.watch(Installavailable) == true) {
           setState(() {
-            loading = false;
-            detailVisible = false;
+            loading = true;
+            detailVisible = true;
+          });
+
+          MapsAndLocation().getCamera().then((value) {
+            if (value == null) {
+              setState(() {
+                loading = false;
+                detailVisible = false;
+              });
+            } else {
+              setState(() {
+                newImage = value;
+              });
+
+              MapsAndLocation().locationPermisson().then((value) {
+                setState(() {
+                  lat = value.latitude;
+                  long = value.longitude;
+                });
+                Api()
+                    .ClockIn(
+                        token: token!,
+                        id: id!,
+                        latitude: lat.toString(),
+                        longitude: long.toString(),
+                        photo: newImage!)
+                    .then((value) {
+                  Map<String, dynamic> data = jsonDecode(value);
+                  if (data["success"]) {
+                    ref
+                        .read(Installavailable.notifier)
+                        .update((state) => false);
+                    getInstallationAttendence();
+                  } else {
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "${data["message"]}",
+                      autoCloseDuration: null,
+                    );
+
+                    setState(() {
+                      loading = false;
+                      detailVisible = false;
+                    });
+                  }
+                });
+              });
+            }
           });
         } else {
-          setState(() {
-            newImage = value;
-          });
-          MapsAndLocation().locationPermisson().then((value) {
-            setState(() {
-              lat = value.latitude;
-              long = value.longitude;
-            });
-            Api()
-                .ClockIn(
-                    token: token!,
-                    id: id!,
-                    latitude: lat.toString(),
-                    longitude: long.toString(),
-                    photo: newImage!)
-                .then((value) {
-              Map<String, dynamic> data = jsonDecode(value);
-              if (data["success"]) {
-                ref.read(Installavailable.notifier).update((state) => false);
-                getInstallationAttendence();
-              } else {
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "${data["message"]}",
-                  autoCloseDuration: null,
-                );
-
-                setState(() {
-                  loading = false;
-                  detailVisible = false;
-                });
-              }
-            });
-          });
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Please Complete Previous Installation",
+            autoCloseDuration: null,
+          );
         }
-      });
-    } else {
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: "Please Complete Previous Installation",
-        autoCloseDuration: null,
-      );
-    }
+      }
+    });
   }
 
   installationClockOut(int? id) async {

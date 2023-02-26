@@ -1,39 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:credenze/apis/api.dart';
 import 'package:credenze/const/global_colors.dart';
-import 'package:credenze/custom-widget/custom_drop_down_button.dart';
-import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:quickalert/quickalert.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-import '../../../lead-screen/tabs/widgets/lead_custom_input.dart';
-import '../../../lead-screen/tabs/widgets/lead_custom_lable.dart';
-
-List<String> place = ["Office", "Home"];
-List<String> taskcat = [
-  "Choose",
-];
-List<Map<String, dynamic>> participantObj = [];
-List<Map<String, dynamic>> categoryObj = [];
-
-List<String> participants = [];
-List workItemKey = [];
-List selectedCheckBox = [];
-List selectedCheckBoxVlue = [];
-List selectedItems = [];
-List<String> _selectedItems = [];
-List<int> _selectedUser = [];
-List serialList = [];
-List serialItemList = [];
-
-Map<dynamic, dynamic> workItemObject = {};
+import '../../../../models/installation-employee-model.dart';
+import '../../../../river-pod/riverpod_provider.dart';
+import 'custom-add-employee.dart';
 
 class AddWorkUpdate extends ConsumerStatefulWidget {
   AddWorkUpdate({
@@ -45,112 +19,22 @@ class AddWorkUpdate extends ConsumerStatefulWidget {
 }
 
 class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
-  void _dialogBuilder(BuildContext context) async {
-    final List<String> result = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelect(
-          tems: participants,
-          onclick: getUser,
-        );
-      },
-    );
+  DateTime workUpdateDate = DateTime.now();
+  List<InstallationEmployeeModel> selectedEmployee = [];
+  List<InstallationEmployeeModel> demo = [];
+  bool serialVisible = true;
+  var selectedCheckbox = [];
+  String workTask = "Select Task";
+  String notes = "";
+  int is_removable_task = 0;
+  int removal_qty = 0;
+  int workTaskId = 0;
+  var product = {};
+  var productList = [];
+  var OtherProductList = [];
 
-    if (result != null) {
-      setState(() {
-        _selectedItems = result;
-      });
-    }
-  }
-
-  late String _category = taskcat[0];
-  late String _participants = participants[0];
-
-  DateTime _selectedDate = DateTime.now();
-  late TextEditingController _note = TextEditingController();
-  List<TextEditingController> _controllers = [];
-
-  File? newFile = null;
-  participantType(value) {
-    setState(() {
-      _participants = value;
-    });
-  }
-
-  categoryType(value) {
-    setState(() {
-      _category = value;
-    });
-  }
-
-  onSelectedDates(context, value) {
-    setState(() {
-      _selectedDate = value;
-    });
-    Navigator.pop(context);
-  }
-
-  getUser(List<String>? value) {
-    print(value!.length.toString());
-    setState(() {
-      _selectedItems = value;
-    });
-  }
-
-  getWorkUpdateDetails() async {
-    final int? id = ref.watch(overViewId);
-    final String? date = ref.watch(selectedDate);
-    final String? token = ref.watch(newToken);
-    participantObj = [];
-    categoryObj = [];
-
-    Api().workUpdate(token, id, date).then((value) {
-      participantObj = [];
-
-      var dataList = value["data"];
-      for (var i = 0; i < dataList["taskcategories"].length; i++) {
-        categoryObj.add(dataList["taskcategories"][i]);
-        taskcat.add(dataList["taskcategories"][i]["name"]);
-      }
-      taskcat = taskcat.toSet().toList();
-      for (var i = 0; i < dataList["participants"].length; i++) {
-        participantObj.add(dataList["participants"][i]);
-        participants.add(dataList["participants"][i]["name"]);
-      }
-      participants = participants.toSet().toList();
-
-      dataList["workupdate_items"].keys.forEach((e) {
-        workItemKey.add(e.toString());
-      });
-      workItemKey = workItemKey.toSet().toList();
-
-      List.generate(workItemKey.length, (index) {
-        _controllers.add(TextEditingController());
-      });
-
-      workItemObject = dataList["workupdate_items"];
-    });
-  }
-
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return GlobalColors.themeColor2;
-    }
-    return GlobalColors.themeColor;
-  }
-
-  getSerialWidget(int id, int productId, int value) {
-    if (serialList.isEmpty) return;
-
-    serialList.add({"id": id, "productId": productId, "value": value});
-
-    print("mahesh$serialList");
-  }
+  var serialnosList = [];
+  var selectedProduct = [];
 
   @override
   void initState() {
@@ -159,819 +43,1178 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
 
   @override
   void dispose() {
-    _controllers.forEach((controller) => controller.dispose());
     super.dispose();
     // TODO: implement dispose
   }
 
   @override
   Widget build(BuildContext context) {
-    getWorkUpdateDetails();
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    addWorkUpdate() async {
-      final int? id = ref.watch(overViewId);
-      final int? siteIncharge = ref.watch(inChargeId);
-      final String? token = ref.watch(newToken);
-      selectedItems = [];
 
-      if (_selectedItems.length < 1) {
-        return QuickAlert.show(
-          context: context,
-          type: QuickAlertType.error,
-          widget: Text(
-            "Please choose one or more Participant",
-            style: GoogleFonts.ptSans(
-              color: GlobalColors.black,
-              fontSize: width < 700 ? width / 35 : width / 44,
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0,
-            ),
-          ),
-          autoCloseDuration: null,
-        );
-      }
-      if (_category == "Choose") {
-        return QuickAlert.show(
-          context: context,
-          type: QuickAlertType.error,
-          widget: Text(
-            "Please Choose One Taskcategory",
-            style: GoogleFonts.ptSans(
-              color: GlobalColors.black,
-              fontSize: width < 700 ? width / 35 : width / 44,
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0,
-            ),
-          ),
-          autoCloseDuration: null,
-        );
-      }
-      for (var i = 0; i < selectedCheckBox.length; i++) {
-        double totalQty = double.parse(
-            workItemObject[selectedCheckBoxVlue[i]]["quantity"].toString());
-        if (totalQty < 1) {
-          return QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            widget: Text(
-              "The product ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) quantity is ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]}. ",
-              style: GoogleFonts.ptSans(
-                color: GlobalColors.black,
-                fontSize: width < 700 ? width / 35 : width / 44,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0,
-              ),
-            ),
-            autoCloseDuration: null,
-          );
-        }
-        if (_controllers[selectedCheckBox[i]].text.isEmpty) {
-          return QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            widget: Text(
-              "Please enter some quantity for  ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) .",
-              style: GoogleFonts.ptSans(
-                color: GlobalColors.black,
-                fontSize: width < 700 ? width / 35 : width / 44,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0,
-              ),
-            ),
-            autoCloseDuration: null,
-          );
-        }
-
-        double usedQty = double.parse(_controllers[selectedCheckBox[i]].text);
-
-        if (usedQty > totalQty) {
-          return QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            widget: Text(
-              "The available product ( ${workItemObject[selectedCheckBoxVlue[i]]["product_name"]} ) quantity is ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]}, so you cad add ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]} or add less than ${workItemObject[selectedCheckBoxVlue[i]]["quantity"]} ",
-              style: GoogleFonts.ptSans(
-                color: GlobalColors.black,
-                fontSize: width < 700 ? width / 35 : width / 44,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0,
-              ),
-            ),
-            autoCloseDuration: null,
-          );
-        }
-
-        selectedItems.add({
-          "product_id": workItemObject[selectedCheckBoxVlue[i]]["product_id"],
-          "unit_id": workItemObject[selectedCheckBoxVlue[i]]["unit_id"],
-          "quantity": _controllers[selectedCheckBox[i]].text.toString(),
-          "enable_serial_no": workItemObject[selectedCheckBoxVlue[i]]
-              ["enable_serial_no"],
+    onSelect(bool value, InstallationEmployeeModel list) {
+      if (value) {
+        setState(() {
+          selectedEmployee.add(list);
+          selectedEmployee = selectedEmployee.toSet().toList();
+        });
+      } else {
+        setState(() {
+          selectedEmployee.remove(list);
+          selectedEmployee = selectedEmployee.toSet().toList();
         });
       }
-
-      if (selectedItems.isEmpty) {
-        return QuickAlert.show(
-          context: context,
-          type: QuickAlertType.error,
-          widget: Text(
-            "Please add one or more products",
-            style: GoogleFonts.ptSans(
-              color: GlobalColors.black,
-              fontSize: width < 700 ? width / 35 : width / 44,
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0,
-            ),
-          ),
-          autoCloseDuration: null,
-        );
-      }
-      _selectedUser = [];
-
-      _selectedItems.map((e) {
-        Map<String, dynamic> newParticipant =
-            participantObj.firstWhere((element) => element["name"] == e);
-        _selectedUser.add(newParticipant["userid"]);
-      }).toList();
-
-      Map<String, dynamic> newCategory =
-          categoryObj.firstWhere((element) => element["name"] == _category);
-
-      Api()
-          .addWorkUpdate(
-              token,
-              id,
-              newCategory["id"],
-              DateFormat("dd-MM-yyyy").format(_selectedDate),
-              _selectedUser,
-              _note.text,
-              siteIncharge,
-              selectedItems,
-              serialItemList)
-          .then((value) {
-        Map<String, dynamic> data = jsonDecode(value);
-
-        if (data["success"]) {
-          _selectedItems = [];
-          selectedCheckBox = [];
-          selectedCheckBoxVlue = [];
-          serialList = [];
-          serialItemList = [];
-          Navigator.pop(context);
-          return ref.refresh(workUpdateProvider);
-        } else {
-          _selectedItems = [];
-          selectedCheckBox = [];
-          selectedCheckBoxVlue = [];
-          serialList = [];
-          serialItemList = [];
-          Navigator.pop(context);
-          QuickAlert.show(
-              context: context,
-              type: QuickAlertType.error,
-              title: "${data["message"]}",
-              autoCloseDuration: null);
-        }
-      });
     }
 
-    return Container(
-        width: width,
-        height: height,
-        padding: EdgeInsets.only(right: 4, top: 20, left: 8),
-        decoration: BoxDecoration(
-            border: Border(
-                top: BorderSide(color: GlobalColors.themeColor, width: 3))),
-        child: ListView(
-          children: [
-            Container(
-              width: width,
-              height: height * 0.06,
-              margin: EdgeInsets.symmetric(vertical: height * 0.01),
-              child: Row(
-                children: [
-                  Container(
-                      width: width * 0.308,
-                      height: height * 0.05,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Selecte Date",
-                        style: GoogleFonts.ptSans(
-                          color: GlobalColors.black,
-                          fontSize: width < 700 ? width / 35 : width / 44,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0,
-                        ),
-                      )),
-                  Container(
-                      width: width * 0.49,
-                      height: height * 0.05,
-                      margin: EdgeInsets.only(left: 5, right: 2),
-                      padding: EdgeInsets.only(left: width * 0.07),
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: GlobalColors.themeColor2)),
-                      child: RichText(
-                        text: TextSpan(
-                            text: _selectedDate.day.toString(),
-                            style: GoogleFonts.ptSans(
-                                fontSize: width < 700 ? width / 22 : width / 40,
-                                fontWeight: FontWeight.w400,
-                                color: GlobalColors.themeColor,
-                                letterSpacing: 2),
-                            children: [
-                              TextSpan(
-                                text: DateFormat("-MM-yyyy")
-                                    .format(_selectedDate),
-                                style: GoogleFonts.ptSans(
-                                  fontSize:
-                                      width < 700 ? width / 28 : width / 49,
-                                  fontWeight: FontWeight.w400,
-                                  color: GlobalColors.black,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ]),
-                      )),
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet<void>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Container(
-                            width: width,
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    top: BorderSide(
-                                        color: GlobalColors.themeColor,
-                                        width: 3))),
-                            child: SfDateRangePicker(
-                              view: DateRangePickerView.month,
-                              toggleDaySelection: true,
-                              navigationDirection:
-                                  DateRangePickerNavigationDirection.vertical,
-                              selectionShape:
-                                  DateRangePickerSelectionShape.rectangle,
-                              selectionMode:
-                                  DateRangePickerSelectionMode.single,
-                              monthViewSettings:
-                                  DateRangePickerMonthViewSettings(
-                                      firstDayOfWeek: 7),
-                              // onSelectionChanged: onSelectedDates,
-                              showActionButtons: true,
+    Color getColors(value, dataList) {
+      var data = serialnosList.firstWhere(
+          (element) => element["productId"] == dataList, orElse: () {
+        return null;
+      });
+      // print("$data");
+      if (data == null) {
+        return GlobalColors.white;
+      }
+      // print(value.toString());
 
-                              onSubmit: (value) =>
-                                  onSelectedDates(context, value),
-                              onCancel: () => Navigator.pop(context),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                        width: width * 0.15,
-                        height: height * 0.05,
-                        margin: EdgeInsets.symmetric(vertical: 2),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: GlobalColors.themeColor2),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: Center(
-                          child: Icon(FontAwesomeIcons.calendarCheck,
-                              color: GlobalColors.themeColor),
-                        )),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: width,
-              height: height * 0.06,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: width * 0.3,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Participants",
-                      style: GoogleFonts.ptSans(
-                        color: GlobalColors.black,
-                        fontSize: width < 700 ? width / 35 : width / 44,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: width * 0.6,
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton(
-                      child: Text("Choose Particiapnt"),
-                      onPressed: (() => _dialogBuilder(context)),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (_selectedItems.length > 0)
-              Wrap(
-                children: _selectedItems
-                    .map((e) => Chip(
-                          onDeleted: (() {
-                            _selectedItems.remove(e);
+      // print(data["sNo"].contains(value));
+      if (data["sNo"].contains(value)) {
+        return GlobalColors.themeColor;
+      }
 
-                            setState(() {
-                              _selectedItems = _selectedItems;
-                            });
-                          }),
-                          label: Text(
-                            "$e",
-                            style: GoogleFonts.ptSans(
-                              color: GlobalColors.black,
-                              fontSize: width < 700 ? width / 35 : width / 44,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0,
-                            ),
-                          ),
-                        ))
-                    .toList(),
-              ),
-            Container(
-              width: width,
-              height: height * 0.06,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: width * 0.3,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Task Category",
-                      style: GoogleFonts.ptSans(
-                        color: GlobalColors.black,
-                        fontSize: width < 700 ? width / 35 : width / 44,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0,
-                      ),
-                    ),
+      return GlobalColors.white;
+    }
+
+    int getUsedserialNo(dataList) {
+      var data = serialnosList.firstWhere(
+          (element) => element["productId"] == dataList, orElse: () {
+        return null;
+      });
+      if (data == null) {
+        return 0;
+      }
+
+      return data["sNo"].length;
+    }
+
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          width: width,
+          height: height,
+          margin: EdgeInsets.only(top: 25),
+          padding: EdgeInsets.all(15),
+          child: Column(
+            children: [
+              Container(
+                width: width,
+                color: GlobalColors.themeColor,
+                child: Center(
+                  child: Text(
+                    "Work Update",
+                    style: GoogleFonts.ptSans(
+                        color: GlobalColors.white,
+                        fontSize: width < 700 ? width / 28 : width / 45,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0),
                   ),
-                  CustomDropDownButton(
-                      leaveType: _category,
-                      leaveTypeList: taskcat,
-                      function: categoryType)
-                ],
+                ),
+                height: 40,
               ),
-            ),
-            Container(
-              color: Color.fromARGB(255, 242, 240, 240),
-              padding: EdgeInsets.symmetric(vertical: height * 0.01),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        width: width * 0.1,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Select",
-                          style: GoogleFonts.ptSans(
-                            color: GlobalColors.themeColor,
-                            fontSize: width < 700 ? width / 35 : width / 44,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.4,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Product Name",
-                          style: GoogleFonts.ptSans(
-                            color: GlobalColors.themeColor,
-                            fontSize: width < 700 ? width / 35 : width / 44,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.1,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "unit",
-                          style: GoogleFonts.ptSans(
-                            color: GlobalColors.themeColor,
-                            fontSize: width < 700 ? width / 35 : width / 44,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.15,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Total Qty",
-                          style: GoogleFonts.ptSans(
-                            color: GlobalColors.themeColor,
-                            fontSize: width < 700 ? width / 35 : width / 44,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: width * 0.15,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Used Qty",
-                          style: GoogleFonts.ptSans(
-                            color: GlobalColors.themeColor,
-                            fontSize: width < 700 ? width / 35 : width / 44,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  for (var i = 0; i < workItemKey.length; i++)
+              Expanded(
+                child: Column(
+                  children: [
                     Container(
-                      margin: EdgeInsets.symmetric(vertical: height * 0.01),
-                      child: Column(
+                      margin: EdgeInsets.only(bottom: 3),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Color.fromARGB(255, 200, 196, 196),
+                                  width: 0.5))),
+                      constraints: BoxConstraints(
+                          minWidth: width, minHeight: height * 0.05),
+                      child: Row(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Checkbox(
-                                checkColor: Colors.white,
-                                fillColor:
-                                    MaterialStateProperty.resolveWith(getColor),
-                                value: selectedCheckBoxVlue
-                                    .contains(workItemKey[i]),
-                                onChanged: (bool? value) async {
-                                  setState(() {
-                                    // selectedCheckBox.add(workItemKey[i]);
-
-                                    if (selectedCheckBoxVlue
-                                            .contains(workItemKey[i]) ==
-                                        false) {
-                                      selectedCheckBox.add(i);
-                                      selectedCheckBoxVlue.add(workItemKey[i]);
-                                    } else {
-                                      selectedCheckBoxVlue
-                                          .remove(workItemKey[i]);
-                                      selectedCheckBox.remove(i);
-                                    }
-
-                                    print(selectedCheckBox.toString());
-                                    print(selectedCheckBoxVlue.toString());
+                          Expanded(
+                              child: Container(
+                            child: Text(
+                              "Date",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                            ),
+                          )),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "${DateFormat("dd-MM-yyyy").format(workUpdateDate)}",
+                                style: GoogleFonts.ptSans(
+                                    color: GlobalColors.themeColor,
+                                    fontSize:
+                                        width < 700 ? width / 30 : width / 45,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: IconButton(
+                                icon: Icon(Icons.calendar_month),
+                                onPressed: () {
+                                  showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2000),
+                                          lastDate: DateTime(2100),
+                                          currentDate: workUpdateDate)
+                                      .then((value) {
+                                    setState(() {
+                                      workUpdateDate = value!;
+                                    });
                                   });
                                 },
                               ),
-                              Container(
-                                width: width * 0.35,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 3),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Color.fromARGB(255, 200, 196, 196),
+                                  width: 0.5))),
+                      constraints: BoxConstraints(
+                          minWidth: width, minHeight: height * 0.05),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Container(
+                            child: Text(
+                              "Participants *",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                            ),
+                          )),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Wrap(
+                                spacing: 5,
+                                children: [
+                                  for (var i = 0;
+                                      i < selectedEmployee.length;
+                                      i++)
+                                    Chip(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 249, 223, 223),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: GlobalColors.themeColor),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      label: Text(
+                                        "${selectedEmployee[i].name}",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.themeColor,
+                                            fontSize: width < 700
+                                                ? width / 30
+                                                : width / 45,
+                                            fontWeight: FontWeight.w400,
+                                            letterSpacing: 0),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: IconButton(
+                                icon: Icon(Icons.add),
+                                onPressed: () {
+                                  setState(() {
+                                    selectedEmployee = [];
+                                  });
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) {
+                                      return CustomAddEmployee(
+                                        token: ref.watch(newToken)!,
+                                        id: ref.watch(overViewId),
+                                        date:
+                                            "${DateFormat("dd-MM-yyyy").format(workUpdateDate)}",
+                                        onclick: onSelect,
+                                        selectedlist: selectedEmployee,
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 3),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Color.fromARGB(255, 200, 196, 196),
+                                  width: 0.5))),
+                      constraints: BoxConstraints(
+                          minWidth: width, minHeight: height * 0.05),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Container(
+                            child: Text(
+                              "Task *",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                            ),
+                          )),
+                          Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onTap: () {
+                                Api()
+                                    .workTaskList(ref.watch(newToken),
+                                        ref.watch(overViewId))
+                                    .then((value) {
+                                  // print(value.toString());
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Container(
+                                          child: Text(
+                                            "Task",
+                                            style: GoogleFonts.ptSans(
+                                                color: GlobalColors.black,
+                                                fontSize: width < 500
+                                                    ? width / 25
+                                                    : width / 35),
+                                          ),
+                                        ),
+                                        content: Container(
+                                          width: width,
+                                          height: height * .3,
+                                          child: ListView(
+                                            children: [
+                                              for (var i = 0;
+                                                  i < value.length;
+                                                  i++)
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      productList = [];
+                                                      OtherProductList = [];
+                                                      selectedCheckbox = [];
+                                                    });
+                                                    setState(() {
+                                                      workTask = value[i]
+                                                          ["category"]["name"];
+                                                      workTaskId =
+                                                          value[i]["id"];
+                                                      is_removable_task =
+                                                          value[i]
+                                                              ["is_removable"];
+                                                      removal_qty = value[i]
+                                                          ["removeable_count"];
+                                                    });
+
+                                                    Api()
+                                                        .workProductList(
+                                                            ref.watch(newToken),
+                                                            ref.watch(
+                                                                overViewId),
+                                                            workTaskId)
+                                                        .then((value) {
+                                                      setState(() {
+                                                        product = value;
+                                                      });
+                                                      if (product["task_details"]
+                                                              [
+                                                              "is_removable"] ==
+                                                          0) {
+                                                        product["task_products"]
+                                                            .forEach((v, k) {
+                                                          product["task_products"]
+                                                              [v.toString()];
+
+                                                          setState(() {
+                                                            productList.add(product[
+                                                                    "task_products"]
+                                                                [v.toString()]);
+
+                                                            productList
+                                                                .toSet()
+                                                                .toList();
+                                                          });
+                                                        });
+
+                                                        product["other_products"]
+                                                            .forEach((v, k) {
+                                                          product["other_products"]
+                                                              [v.toString()];
+
+                                                          setState(() {
+                                                            OtherProductList
+                                                                .add(product[
+                                                                        "other_products"]
+                                                                    [
+                                                                    v.toString()]);
+
+                                                            OtherProductList
+                                                                    .toSet()
+                                                                .toList();
+                                                          });
+                                                        });
+                                                      } else {
+                                                        productList = [];
+                                                        OtherProductList = [];
+                                                      }
+                                                    });
+
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Card(
+                                                    elevation: 3,
+                                                    child: Container(
+                                                      width: width,
+                                                      height: height * 0.05,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            "${value[i]["category"]["name"]}",
+                                                            style: GoogleFonts.ptSans(
+                                                                color: GlobalColors
+                                                                    .themeColor2,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: width <
+                                                                        500
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        35),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                });
+                              },
+                              child: Container(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "${workItemObject[workItemKey[i]]["product_name"]}",
+                                  workTask,
                                   style: GoogleFonts.ptSans(
-                                    color: GlobalColors.black,
-                                    fontSize:
-                                        width < 700 ? width / 35 : width / 44,
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0,
-                                  ),
+                                      color: GlobalColors.themeColor2,
+                                      fontSize:
+                                          width < 700 ? width / 30 : width / 45,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0),
                                 ),
                               ),
-                              Container(
-                                width: width * 0.1,
-                                alignment: Alignment.center,
+                            ),
+                          ),
+                          Expanded(child: Center(child: Text("")))
+                        ],
+                      ),
+                    ),
+                    if (workTaskId != 0)
+                      if (product["task_details"]["is_removable"] == 1)
+                        Container(
+                          margin: EdgeInsets.only(bottom: 3),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      color: Color.fromARGB(255, 200, 196, 196),
+                                      width: 0.5))),
+                          constraints: BoxConstraints(
+                              minWidth: width, minHeight: height * 0.05),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    child: Text(
+                                      "Removeable Count",
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.black,
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0),
+                                    ),
+                                  )),
+                              Expanded(
+                                  child: Container(
                                 child: Text(
-                                  "${workItemObject[workItemKey[i]]["unit_name"]}",
+                                  "${product["removable_pending"]}",
                                   style: GoogleFonts.ptSans(
-                                    color: GlobalColors.black,
-                                    fontSize:
-                                        width < 700 ? width / 35 : width / 44,
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: width * 0.1,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "${workItemObject[workItemKey[i]]["quantity"]}",
-                                  style: GoogleFonts.ptSans(
-                                    color: GlobalColors.black,
-                                    fontSize:
-                                        width < 700 ? width / 35 : width / 44,
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: width * 0.15,
-                                height: height * 0.032,
-                                child: TextField(
-                                  onChanged: (text) {
-                                    if (text.isEmpty) {
-                                      serialList.removeWhere(
-                                          (element) => element["id"] == i);
-                                    } else {
-                                      setState(() {
-                                        if (serialList.isEmpty) {
-                                          serialList.add({
-                                            "id": i,
-                                            "productId": workItemObject[
-                                                    selectedCheckBoxVlue[i]]
-                                                ["product_id"],
-                                            "value": int.parse(text)
-                                          });
-                                        } else {
-                                          bool isContain = serialList.any(
-                                              (element) => element["id"] == i);
-                                          if (isContain) {
-                                            serialList.removeWhere((element) =>
-                                                element["id"] == i);
-                                            serialList.add({
-                                              "id": i,
-                                              "productId": workItemObject[
-                                                      selectedCheckBoxVlue[i]]
-                                                  ["product_id"],
-                                              "value": int.parse(text)
-                                            });
-                                          } else {
-                                            serialList.add({
-                                              "id": i,
-                                              "productId": workItemObject[
-                                                      selectedCheckBoxVlue[i]]
-                                                  ["product_id"],
-                                              "value": int.parse(text)
-                                            });
-                                          }
-                                        }
-                                        print("id1$serialList");
-                                      });
-                                    }
-                                  },
-                                  controller: _controllers.length > 0
-                                      ? _controllers[i]
-                                      : null,
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  readOnly: !selectedCheckBoxVlue
-                                      .contains(workItemKey[i]),
-                                  style: GoogleFonts.ptSans(
-                                      color: GlobalColors.themeColor,
+                                      color: GlobalColors.black,
                                       fontSize:
                                           width < 700 ? width / 30 : width / 45,
                                       fontWeight: FontWeight.w400,
                                       letterSpacing: 0),
-                                  decoration: InputDecoration(
-                                    hintText: "",
-                                    hintStyle: GoogleFonts.ptSans(
-                                        color: GlobalColors.themeColor,
-                                        fontSize: width < 700
-                                            ? width / 35
-                                            : width / 45,
-                                        fontWeight: FontWeight.w400,
-                                        letterSpacing: 0),
-                                  ),
+                                ),
+                              )),
+                              Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    child: Text(
+                                      "Used Count",
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.black,
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0),
+                                    ),
+                                  )),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: TextField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.all(15),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4))),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          removal_qty = int.parse(value);
+                                        });
+                                      }),
                                 ),
                               ),
                             ],
                           ),
-                          if (workItemObject[workItemKey[i]]
-                                  ["enable_serial_no"] ==
-                              1)
-                            if (serialList.isNotEmpty)
-                              for (var j = 0; j < serialList.length; j++)
-                                if (serialList[j]["id"] == i)
-                                  for (var k = 0;
-                                      k < serialList[j]["value"];
-                                      k++)
-                                    Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: TextField(
-                                        onChanged: ((text) {
-                                          print("id3$text");
-                                          if (text.isEmpty) {
-                                            serialItemList.removeWhere((element) =>
-                                                element["serial_no"] == k &&
-                                                element["productId"] ==
-                                                    workItemObject[
-                                                        selectedCheckBoxVlue[
-                                                            i]]["product_id"]);
+                        ),
+                    if (productList.isNotEmpty)
+                      Text(
+                        "Products",
+                        style: GoogleFonts.ptSans(
+                            color: GlobalColors.black,
+                            fontSize: width < 500 ? width / 25 : width / 35),
+                      ),
+                    for (var i = 0; i < productList.length; i++)
+                      Card(
+                        elevation: 3,
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Checkbox(
+                                        activeColor: GlobalColors.themeColor,
+                                        checkColor: GlobalColors.white,
+                                        value: selectedCheckbox
+                                            .contains(productList[i]),
+                                        onChanged: (bool? value) {
+                                          if (value!) {
+                                            setState(() {
+                                              selectedCheckbox
+                                                  .add(productList[i]);
+                                            });
                                           } else {
-                                            if (serialItemList.isEmpty) {
-                                              serialItemList.add({
-                                                "id": i,
-                                                "serial_no": k,
-                                                "productId": workItemObject[
-                                                        selectedCheckBoxVlue[i]]
-                                                    ["product_id"],
-                                                "value": text
-                                              });
-                                            } else {
-                                              bool isContain = serialItemList
-                                                  .any((element) =>
-                                                      element["serial_no"] ==
-                                                          k &&
-                                                      element["productId"] ==
-                                                          workItemObject[
-                                                                  selectedCheckBoxVlue[
-                                                                      i]]
-                                                              ["product_id"]);
-
-                                              if (isContain) {
-                                                serialItemList.removeWhere(
-                                                    (element) =>
-                                                        element["serial_no"] ==
-                                                            k &&
-                                                        element["productId"] ==
-                                                            workItemObject[
-                                                                    selectedCheckBoxVlue[
-                                                                        i]]
-                                                                ["product_id"]);
-                                                setState(() {
-                                                  serialItemList.add({
-                                                    "id": i,
-                                                    "serial_no": k,
-                                                    "productId": workItemObject[
-                                                        selectedCheckBoxVlue[
-                                                            i]]["product_id"],
-                                                    "value": text
-                                                  });
-                                                });
-                                              } else {
-                                                setState(() {
-                                                  serialItemList.add({
-                                                    "id": i,
-                                                    "serial_no": k,
-                                                    "productId": workItemObject[
-                                                        selectedCheckBoxVlue[
-                                                            i]]["product_id"],
-                                                    "value": text
-                                                  });
-                                                });
-                                              }
-                                            }
+                                            setState(() {
+                                              selectedCheckbox
+                                                  .remove(productList[i]);
+                                            });
                                           }
-
-                                          print("id3$serialItemList");
-                                        }),
-                                        obscureText: false,
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Enter Serial No ${k}',
-                                        ),
+                                        },
                                       ),
                                     ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Container(
+                                      child: Text(
+                                        "${productList[i]["item_name"]}",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.black,
+                                            fontSize: width < 500
+                                                ? width / 35
+                                                : width / 35),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "${productList[i]["unit_name"]}",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.black,
+                                            fontSize: width < 500
+                                                ? width / 35
+                                                : width / 35),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "${productList[i]["pending_quantity"]}",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.black,
+                                            fontSize: width < 500
+                                                ? width / 35
+                                                : width / 35),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (selectedCheckbox.contains(productList[i]))
+                                if (productList[i]["serialnos"] != null)
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Center(
+                                          child: Text(
+                                            "S No:",
+                                            style: GoogleFonts.ptSans(
+                                                color: GlobalColors.themeColor2,
+                                                fontSize: width < 500
+                                                    ? width / 35
+                                                    : width / 35),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Wrap(
+                                          children: [
+                                            for (var s = 0;
+                                                s <
+                                                    productList[i]["serialnos"]
+                                                        .length;
+                                                s++)
+                                              InkWell(
+                                                onTap: () {
+                                                  if (serialnosList.isEmpty) {
+                                                    setState(() {
+                                                      serialnosList.add({
+                                                        "productId":
+                                                            productList[i]
+                                                                ["item_id"],
+                                                        "sNo": [
+                                                          productList[i]
+                                                              ["serialnos"][s]
+                                                        ]
+                                                      });
+                                                    });
+                                                  }
+                                                  var data = serialnosList
+                                                      .firstWhere(
+                                                          (element) =>
+                                                              element[
+                                                                  "productId"] ==
+                                                              productList[i]
+                                                                  ["item_id"],
+                                                          orElse: () {
+                                                    return null;
+                                                  });
+                                                  if (data == null) {
+                                                    setState(() {
+                                                      serialnosList.add({
+                                                        "productId":
+                                                            productList[i]
+                                                                ["item_id"],
+                                                        "sNo": [
+                                                          productList[i]
+                                                              ["serialnos"][s]
+                                                        ]
+                                                      });
+                                                    });
+                                                  } else {
+                                                    if (data["sNo"].contains(
+                                                        productList[i]
+                                                            ["serialnos"][s])) {
+                                                      data["sNo"].remove(
+                                                          productList[i]
+                                                              ["serialnos"][s]);
+                                                    } else {
+                                                      data["sNo"].add(
+                                                          productList[i]
+                                                              ["serialnos"][s]);
+                                                    }
+
+                                                    if (data["sNo"].length <
+                                                        1) {
+                                                      serialnosList.remove({
+                                                        "productId":
+                                                            productList[i]
+                                                                ["item_id"],
+                                                        "sNo": []
+                                                      });
+                                                    }
+                                                    var getData = selectedCheckbox
+                                                        .firstWhere(
+                                                            (element) =>
+                                                                element[
+                                                                    "item_id"] ==
+                                                                productList[i]
+                                                                    ["item_id"],
+                                                            orElse: () {
+                                                      return null;
+                                                    });
+                                                    getData["used_serialNos"] =
+                                                        data["sNo"];
+
+                                                    getColors(
+                                                        productList[i]
+                                                            ["serialnos"][s],
+                                                        productList[i]
+                                                            ["item_id"]);
+
+                                                    setState(() {
+                                                      serialVisible =
+                                                          !serialVisible;
+                                                    });
+                                                    setState(() {
+                                                      serialVisible =
+                                                          !serialVisible;
+                                                    });
+                                                  }
+                                                },
+                                                child: Visibility(
+                                                  visible: serialVisible,
+                                                  child: Card(
+                                                    color: getColors(
+                                                        productList[i]
+                                                            ["serialnos"][s],
+                                                        productList[i]
+                                                            ["item_id"]),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10.0),
+                                                      child: Text(
+                                                        productList[i]
+                                                                ["serialnos"][s]
+                                                            .toString(),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              if (selectedCheckbox.contains(productList[i]))
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(""),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          "Used Quantity",
+                                          style: GoogleFonts.ptSans(
+                                              color: GlobalColors.themeColor2,
+                                              fontSize: width < 500
+                                                  ? width / 35
+                                                  : width / 35),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: productList[i]["serialnos"] !=
+                                                null
+                                            ? Container(
+                                                constraints: BoxConstraints(
+                                                    minHeight: 50,
+                                                    minWidth: 50),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    border: Border.all(
+                                                        color: GlobalColors
+                                                            .themeColor,
+                                                        width: 2)),
+                                                child: Center(
+                                                    child: Text(getUsedserialNo(
+                                                            productList[i]
+                                                                ["item_id"])
+                                                        .toString())),
+                                              )
+                                            : TextField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                decoration: InputDecoration(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            15),
+                                                    border: OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4))),
+                                                onChanged: (value) {
+                                                  var data = selectedCheckbox
+                                                      .firstWhere(
+                                                          (element) =>
+                                                              element[
+                                                                  "item_id"] ==
+                                                              productList[i]
+                                                                  ["item_id"],
+                                                          orElse: () {
+                                                    return null;
+                                                  });
+                                                  data["used_quantity"] = value;
+
+                                                  // print(data.toString());
+                                                  // do something
+                                                },
+                                              ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                            ],
+                          ),
+                        ),
+                      ),
+                    if (OtherProductList.isNotEmpty)
+                      Text(
+                        "Other Products",
+                        style: GoogleFonts.ptSans(
+                            color: GlobalColors.black,
+                            fontSize: width < 500 ? width / 25 : width / 35),
+                      ),
+                    for (var i = 0; i < OtherProductList.length; i++)
+                      Card(
+                        elevation: 3,
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Checkbox(
+                                        activeColor: GlobalColors.themeColor,
+                                        checkColor: GlobalColors.white,
+                                        value: selectedCheckbox
+                                            .contains(OtherProductList[i]),
+                                        onChanged: (bool? value) {
+                                          if (value!) {
+                                            setState(() {
+                                              selectedCheckbox
+                                                  .add(OtherProductList[i]);
+                                            });
+                                          } else {
+                                            setState(() {
+                                              selectedCheckbox
+                                                  .remove(OtherProductList[i]);
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Container(
+                                      child: Text(
+                                        "${OtherProductList[i]["item_name"]}",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.black,
+                                            fontSize: width < 500
+                                                ? width / 35
+                                                : width / 35),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "${OtherProductList[i]["unit_name"]}",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.black,
+                                            fontSize: width < 500
+                                                ? width / 35
+                                                : width / 35),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "${OtherProductList[i]["pending_quantity"]}",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.black,
+                                            fontSize: width < 500
+                                                ? width / 35
+                                                : width / 35),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (selectedCheckbox
+                                  .contains(OtherProductList[i]))
+                                if (OtherProductList[i]["serialnos"] != null)
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Center(
+                                          child: Text(
+                                            "S No:",
+                                            style: GoogleFonts.ptSans(
+                                                color: GlobalColors.themeColor2,
+                                                fontSize: width < 500
+                                                    ? width / 35
+                                                    : width / 35),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Wrap(
+                                          children: [
+                                            for (var s = 0;
+                                                s <
+                                                    OtherProductList[i]
+                                                            ["serialnos"]
+                                                        .length;
+                                                s++)
+                                              InkWell(
+                                                onTap: () {
+                                                  if (serialnosList.isEmpty) {
+                                                    setState(() {
+                                                      serialnosList.add({
+                                                        "productId":
+                                                            OtherProductList[i]
+                                                                ["item_id"],
+                                                        "sNo": [
+                                                          OtherProductList[i]
+                                                              ["serialnos"][s]
+                                                        ]
+                                                      });
+                                                    });
+                                                  }
+                                                  var data = serialnosList
+                                                      .firstWhere(
+                                                          (element) =>
+                                                              element[
+                                                                  "productId"] ==
+                                                              OtherProductList[
+                                                                  i]["item_id"],
+                                                          orElse: () {
+                                                    return null;
+                                                  });
+                                                  if (data == null) {
+                                                    setState(() {
+                                                      serialnosList.add({
+                                                        "productId":
+                                                            OtherProductList[i]
+                                                                ["item_id"],
+                                                        "sNo": [
+                                                          OtherProductList[i]
+                                                              ["serialnos"][s]
+                                                        ]
+                                                      });
+                                                    });
+                                                  } else {
+                                                    if (data["sNo"].contains(
+                                                        OtherProductList[i]
+                                                            ["serialnos"][s])) {
+                                                      data["sNo"].remove(
+                                                          OtherProductList[i]
+                                                              ["serialnos"][s]);
+                                                    } else {
+                                                      data["sNo"].add(
+                                                          OtherProductList[i]
+                                                              ["serialnos"][s]);
+                                                    }
+
+                                                    if (data["sNo"].length <
+                                                        1) {
+                                                      serialnosList.remove({
+                                                        "productId":
+                                                            OtherProductList[i]
+                                                                ["item_id"],
+                                                        "sNo": []
+                                                      });
+                                                    }
+                                                    var getData = selectedCheckbox
+                                                        .firstWhere(
+                                                            (element) =>
+                                                                element[
+                                                                    "item_id"] ==
+                                                                OtherProductList[
+                                                                        i]
+                                                                    ["item_id"],
+                                                            orElse: () {
+                                                      return null;
+                                                    });
+                                                    getData["used_serialNos"] =
+                                                        data["sNo"];
+
+                                                    getColors(
+                                                        OtherProductList[i]
+                                                            ["serialnos"][s],
+                                                        OtherProductList[i]
+                                                            ["item_id"]);
+
+                                                    setState(() {
+                                                      serialVisible =
+                                                          !serialVisible;
+                                                    });
+                                                    setState(() {
+                                                      serialVisible =
+                                                          !serialVisible;
+                                                    });
+                                                  }
+                                                },
+                                                child: Visibility(
+                                                  visible: serialVisible,
+                                                  child: Card(
+                                                    color: getColors(
+                                                        OtherProductList[i]
+                                                            ["serialnos"][s],
+                                                        OtherProductList[i]
+                                                            ["item_id"]),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10.0),
+                                                      child: Text(
+                                                        OtherProductList[i]
+                                                                ["serialnos"][s]
+                                                            .toString(),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              if (selectedCheckbox
+                                  .contains(OtherProductList[i]))
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(""),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          "Used Quantity",
+                                          style: GoogleFonts.ptSans(
+                                              color: GlobalColors.themeColor2,
+                                              fontSize: width < 500
+                                                  ? width / 35
+                                                  : width / 35),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: OtherProductList[i]
+                                                    ["serialnos"] !=
+                                                null
+                                            ? Container(
+                                                constraints: BoxConstraints(
+                                                    minHeight: 50,
+                                                    minWidth: 50),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    border: Border.all(
+                                                        color: GlobalColors
+                                                            .themeColor,
+                                                        width: 2)),
+                                                child: Center(
+                                                    child: Text(getUsedserialNo(
+                                                            OtherProductList[i]
+                                                                ["item_id"])
+                                                        .toString())),
+                                              )
+                                            : TextField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                decoration: InputDecoration(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            15),
+                                                    border: OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4))),
+                                                onChanged: (value) {
+                                                  var data = selectedCheckbox
+                                                      .firstWhere(
+                                                          (element) =>
+                                                              element[
+                                                                  "item_id"] ==
+                                                              OtherProductList[
+                                                                  i]["item_id"],
+                                                          orElse: () {
+                                                    return null;
+                                                  });
+                                                  data["used_quantity"] = value;
+
+                                                  print(data.toString());
+                                                  // do something
+                                                },
+                                              ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                            ],
+                          ),
+                        ),
+                      ),
+                    Divider(),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 3),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Color.fromARGB(255, 200, 196, 196),
+                                  width: 0.5))),
+                      constraints: BoxConstraints(
+                          minWidth: width, minHeight: height * 0.05),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Container(
+                            child: Text(
+                              "Notes",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                            ),
+                          )),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.all(15),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(4))),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      notes = value.trim();
+                                    });
+                                  }),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                ],
+                    ElevatedButton(
+                      onPressed: () {
+                        Api()
+                            .WorkUpdateAdd(
+                                ref.watch(newToken),
+                                ref.watch(overViewId),
+                                workTaskId,
+                                "${DateFormat("dd-MM-yyyy").format(workUpdateDate)}",
+                                selectedEmployee,
+                                notes,
+                                ref.watch(inChargeId),
+                                is_removable_task,
+                                removal_qty,
+                                selectedCheckbox)
+                            .then((value) {});
+                        Navigator.pop(context);
+                        return ref.refresh(workUpdateListProvider);
+                      },
+                      child: Text("Add"),
+                    )
+                  ],
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: height * 0.01),
-              child: Row(
-                children: [
-                  LeadCustomlabel(
-                    label: "Description",
-                    start: null,
-                  ),
-                  LeadCustomInput(
-                    label: "Add DesCription",
-                    controller: _note,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: width,
-              height: height * 0.07,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: GlobalColors.themeColor2),
-                    onPressed: () {
-                      _selectedItems = [];
-                      selectedCheckBox = [];
-                      selectedCheckBoxVlue = [];
-                      serialList = [];
-                      serialItemList = [];
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.cancel),
-                    label: Text(
-                      " Cancel",
-                      style: GoogleFonts.ptSans(
-                          fontSize: width < 700 ? width / 28 : width / 45,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0),
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      addWorkUpdate();
-                    },
-                    icon: Icon(Icons.add),
-                    label: Text(
-                      "Add Work",
-                      style: GoogleFonts.ptSans(
-                          fontSize: width < 700 ? width / 28 : width / 45,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ));
-  }
-}
-
-class MultiSelect extends StatefulWidget {
-  final List<String> tems;
-  final Function onclick;
-
-  const MultiSelect({Key? key, required this.tems, required this.onclick})
-      : super(key: key);
-
-  @override
-  _MultiSelectState createState() => _MultiSelectState();
-}
-
-class _MultiSelectState extends State<MultiSelect> {
-  _itemChange(String item, bool isSelected) {
-    setState(() {
-      if (isSelected) {
-        _selectedItems.add(item);
-      } else {
-        _selectedItems.remove(item);
-      }
-    });
-    widget.onclick(_selectedItems);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Participants'),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: participants
-              .map((item) => CheckboxListTile(
-                    value: _selectedItems.contains(item),
-                    title: Text(item),
-                    onChanged: (isChecked) {
-                      _itemChange(item, isChecked!);
-                    },
-                  ))
-              .toList(),
+            ],
+          ),
         ),
       ),
-      actions: <Widget>[
-        TextButton(
-          style: TextButton.styleFrom(
-            textStyle: Theme.of(context).textTheme.labelLarge,
-          ),
-          child: const Text('Cancel'),
-          onPressed: () {
-            _selectedItems = [];
-            selectedCheckBox = [];
-            selectedCheckBoxVlue = [];
-
-            widget.onclick(_selectedItems);
-            Navigator.of(context).pop();
-          },
-        ),
-        TextButton(
-          style: TextButton.styleFrom(
-            textStyle: Theme.of(context).textTheme.labelLarge,
-          ),
-          child: const Text('Ok'),
-          onPressed: () {
-            setState(() {
-              _selectedItems = _selectedItems;
-            });
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
     );
   }
 }

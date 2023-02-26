@@ -182,7 +182,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                         child: Container(
                           padding: EdgeInsets.all(4),
                           child: Icon(
-                            Icons.whatsapp,
+                            Icons.call,
                             color: Color.fromARGB(255, 73, 192, 77),
                             size: width < 700 ? width / 25 : width / 45,
                           ),

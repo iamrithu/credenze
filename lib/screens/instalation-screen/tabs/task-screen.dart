@@ -29,7 +29,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
 
   @override
   Widget build(BuildContext) {
-    final taskDetail = ref.watch(taskProvider);
+    final taskDetail = ref.watch(installationTaskProvider);
     return taskDetail.when(
         data: (_data) {
           return RefreshIndicator(
@@ -63,117 +63,157 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                 : ListView(
                     children: [
                       for (var i = 0; i < _data.length; i++)
-                        Container(
-                          width: widget.width,
-                          child: Column(
-                            children: [
-                              Card(
-                                  elevation: 1,
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: GlobalColors.themeColor,
-                                          width: 1,
-                                          strokeAlign: StrokeAlign.center,
-                                          style: BorderStyle.solid),
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          width: widget.width! * 0.9,
-                                          child: Column(
-                                            children: [
-                                              TextRowWidget(
-                                                width: widget.width!,
-                                                lable: "Task Id",
-                                                value: "#${_data[i].id!}",
-                                              ),
-                                              TextRowWidget(
-                                                width: widget.width!,
-                                                lable: "Description",
-                                                value:
-                                                    "${_data[i].description!}",
-                                              ),
-                                              TextRowWidget(
-                                                width: widget.width!,
-                                                lable: "Start Date",
-                                                value:
-                                                    "${DateFormat("dd - MMMM - yyyy ").format(_data[i].startDate!)}",
-                                              ),
-                                              TextRowWidget(
-                                                width: widget.width!,
-                                                lable: "End Date",
-                                                value:
-                                                    "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
-                                              ),
-                                              Divider(
-                                                thickness: 1,
-                                                color: GlobalColors.themeColor2,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    width: widget.width! * 0.27,
-                                                    child: Text(
-                                                      "Category",
-                                                      style: GoogleFonts.ptSans(
-                                                          fontSize: widget
-                                                                      .width! <
-                                                                  700
-                                                              ? widget.width! /
-                                                                  32
-                                                              : widget.width! /
-                                                                  45,
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                          color: GlobalColors
-                                                              .themeColor2,
-                                                          letterSpacing: 0),
-                                                    ),
+                        InkWell(
+                          onTap: () {
+                            ref
+                                .read(taskId.notifier)
+                                .update((state) => _data[i].id!);
+                            ref.read(pageIndex.notifier).update((state) => 5);
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Color.fromARGB(255, 249, 188, 189)),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Container(
+                              width: widget.width,
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: widget.width! * 0.9,
+                                        child: Column(
+                                          children: [
+                                            TextRowWidget(
+                                              width: widget.width!,
+                                              lable: "Task Id",
+                                              value: "#${_data[i].id!}",
+                                            ),
+                                            TextRowWidget(
+                                              width: widget.width!,
+                                              lable: "Category",
+                                              value:
+                                                  "${_data[i].category!.name ?? "--"}",
+                                            ),
+                                            TextRowWidget(
+                                              width: widget.width!,
+                                              lable: "Description",
+                                              value:
+                                                  "${_data[i].taskDescription ?? "--"}",
+                                            ),
+                                            TextRowWidget(
+                                              width: widget.width!,
+                                              lable: "Start Date",
+                                              value:
+                                                  "${DateFormat("dd - MMMM - yyyy ").format(_data[i].startDate!)}",
+                                            ),
+                                            TextRowWidget(
+                                              width: widget.width!,
+                                              lable: "End Date",
+                                              value:
+                                                  "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  width: widget.width! * 0.3,
+                                                  child: Text(
+                                                    "Status",
+                                                    style: GoogleFonts.ptSans(
+                                                        fontSize: widget
+                                                                    .width! <
+                                                                700
+                                                            ? widget.width! / 38
+                                                            : widget.width! /
+                                                                45,
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                        color:
+                                                            GlobalColors.black,
+                                                        letterSpacing: 0),
                                                   ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: widget.width! *
-                                                            0.02),
-                                                    child: Container(
-                                                      width:
-                                                          widget.width! * 0.6,
-                                                      child: HtmlWidget(
-                                                        "${_data[i].categoryName!}",
-                                                        textStyle: GoogleFonts.ptSans(
+                                                ),
+                                                Container(
+                                                  width: widget.width! * 0.02,
+                                                  child: Text(
+                                                    ":",
+                                                    style: GoogleFonts.ptSans(
+                                                        fontSize: widget
+                                                                    .width! <
+                                                                700
+                                                            ? widget.width! / 38
+                                                            : widget.width! /
+                                                                45,
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                        color:
+                                                            GlobalColors.black,
+                                                        letterSpacing: 0),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: widget.width! * 0.4,
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        width: widget.width! *
+                                                            0.02,
+                                                        height: widget.width! *
+                                                            0.02,
+                                                        decoration: BoxDecoration(
+                                                            color: _data[i]
+                                                                        .taskStatus ==
+                                                                    "pending"
+                                                                ? Colors.orange
+                                                                : GlobalColors
+                                                                    .green,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        1000)),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        "${_data[i].taskStatus}",
+                                                        style: GoogleFonts.ptSans(
                                                             fontSize: widget
                                                                         .width! <
                                                                     700
                                                                 ? widget.width! /
-                                                                    32
+                                                                    38
                                                                 : widget.width! /
                                                                     45,
                                                             fontWeight:
                                                                 FontWeight.w400,
                                                             color: GlobalColors
-                                                                .themeColor,
+                                                                .black,
                                                             letterSpacing: 0),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        Spacer(),
-                                      ],
-                                    ),
-                                  )),
-                            ],
+                                      ),
+                                      Spacer(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                     ],
