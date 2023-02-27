@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../../../../models/installation-employee-model.dart';
 import '../../../../river-pod/riverpod_provider.dart';
@@ -1190,6 +1192,26 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        if (selectedEmployee.length < 1) {
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              title: "Add one or more participants",
+                              autoCloseDuration: null);
+
+                          return null;
+                        }
+                        print(workTask.toString());
+                        if (workTask.isEmpty || workTask == "Select Task") {
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              title: "Select task",
+                              autoCloseDuration: null);
+
+                          return null;
+                        }
+
                         Api()
                             .WorkUpdateAdd(
                                 ref.watch(newToken),
@@ -1202,9 +1224,27 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                 is_removable_task,
                                 removal_qty,
                                 selectedCheckbox)
-                            .then((value) {});
-                        Navigator.pop(context);
-                        return ref.refresh(workUpdateListProvider);
+                            .then((value) {
+                          if (value.statusCode.toString() == "422" ||
+                              value.statusCode.toString() == "500") {
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "${value.data["error"]["message"]}",
+                                autoCloseDuration: null);
+
+                            return print("check rithi");
+                          } else {
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "${value.data["error"]["message"]}",
+                                autoCloseDuration: null);
+
+                            Navigator.pop(context);
+                            ref.refresh(workUpdateListProvider);
+                          }
+                        });
                       },
                       child: Text("Add"),
                     )

@@ -71,7 +71,7 @@ class CustomAppBar extends ConsumerWidget {
                       )
                     : page == 2
                         ? Text(
-                            "Attendence",
+                            "Attendance",
                             style: GoogleFonts.ptSans(
                                 fontSize: width < 700 ? width / 20 : width / 24,
                                 fontWeight: FontWeight.w800,

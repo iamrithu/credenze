@@ -189,7 +189,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                   letterSpacing: 0),
             ),
             content: Text(
-              "We need your current location for attendence, So enable your location accsess.",
+              "We need your current location for attendance, So enable your location accsess.",
               textAlign: TextAlign.start,
               style: GoogleFonts.ptSans(
                   fontSize: widget.width! < 700

@@ -48,7 +48,7 @@ class HomeScreen extends ConsumerWidget {
     List<String> name = [
       "Dashboard",
       "My Installations",
-      "Attendence",
+      "Attendance",
       // "Leads",
       "Profile"
     ];

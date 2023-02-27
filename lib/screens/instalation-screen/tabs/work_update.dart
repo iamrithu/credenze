@@ -72,7 +72,7 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
               strokeWidth: 4.0,
               onRefresh: () async {
                 return Future<void>.delayed(const Duration(seconds: 2), () {
-                  return ref.refresh(workUpdateProvider);
+                  return ref.refresh(workUpdateListProvider);
                 });
               },
               child: ListView(
