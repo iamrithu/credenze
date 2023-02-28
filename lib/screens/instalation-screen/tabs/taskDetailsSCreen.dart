@@ -103,7 +103,9 @@ class _TaskDetailsSCreenState extends ConsumerState<TaskDetailsSCreen> {
                                 width: 4,
                               ),
                               Text(
-                                "${DateFormat("dd-MM-yyyy").format(_data.startDate!)}",
+                                _data.startDate == null
+                                    ? "--"
+                                    : "${DateFormat("dd-MM-yyyy").format(_data.startDate!)}",
                                 style: GoogleFonts.ptSans(
                                     color: GlobalColors.themeColor,
                                     fontSize:
@@ -135,7 +137,9 @@ class _TaskDetailsSCreenState extends ConsumerState<TaskDetailsSCreen> {
                                 width: 4,
                               ),
                               Text(
-                                "${DateFormat("dd-MM-yyyy").format(_data.endDate!)}",
+                                _data.endDate == null
+                                    ? "--"
+                                    : "${DateFormat("dd-MM-yyyy").format(_data.endDate!)}",
                                 style: GoogleFonts.ptSans(
                                     color: GlobalColors.themeColor,
                                     fontSize:

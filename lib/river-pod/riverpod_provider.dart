@@ -23,6 +23,8 @@ final workSelectedDate = StateProvider<String?>((ref) => "select date");
 final demo = StateProvider<String?>((ref) => "demo");
 
 final pageIndex = StateProvider<int>((ref) => 0);
+final initialIndex = StateProvider<int>((ref) => 0);
+
 final userId = StateProvider<int>((ref) => 0);
 final netWorkConnectivity = StateProvider<bool>((ref) => true);
 final InstallationClockIn = StateProvider<bool>((ref) => true);

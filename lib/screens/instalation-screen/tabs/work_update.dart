@@ -33,6 +33,14 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
   @override
   Widget build(BuildContext) {
     final data = ref.watch(workUpdateListProvider);
+
+    onRefresh() async {
+      return Future<void>.delayed(const Duration(seconds: 1), () {
+        print("i am working");
+        return ref.refresh(workUpdateListProvider);
+      });
+    }
+
     return Scaffold(
       floatingActionButton: ElevatedButton.icon(
         onPressed: () {
@@ -40,7 +48,9 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
             isScrollControlled: true,
             context: context,
             builder: (context) {
-              return AddWorkUpdate();
+              return AddWorkUpdate(
+                onclick: onRefresh,
+              );
             },
           );
         },

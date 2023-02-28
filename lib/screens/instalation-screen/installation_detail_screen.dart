@@ -16,7 +16,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'tabs/expenses-screen.dart';
 
 class InstallationDetailScreen extends ConsumerStatefulWidget {
-  const InstallationDetailScreen({Key? key}) : super(key: key);
+  const InstallationDetailScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _InstallationDetailScreenState createState() =>
@@ -60,6 +62,7 @@ class _InstallationDetailScreenState
         return DefaultTabController(
           initialIndex: 0,
           length: tabName.length,
+          animationDuration: Duration(milliseconds: 600),
           child: Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -74,6 +77,9 @@ class _InstallationDetailScreenState
                     indicatorSize: TabBarIndicatorSize.label,
                     dragStartBehavior: DragStartBehavior.start,
                     isScrollable: tabName.length > 5 ? true : false,
+                    onTap: (int) {
+                      ref.read(initialIndex.notifier).update((state) => int);
+                    },
                     overlayColor: MaterialStateProperty.resolveWith((states) {
                       if (states.contains(MaterialState.pressed)) {
                         return GlobalColors.themeColor2;

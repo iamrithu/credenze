@@ -12,8 +12,10 @@ import '../../../../river-pod/riverpod_provider.dart';
 import 'custom-add-employee.dart';
 
 class AddWorkUpdate extends ConsumerStatefulWidget {
+  final Function onclick;
   AddWorkUpdate({
     Key? key,
+    required this.onclick,
   }) : super(key: key);
 
   @override
@@ -1225,6 +1227,16 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                 removal_qty,
                                 selectedCheckbox)
                             .then((value) {
+                          print(value.statusCode.toString());
+
+                          if (value.statusCode.toString() == "401") {
+                            print("demo");
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "${value.data["message"]}",
+                                autoCloseDuration: null);
+                          }
                           if (value.statusCode.toString() == "422" ||
                               value.statusCode.toString() == "500") {
                             QuickAlert.show(
@@ -1232,18 +1244,13 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                 type: QuickAlertType.error,
                                 title: "${value.data["error"]["message"]}",
                                 autoCloseDuration: null);
-
-                            return print("check rithi");
-                          } else {
-                            QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.error,
-                                title: "${value.data["error"]["message"]}",
-                                autoCloseDuration: null);
-
-                            Navigator.pop(context);
-                            ref.refresh(workUpdateListProvider);
                           }
+                        });
+
+                        widget.onclick();
+                        Navigator.pop(context);
+                        Future<void>.delayed(const Duration(seconds: 1), () {
+                          return ref.refresh(workUpdateListProvider);
                         });
                       },
                       child: Text("Add"),

@@ -384,6 +384,9 @@ class _InstalationScreenState extends ConsumerState<InstalationScreen> {
                                     InkWell(
                                       onTap: () {
                                         ref
+                                            .read(initialIndex.notifier)
+                                            .update((state) => 0);
+                                        ref
                                             .read(pageIndex.notifier)
                                             .update((state) => 4);
 

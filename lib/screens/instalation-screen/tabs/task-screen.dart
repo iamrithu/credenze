@@ -38,7 +38,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
             strokeWidth: 4.0,
             onRefresh: () async {
               return Future<void>.delayed(const Duration(seconds: 2), () {
-                return ref.refresh(taskProvider);
+                return ref.refresh(installationTaskProvider);
               });
             },
             child: _data.isEmpty
@@ -109,14 +109,16 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                                             TextRowWidget(
                                               width: widget.width!,
                                               lable: "Start Date",
-                                              value:
-                                                  "${DateFormat("dd - MMMM - yyyy ").format(_data[i].startDate!)}",
+                                              value: _data[i].startDate == null
+                                                  ? "--"
+                                                  : "${DateFormat("dd - MMMM - yyyy ").format(_data[i].startDate!)}",
                                             ),
                                             TextRowWidget(
                                               width: widget.width!,
                                               lable: "End Date",
-                                              value:
-                                                  "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
+                                              value: _data[i].endDate == null
+                                                  ? "--"
+                                                  : "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
                                             ),
                                             Row(
                                               mainAxisAlignment:

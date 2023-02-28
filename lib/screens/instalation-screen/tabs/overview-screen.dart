@@ -293,43 +293,73 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   }
 
   installationClockOut(int? id) async {
-    setState(() {
-      loading = true;
-      detailVisible = true;
-    });
     final prefs = await SharedPreferences.getInstance();
 
     String? token = await prefs.getString('token');
-    MapsAndLocation().locationPermisson().then((value) {
-      setState(() {
-        lat = value.latitude;
-        long = value.longitude;
-      });
-      Api()
-          .ClockOut(
-              token: token!,
-              id: id!,
-              latitude: value.latitude.toString(),
-              longitude: value.longitude.toString())
-          .then((value) {
-        Map<String, dynamic> data = jsonDecode(value);
-        if (data["success"]) {
-          ref.read(Installavailable.notifier).update((state) => true);
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.info,
+      widget: Text(
+        "Do you have any additional expenses for this installation? If yes add in the expenses field before clock out.",
+        textAlign: TextAlign.start,
+        style: GoogleFonts.ptSans(
+            fontSize:
+                widget.width! < 700 ? widget.width! / 35 : widget.width! / 45,
+            fontWeight: FontWeight.w600,
+            color: GlobalColors.themeColor2,
+            letterSpacing: 0),
+      ),
+      showCancelBtn: true,
+      onCancelBtnTap: () {
+        Navigator.pop(context);
+        return null;
+      },
+      cancelBtnText: "Cancel",
+      confirmBtnText: "Continue",
+      onConfirmBtnTap: () {
+        ref.read(pageIndex.notifier).update((state) => 2);
+        ref.read(pageIndex.notifier).update((state) => 4);
+        ref.read(initialIndex.notifier).update((state) => 4);
+        setState(() {
+          loading = true;
+          detailVisible = true;
+        });
 
-          getInstallationAttendence();
-        } else {
-          QuickAlert.show(
-              context: context,
-              type: QuickAlertType.error,
-              title: "${data["message"]}",
-              autoCloseDuration: null);
+        MapsAndLocation().locationPermisson().then((value) {
           setState(() {
-            loading = false;
-            detailVisible = false;
+            lat = value.latitude;
+            long = value.longitude;
           });
-        }
-      });
-    });
+          Api()
+              .ClockOut(
+                  token: token!,
+                  id: id!,
+                  latitude: value.latitude.toString(),
+                  longitude: value.longitude.toString())
+              .then((value) {
+            Map<String, dynamic> data = jsonDecode(value);
+            if (data["success"]) {
+              ref.read(Installavailable.notifier).update((state) => true);
+
+              getInstallationAttendence();
+            } else {
+              QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "${data["message"]}",
+                  autoCloseDuration: null);
+              setState(() {
+                loading = false;
+                detailVisible = false;
+              });
+            }
+          });
+        });
+
+        Navigator.pop(context);
+      },
+      autoCloseDuration: null,
+    );
   }
 
   @override
