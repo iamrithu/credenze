@@ -832,38 +832,67 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                     ),
                                   ),
                                   Spacer(),
-                                  Container(
-                                    width: widget.width! * 0.16,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            MapsAndLocation().openMapsSheet(
-                                                context,
-                                                double.parse(
-                                                    _data.siteLatitude!),
-                                                double.parse(
-                                                    _data.siteLongitude!));
-                                          },
-                                          child: Container(
-                                            width: widget.width! * 0.1,
-                                            child: Card(
-                                              margin: EdgeInsets.all(2),
-                                              elevation: 1,
-                                              child: Image(
-                                                image: AssetImage(
-                                                    "Assets/images/map.png"),
+                                  if (_data.siteLatitude != null ||
+                                      _data.siteLongitude != null)
+                                    Container(
+                                      width: widget.width! * 0.16,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              // if (_data.siteLatitude == null ||
+                                              //     _data.siteLongitude == null) {
+                                              //   QuickAlert.show(
+                                              //     context: context,
+                                              //     type: QuickAlertType.error,
+                                              //     widget: Text(
+                                              //       "This installation did not has location details",
+                                              //       textAlign: TextAlign.start,
+                                              //       style: GoogleFonts.ptSans(
+                                              //           fontSize: widget
+                                              //                       .width! <
+                                              //                   700
+                                              //               ? widget.width! / 35
+                                              //               : widget.width! /
+                                              //                   45,
+                                              //           fontWeight:
+                                              //               FontWeight.w600,
+                                              //           color: GlobalColors
+                                              //               .themeColor2,
+                                              //           letterSpacing: 0),
+                                              //     ),
+                                              //     showCancelBtn: false,
+                                              //     autoCloseDuration: Duration(
+                                              //         milliseconds: 2000),
+                                              //   );
+                                              //   return null;
+                                              // }
+                                              MapsAndLocation().openMapsSheet(
+                                                  context,
+                                                  double.parse(
+                                                      _data.siteLatitude!),
+                                                  double.parse(
+                                                      _data.siteLongitude!));
+                                            },
+                                            child: Container(
+                                              width: widget.width! * 0.1,
+                                              child: Card(
+                                                margin: EdgeInsets.all(2),
+                                                elevation: 1,
+                                                child: Image(
+                                                  image: AssetImage(
+                                                      "Assets/images/map.png"),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
                                 ],
                               ),
                             )),
@@ -1280,47 +1309,67 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                Text(
-                                                  "S.NO",
-                                                  textAlign: TextAlign.start,
-                                                  style: GoogleFonts.ptSans(
-                                                      fontSize: widget.width! <
-                                                              700
-                                                          ? widget.width! / 35
-                                                          : widget.width! / 42,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: GlobalColors
-                                                          .themeColor2,
-                                                      letterSpacing: 0),
+                                                Container(
+                                                  width: widget.width! * 0.2,
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    "S.NO",
+                                                    textAlign: TextAlign.start,
+                                                    style: GoogleFonts.ptSans(
+                                                        fontSize: widget
+                                                                    .width! <
+                                                                700
+                                                            ? widget.width! / 35
+                                                            : widget.width! /
+                                                                42,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: GlobalColors
+                                                            .themeColor2,
+                                                        letterSpacing: 0),
+                                                  ),
                                                 ),
-                                                Text(
-                                                  "Category",
-                                                  textAlign: TextAlign.start,
-                                                  style: GoogleFonts.ptSans(
-                                                      fontSize: widget.width! <
-                                                              700
-                                                          ? widget.width! / 35
-                                                          : widget.width! / 42,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: GlobalColors
-                                                          .themeColor2,
-                                                      letterSpacing: 0),
+                                                Expanded(
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Category",
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: GoogleFonts.ptSans(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .themeColor2,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ),
                                                 ),
-                                                Text(
-                                                  "Amount",
-                                                  textAlign: TextAlign.start,
-                                                  style: GoogleFonts.ptSans(
-                                                      fontSize: widget.width! <
-                                                              700
-                                                          ? widget.width! / 35
-                                                          : widget.width! / 42,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: GlobalColors
-                                                          .themeColor2,
-                                                      letterSpacing: 0),
+                                                Container(
+                                                  width: widget.width! * 0.2,
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    "Amount",
+                                                    textAlign: TextAlign.start,
+                                                    style: GoogleFonts.ptSans(
+                                                        fontSize: widget
+                                                                    .width! <
+                                                                700
+                                                            ? widget.width! / 35
+                                                            : widget.width! /
+                                                                42,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: GlobalColors
+                                                            .themeColor2,
+                                                        letterSpacing: 0),
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -1331,115 +1380,104 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                 width: widget.width,
                                                 margin: EdgeInsets.symmetric(
                                                     vertical: 5),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  children: [
-                                                    Text(
-                                                      "${i + 1}",
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      style: GoogleFonts.ptSans(
-                                                          fontSize: widget
-                                                                      .width! <
-                                                                  700
-                                                              ? widget.width! /
-                                                                  35
-                                                              : widget.width! /
-                                                                  42,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: GlobalColors
-                                                              .black,
-                                                          letterSpacing: 0),
+                                                child: Card(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          width: widget.width! *
+                                                              0.2,
+                                                          child: Text(
+                                                            "${i + 1}",
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            style: GoogleFonts.ptSans(
+                                                                fontSize: widget
+                                                                            .width! <
+                                                                        700
+                                                                    ? widget.width! /
+                                                                        35
+                                                                    : widget.width! /
+                                                                        42,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Center(
+                                                            child: Text(
+                                                              _data[i]
+                                                                  .category!
+                                                                  .name!,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start,
+                                                              style: GoogleFonts.ptSans(
+                                                                  fontSize: widget
+                                                                              .width! <
+                                                                          700
+                                                                      ? widget.width! /
+                                                                          35
+                                                                      : widget.width! /
+                                                                          42,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color:
+                                                                      GlobalColors
+                                                                          .black,
+                                                                  letterSpacing:
+                                                                      0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: widget.width! *
+                                                              0.2,
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                            "${_data[i].amount} Rs",
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            style: GoogleFonts.ptSans(
+                                                                fontSize: widget
+                                                                            .width! <
+                                                                        700
+                                                                    ? widget.width! /
+                                                                        35
+                                                                    : widget.width! /
+                                                                        42,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                letterSpacing:
+                                                                    0),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Text(
-                                                      _data[i].categoryId == 1
-                                                          ? "Petrol"
-                                                          : "Food",
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      style: GoogleFonts.ptSans(
-                                                          fontSize: widget
-                                                                      .width! <
-                                                                  700
-                                                              ? widget.width! /
-                                                                  35
-                                                              : widget.width! /
-                                                                  42,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: GlobalColors
-                                                              .black,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                    Text(
-                                                      "${_data[i].amount} Rs",
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      style: GoogleFonts.ptSans(
-                                                          fontSize: widget
-                                                                      .width! <
-                                                                  700
-                                                              ? widget.width! /
-                                                                  35
-                                                              : widget.width! /
-                                                                  42,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: GlobalColors
-                                                              .black,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             Divider(),
-                                            // Padding(
-                                            //   padding:
-                                            //       const EdgeInsets.symmetric(
-                                            //           vertical: 8.0),
-                                            //   child: Row(
-                                            //     mainAxisAlignment:
-                                            //         MainAxisAlignment
-                                            //             .spaceEvenly,
-                                            //     children: [
-                                            //       Text(
-                                            //         "Total",
-                                            //         textAlign: TextAlign.start,
-                                            //         style: GoogleFonts.ptSans(
-                                            //             fontSize: widget
-                                            //                         .width! <
-                                            //                     700
-                                            //                 ? widget.width! / 35
-                                            //                 : widget.width! /
-                                            //                     42,
-                                            //             fontWeight:
-                                            //                 FontWeight.w400,
-                                            //             color: GlobalColors
-                                            //                 .themeColor,
-                                            //             letterSpacing: 0),
-                                            //       ),
-                                            //       Text(
-                                            //         "${totalAmount}",
-                                            //         textAlign: TextAlign.start,
-                                            //         style: GoogleFonts.ptSans(
-                                            //             fontSize: widget
-                                            //                         .width! <
-                                            //                     700
-                                            //                 ? widget.width! / 35
-                                            //                 : widget.width! /
-                                            //                     42,
-                                            //             fontWeight:
-                                            //                 FontWeight.w400,
-                                            //             color: GlobalColors
-                                            //                 .themeColor,
-                                            //             letterSpacing: 0),
-                                            //       ),
-                                            //     ],
-                                            //   ),
-                                            // ),
                                           ],
                                         ),
                                       ),

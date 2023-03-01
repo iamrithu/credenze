@@ -10,6 +10,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:map_launcher/map_launcher.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../maps&location/map-location.dart';
@@ -644,40 +646,80 @@ class _InstalationScreenState extends ConsumerState<InstalationScreen> {
                                                   ],
                                                 ),
                                               ),
-                                              InkWell(
-                                                onTap: () {
-                                                  MapsAndLocation()
-                                                      .openMapsSheet(
-                                                          context,
-                                                          double.parse(_data[i]
-                                                              .siteLatitude!),
-                                                          double.parse(_data[i]
-                                                              .siteLongitude!));
-                                                },
-                                                child: Container(
-                                                  width: width * 0.2,
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      Container(
-                                                        width: width * 0.1,
-                                                        child: Card(
-                                                          margin:
-                                                              EdgeInsets.all(2),
-                                                          elevation: 10,
-                                                          child: Image(
-                                                            image: AssetImage(
-                                                                "Assets/images/map.png"),
+                                              if (_data[i].siteLatitude !=
+                                                      null &&
+                                                  _data[i].siteLongitude !=
+                                                      null)
+                                                InkWell(
+                                                  onTap: () {
+                                                    // if (_data[i].siteLatitude ==
+                                                    //         null ||
+                                                    //     _data[i].siteLongitude ==
+                                                    //         null) {
+                                                    //   QuickAlert.show(
+                                                    //     context: context,
+                                                    //     type:
+                                                    //         QuickAlertType.error,
+                                                    //     widget: Text(
+                                                    //       "This installation did not has location details",
+                                                    //       textAlign:
+                                                    //           TextAlign.start,
+                                                    //       style: GoogleFonts.ptSans(
+                                                    //           fontSize: width <
+                                                    //                   700
+                                                    //               ? width / 35
+                                                    //               : width / 45,
+                                                    //           fontWeight:
+                                                    //               FontWeight.w600,
+                                                    //           color: GlobalColors
+                                                    //               .themeColor2,
+                                                    //           letterSpacing: 0),
+                                                    //     ),
+                                                    //     showCancelBtn: false,
+                                                    //     autoCloseDuration:
+                                                    //         Duration(
+                                                    //             milliseconds:
+                                                    //                 2000),
+                                                    //   );
+                                                    //   return null;
+                                                    // }
+
+                                                    MapsAndLocation()
+                                                        .openMapsSheet(
+                                                            context,
+                                                            double.parse(_data[i]
+                                                                .siteLatitude!),
+                                                            double.parse(_data[
+                                                                    i]
+                                                                .siteLongitude!));
+                                                  },
+                                                  child: Container(
+                                                    width: width * 0.2,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        Container(
+                                                          width: width * 0.1,
+                                                          child: Card(
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    2),
+                                                            elevation: 10,
+                                                            child: Image(
+                                                              image: AssetImage(
+                                                                  "Assets/images/map.png"),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
                                             ],
                                           ),
                                         ),

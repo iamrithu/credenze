@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:credenze/apis/api.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
+import 'package:credenze/screens/instalation-screen/tabs/widget/expense-update-screen.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/text-row-widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:quickalert/quickalert.dart';
 import '../../../const/global_colors.dart';
-import '../../../models/expense-category-model.dart';
 import 'widget/add-expense-screen.dart';
 
 class ExpenseScreen extends ConsumerStatefulWidget {
@@ -36,66 +35,36 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
     super.initState();
   }
 
+  refresh() async {
+    print("dd");
+    return Future<void>.delayed(const Duration(seconds: 1), () {
+      return ref.refresh(expenseProvider);
+    });
+  }
+
   @override
   Widget build(BuildContext) {
     final expenseDetail = ref.watch(expenseProvider);
     final token = ref.watch(newToken);
     final id = ref.watch(overViewId);
-    return Scaffold(
-      floatingActionButton: Consumer(builder: ((context, ref, child) {
-        final data = ref.watch(expenseCategoryProvider);
-        return data.when(
-            data: ((_data) {
-              cat = [];
-              for (var i = 0; i < _data.length; i++) {
-                cat.add(_data[i].name!);
-              }
-              return ElevatedButton.icon(
-                onPressed: () {
-                  Api().ExpensePlace(token: token, id: id).then((value) {
-                    Map<String, dynamic> data = jsonDecode(value);
 
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (context) {
-                        return ExpenseAddScreen(
-                            cat: cat,
-                            data: _data,
-                            type: "add",
-                            updateData: null,
-                            count: data["count"]);
-                      },
-                    );
-                  });
-                },
-                icon: Icon(
-                  Icons.add,
-                  color: GlobalColors.white,
-                  size: widget.width! < 700
-                      ? widget.width! / 30
-                      : widget.width! / 45,
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: GlobalColors.themeColor,
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4)),
-                ),
-                label: Text(
-                  "Add Expense",
-                  style: GoogleFonts.ptSans(
-                      color: GlobalColors.white,
-                      fontSize: widget.width! < 700
-                          ? widget.width! / 35
-                          : widget.width! / 45,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0),
-                ),
-              );
-            }),
-            error: ((error, stackTrace) => Text("")),
-            loading: (() => Text("")));
-      })),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: GlobalColors.themeColor,
+          child: Icon(Icons.add),
+          onPressed: () {
+            showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              builder: (context) {
+                return Container(
+                  width: widget.width,
+                  height: widget.height,
+                  child: ExpenseAddScreen(onclick: refresh),
+                );
+              },
+            );
+          }),
       body: expenseDetail.when(
           data: (_data) {
             return RefreshIndicator(
@@ -141,14 +110,19 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                           child: Container(
                             width: widget.width,
                             height: _data[i].categoryId == 1
-                                ? widget.height! * 0.3
-                                : widget.height! * 0.18,
+                                ? widget.height! * 0.35
+                                : widget.height! * 0.25,
                           ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             InkWell(
+                              onTap: (() {
+                                setState(() {
+                                  selectedId = null;
+                                });
+                              }),
                               onLongPress: (() {
                                 setState(() {
                                   selectedId = _data[i].id!;
@@ -163,8 +137,8 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                   child: Container(
                                     width: widget.width! * 0.97,
                                     height: _data[i].categoryId == 1
-                                        ? widget.height! * 0.3
-                                        : widget.height! * 0.18,
+                                        ? widget.height! * 0.35
+                                        : widget.height! * 0.25,
                                     padding: EdgeInsets.only(
                                         left: widget.width! * 0.03),
                                     child: Column(
@@ -175,35 +149,31 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                       children: [
                                         TextRowWidget(
                                           width: widget.width!,
+                                          lable: "Id",
+                                          value: "#${_data[i].id!}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
                                           lable: "Expense Date",
                                           value: DateFormat("dd-MM-yyyy")
-                                              .format(_data[i].date!),
+                                              .format(_data[i].expensesDate!),
                                         ),
-                                        Consumer(
-                                            builder: ((context, ref, child) {
-                                          final cat = ref
-                                              .watch(expenseCategoryProvider);
-                                          return cat.when(
-                                              data: ((data) {
-                                                var newdata = data.firstWhere(
-                                                    (element) =>
-                                                        element.id ==
-                                                        _data[i].categoryId);
-                                                return TextRowWidget(
-                                                  width: widget.width!,
-                                                  lable: "Category",
-                                                  value: "${newdata.name}",
-                                                );
-                                              }),
-                                              error: ((error, stackTrace) =>
-                                                  Text("")),
-                                              loading: (() => Text("")));
-                                        })),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Category",
+                                          value: _data[i].category!.name,
+                                        ),
                                         if (_data[i].categoryId == 1)
                                           TextRowWidget(
                                             width: widget.width!,
-                                            lable: "Place",
+                                            lable: "From place",
                                             value: _data[i].fromPlace,
+                                          ),
+                                        if (_data[i].categoryId == 1)
+                                          TextRowWidget(
+                                            width: widget.width!,
+                                            lable: "To place",
+                                            value: _data[i].toPlace,
                                           ),
                                         if (_data[i].categoryId == 1)
                                           TextRowWidget(
@@ -247,8 +217,8 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                   child: Container(
                                     width: widget.width! * 0.97,
                                     height: _data[i].categoryId == 1
-                                        ? widget.height! * 0.3
-                                        : widget.height! * 0.18,
+                                        ? widget.height! * 0.35
+                                        : widget.height! * 0.25,
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -284,101 +254,43 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                         SizedBox(
                                           width: widget.width! * 0.06,
                                         ),
-                                        Consumer(
-                                            builder: ((context, ref, child) {
-                                          final data = ref
-                                              .watch(expenseCategoryProvider);
-                                          return data.when(
-                                              data: ((_data1) {
-                                                cat = [];
-                                                for (var i = 0;
-                                                    i < _data1.length;
-                                                    i++) {
-                                                  cat.add(_data1[i].name!);
-                                                }
-                                                return InkWell(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      selectedId = null;
-                                                    });
-
-                                                    print(_data[i]
-                                                        .categoryId
-                                                        .toString());
-
-                                                    if (_data[i].categoryId ==
-                                                        1) {
-                                                      QuickAlert.show(
-                                                        context: context,
-                                                        type: QuickAlertType
-                                                            .error,
-                                                        widget: Text(
-                                                          "You con not edit this details. Please contact  admin",
-                                                          style: GoogleFonts
-                                                              .ptSans(
-                                                            color: GlobalColors
-                                                                .black,
-                                                            fontSize: widget
-                                                                        .width! <
-                                                                    700
-                                                                ? widget.width! /
-                                                                    35
-                                                                : widget.width! /
-                                                                    44,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            letterSpacing: 0,
-                                                          ),
-                                                        ),
-                                                        autoCloseDuration: null,
-                                                      );
-                                                    } else {
-                                                      showModalBottomSheet<
-                                                          void>(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return ExpenseAddScreen(
-                                                            cat: cat,
-                                                            data: _data1,
-                                                            type: "update",
-                                                            updateData:
-                                                                _data[i],
-                                                            count: null,
-                                                          );
-                                                        },
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Card(
-                                                    elevation: 10,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        100)),
-                                                    child: Container(
-                                                      padding:
-                                                          EdgeInsets.all(4),
-                                                      child: Icon(
-                                                        FontAwesomeIcons
-                                                            .penToSquare,
-                                                        color: GlobalColors
-                                                            .themeColor,
-                                                        size: widget.width! <
-                                                                700
-                                                            ? widget.width! / 20
-                                                            : widget.width! /
-                                                                45,
-                                                      ),
-                                                    ),
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              selectedId = null;
+                                            });
+                                            showModalBottomSheet<void>(
+                                              isScrollControlled: true,
+                                              context: context,
+                                              builder: (context) {
+                                                return Container(
+                                                  width: widget.width,
+                                                  height: widget.height,
+                                                  child: ExpenseUpdateAddScreen(
+                                                    onclick: refresh,
+                                                    data: _data[i],
                                                   ),
                                                 );
-                                              }),
-                                              error: ((error, stackTrace) =>
-                                                  Text("")),
-                                              loading: (() => Text("")));
-                                        })),
+                                              },
+                                            );
+                                          },
+                                          child: Card(
+                                            elevation: 10,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(100)),
+                                            child: Container(
+                                              padding: EdgeInsets.all(4),
+                                              child: Icon(
+                                                FontAwesomeIcons.penToSquare,
+                                                color: GlobalColors.themeColor,
+                                                size: widget.width! < 700
+                                                    ? widget.width! / 20
+                                                    : widget.width! / 45,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                         SizedBox(
                                           width: widget.width! * 0.06,
                                         ),

@@ -60,7 +60,7 @@ class _InstallationDetailScreenState
       height: width < 700 ? height * 0.8 : height * 0.9,
       child: LayoutBuilder(builder: ((context, constraints) {
         return DefaultTabController(
-          initialIndex: 0,
+          initialIndex: ref.watch(initialIndex),
           length: tabName.length,
           animationDuration: Duration(milliseconds: 600),
           child: Scaffold(

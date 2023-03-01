@@ -149,6 +149,34 @@ class Api {
     }
   }
 
+  Future expansesCategory(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "installation/${id}/expenses/categories",
+      );
+
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future expansesLocation(String? token, int? id, String date) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "installation/${id}/expenses/getlocation/${date}",
+      );
+
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
   Future<String> AddFile({
     required String? token,
     required int? id,
@@ -180,36 +208,43 @@ class Api {
   Future<String> AddExpense(
       {required String? token,
       required int? id,
-      required int? category_id,
-      required File file,
-      required String? date,
-      required String? amount,
-      required String? note,
-      required String? fromPlace,
-      required int? distance}) async {
+      required Map<String, dynamic> data}) async {
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
-      String fileName = file.path.split('/').last;
-      FormData data = FormData.fromMap({
-        "date": date,
-        "category_id": category_id,
-        "amount": amount,
-        "notes": note,
-        "attachment": file == null
+      String fileName = data["attachment"] != null
+          ? data["attachment"].path.split('/').last
+          : "";
+
+      FormData newData = FormData.fromMap({
+        "installation_id": data["installation_id"],
+        "user_id": data["user_id"],
+        "expenses_date": data["expenses_date"],
+        "category_id": data["category_id"],
+        "from_place": data["from_place"],
+        "to_place": data["to_place"],
+        "distance": data["distance"],
+        "amount": data["amount"],
+        "attachment": data["attachment"] != null
             ? await MultipartFile.fromFile(
-                file.path,
+                data["attachment"].path,
                 filename: fileName,
               )
-            : File(""),
-        "from_place": fromPlace,
-        "distance": distance
+            : File("")
       });
+
+      print(newData.fields.toString());
+      print(fileName.toString());
+      print(data["attachment"].toString());
+
       Response response = await dio.post(
-        "installation/$id/expense/add",
+        "installation/${id}/expenses/save",
         data: data,
       );
+      print(response.toString());
       return response.toString();
     } on DioError catch (e) {
+      print(e.response.toString());
+
       return e.response.toString();
     }
   }
@@ -217,40 +252,85 @@ class Api {
   Future<String> updateExpense(
       {required String? token,
       required int? id,
-      required int? expenseId,
-      required int? category_id,
-      required File file,
-      required String? date,
-      required String? amount,
-      required String? note,
-      required int? fromPlace,
-      required int? distance}) async {
+      required Map<String, dynamic> data,
+      required int expenseId}) async {
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
-      String fileName = file.path.split('/').last;
-      FormData data = FormData.fromMap({
-        "date": date,
-        "category_id": category_id,
-        "amount": amount,
-        "notes": note,
-        "attachment": file == null
+      String fileName = data["attachment"] != null
+          ? data["attachment"].path.split('/').last
+          : "";
+
+      var newData = {
+        "installation_id": data["installation_id"],
+        "user_id": data["user_id"],
+        "expenses_date": data["expenses_date"],
+        "category_id": data["category_id"],
+        "from_place": data["from_place"],
+        "to_place": data["to_place"],
+        "distance": data["distance"],
+        "amount": data["amount"],
+        "status": data["status"],
+        "attachment": data["attachment"] != null
             ? await MultipartFile.fromFile(
-                file.path,
+                data["attachment"].path,
                 filename: fileName,
               )
             : File(""),
-        "from_place": "",
-        "distance": 0
-      });
+      };
+
+      print("z" + newData.toString());
+
       Response response = await dio.post(
-        "installation/$id/expense/$expenseId/update",
+        "installation/${id}/expenses/update/${expenseId}",
         data: data,
       );
+      print("z" + response.toString());
       return response.toString();
     } on DioError catch (e) {
+      print("z" + e.message.toString());
+
       return e.response.toString();
     }
   }
+
+  // Future<String> updateExpense(
+  //     {required String? token,
+  //     required int? id,
+  //     required int? expenseId,
+  //     required int? category_id,
+  //     required File file,
+  //     required String? date,
+  //     required String? amount,
+  //     required String? note,
+  //     required int? fromPlace,
+  //     required int? distance}) async {
+  //   dio.options.headers["Authorization"] = "Bearer $token";
+  //   try {
+  //     String fileName = file.path.split('/').last;
+  //     FormData data = FormData.fromMap({
+  //       "date": date,
+  //       "category_id": category_id,
+  //       "amount": amount,
+  //       "notes": note,
+  //       "attachment": file == null
+  //           ? await MultipartFile.fromFile(
+  //               file.path,
+  //               filename: fileName,
+  //             )
+  //           : File(""),
+  //       "from_place": "",
+  //       "distance": 0
+  //     });
+  //     Response response = await dio.post(
+  //       "installation/$id/expense/$expenseId/update",
+  //       data: data,
+  //     );
+
+  //     return response.toString();
+  //   } on DioError catch (e) {
+  //     return e.response.toString();
+  //   }
+  // }
 
   Future<String> DeleteFile({
     required String? token,
@@ -653,7 +733,7 @@ class ProviderApi {
   Future<List<ExpensesModel>> Expenses(String? token, int? id) async {
     dio.options.headers["Authorization"] = "Bearer $token";
     Response response = await dio.get(
-      "installation/$id/expense",
+      "installation/${id}/expenses",
     );
 
     if (response.statusCode == 200) {

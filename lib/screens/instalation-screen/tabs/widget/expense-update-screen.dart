@@ -14,6 +14,7 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../../../../apis/api.dart';
+import '../../../../models/expenses-model.dart';
 import '../../../lead-screen/tabs/widgets/lead_custom_input.dart';
 import '../../../lead-screen/tabs/widgets/lead_custom_lable.dart';
 
@@ -22,18 +23,21 @@ List<String> fromPlaceList = [
   "Home",
 ];
 
-class ExpenseAddScreen extends ConsumerStatefulWidget {
+class ExpenseUpdateAddScreen extends ConsumerStatefulWidget {
   final Function onclick;
-  ExpenseAddScreen({
+  final ExpensesModel data;
+  ExpenseUpdateAddScreen({
     Key? key,
     required this.onclick,
+    required this.data,
   }) : super(key: key);
 
   @override
-  _ExpenseAddScreenState createState() => _ExpenseAddScreenState();
+  _ExpenseUpdateAddScreenState createState() => _ExpenseUpdateAddScreenState();
 }
 
-class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
+class _ExpenseUpdateAddScreenState
+    extends ConsumerState<ExpenseUpdateAddScreen> {
   List<dynamic> categoryList = [];
   Map<String, dynamic> location = {};
   String category = "--";
@@ -80,6 +84,19 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    print(widget.data.toJson());
+
+    setState(() {
+      _amount.text = widget.data.amount!;
+      _selectedDate = widget.data.expensesDate!;
+      fromPlace = widget.data.fromPlace ?? "";
+      toPlace = widget.data.toPlace ?? "";
+      category = widget.data.category!.name!;
+      categoryId = widget.data.categoryId!;
+      _distance.text =
+          widget.data.distance == null ? "" : widget.data.distance.toString();
+    });
 
     getCategory();
   }
@@ -668,6 +685,14 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                                 autoCloseDuration: null);
                             return null;
                           }
+                          if (_distance.text.trim().isEmpty) {
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "Enter distance in KM",
+                                autoCloseDuration: null);
+                            return null;
+                          }
                         }
                         print("1oo rithi");
                         Map<String, dynamic> data = {
@@ -681,11 +706,13 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                           "to_place": categoryId == 1 ? toPlace : "",
                           "distance": categoryId == 1 ? _distance.text : "",
                           "amount": categoryId == 1 ? "" : _amount.text,
-                          "attachment": newFile
+                          "attachment": newFile,
+                          "status": "pending"
                         };
 
                         Api()
-                            .AddExpense(
+                            .updateExpense(
+                                expenseId: widget.data.id!,
                                 data: data,
                                 token: ref.watch(newToken),
                                 id: ref.watch(overViewId))

@@ -24,6 +24,9 @@ class CustomAppBar extends ConsumerWidget {
           leading: page > 0
               ? IconButton(
                   onPressed: () {
+                    if (page == 5) {
+                      ref.read(initialIndex.notifier).update((state) => 1);
+                    }
                     ref.read(pageIndex.notifier).update((state) => page == 4
                         // ? 3
                         // : page == 6
