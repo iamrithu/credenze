@@ -15,6 +15,7 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../../../../apis/api.dart';
 import '../../../../models/expenses-model.dart';
+import '../../../../models/service-expense-model.dart';
 import '../../../lead-screen/tabs/widgets/lead_custom_input.dart';
 import '../../../lead-screen/tabs/widgets/lead_custom_lable.dart';
 
@@ -23,21 +24,22 @@ List<String> fromPlaceList = [
   "Home",
 ];
 
-class ExpenseUpdateAddScreen extends ConsumerStatefulWidget {
+class ServiceExpenseUpdateScreen extends ConsumerStatefulWidget {
   final Function onclick;
-  final ExpensesModel data;
-  ExpenseUpdateAddScreen({
+  final SeviceExpenseModel data;
+  ServiceExpenseUpdateScreen({
     Key? key,
     required this.onclick,
     required this.data,
   }) : super(key: key);
 
   @override
-  _ExpenseUpdateAddScreenState createState() => _ExpenseUpdateAddScreenState();
+  _ServiceExpenseUpdateScreenState createState() =>
+      _ServiceExpenseUpdateScreenState();
 }
 
-class _ExpenseUpdateAddScreenState
-    extends ConsumerState<ExpenseUpdateAddScreen> {
+class _ServiceExpenseUpdateScreenState
+    extends ConsumerState<ServiceExpenseUpdateScreen> {
   List<dynamic> categoryList = [];
   Map<String, dynamic> location = {};
   String category = "--";
@@ -55,7 +57,7 @@ class _ExpenseUpdateAddScreenState
 
   getCategory() {
     Api()
-        .expansesCategory(ref.read(newToken), ref.read(overViewId))
+        .serviceExpansesCategory(ref.read(newToken), ref.read(ServiceId))
         .then((value) {
       setState(() {
         categoryList = value.data["data"];
@@ -66,7 +68,7 @@ class _ExpenseUpdateAddScreenState
 
   getLocation(DateTime date) {
     Api()
-        .expansesLocation(ref.read(newToken), ref.read(overViewId),
+        .serviceExpansesLocation(ref.read(newToken), ref.read(ServiceId),
             DateFormat("dd-MM-yyyy").format(date).toString())
         .then((value) {
       setState(() {
@@ -76,7 +78,7 @@ class _ExpenseUpdateAddScreenState
         fromPlace = location["from_place"];
         toPlace = location["to_place"];
       });
-      print(location.toString());
+      print("88" + location.toString());
     });
   }
 
@@ -701,12 +703,12 @@ class _ExpenseUpdateAddScreenState
                         };
 
                         Api()
-                            .updateExpense(
+                            .serviceUpdateExpense(
                                 expenseId: widget.data.id!,
                                 data: data,
                                 file: newFile,
                                 token: ref.watch(newToken),
-                                id: ref.watch(overViewId))
+                                id: ref.watch(ServiceId))
                             .then((value) {
                           widget.onclick();
                         });

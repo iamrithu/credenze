@@ -9,24 +9,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../../../const/global_colors.dart';
-import 'widget/add-expense-screen.dart';
 
-class ExpenseScreen extends ConsumerStatefulWidget {
+import '../../../../const/global_colors.dart';
+import 'expande-add-screen.dart';
+import 'expenses-update-screen.dart';
+
+class SeviceExpenseScreen extends ConsumerStatefulWidget {
   final double? height;
   final double? width;
 
-  const ExpenseScreen({
+  const SeviceExpenseScreen({
     Key? key,
     required this.height,
     required this.width,
   }) : super(key: key);
 
   @override
-  ConsumerState<ExpenseScreen> createState() => _ExpenseScreenState();
+  ConsumerState<SeviceExpenseScreen> createState() =>
+      _SeviceExpenseScreenState();
 }
 
-class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
+class _SeviceExpenseScreenState extends ConsumerState<SeviceExpenseScreen> {
   List<String> cat = [];
   int? selectedId = null;
 
@@ -38,13 +41,13 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   refresh() async {
     print("dd");
     return Future<void>.delayed(const Duration(seconds: 1), () {
-      return ref.refresh(expenseProvider);
+      return ref.refresh(serviceExpenseProvider);
     });
   }
 
   @override
   Widget build(BuildContext) {
-    final expenseDetail = ref.watch(expenseProvider);
+    final expenseDetail = ref.watch(serviceExpenseProvider);
     final token = ref.watch(newToken);
     final id = ref.watch(overViewId);
 
@@ -63,7 +66,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                   child: Container(
                     width: widget.width,
                     height: widget.height,
-                    child: ExpenseAddScreen(onclick: refresh),
+                    child: ServiceExpenseAddScreen(onclick: refresh),
                   ),
                 );
               },
@@ -77,7 +80,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
               strokeWidth: 4.0,
               onRefresh: () async {
                 return Future<void>.delayed(const Duration(seconds: 2), () {
-                  return ref.refresh(expenseProvider);
+                  return ref.refresh(serviceExpenseProvider);
                 });
               },
               child: ListView(
@@ -277,7 +280,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                                     width: widget.width,
                                                     height: widget.height,
                                                     child:
-                                                        ExpenseUpdateAddScreen(
+                                                        ServiceExpenseUpdateScreen(
                                                       onclick: refresh,
                                                       data: _data[i],
                                                     ),
@@ -326,7 +329,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                 strokeWidth: 4.0,
                 onRefresh: () async {
                   return Future<void>.delayed(const Duration(seconds: 2), () {
-                    return ref.refresh(expenseProvider);
+                    return ref.refresh(serviceExpenseProvider);
                   });
                 },
                 child: ListView(

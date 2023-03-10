@@ -14,6 +14,11 @@ import '../models/instalation-task-details-model.dart';
 import '../models/instalation-task-model.dart';
 import '../models/installation-employee-model.dart';
 import '../models/installation-work-updatedList-model.dart';
+import '../models/service-detail-model.dart';
+import '../models/service-expense-model.dart';
+import '../models/service-file-model.dart';
+import '../models/service-list-model.dart';
+import '../models/service-member-model.dart';
 import '../models/work-update-model.dart';
 
 final newToken = StateProvider<String?>((ref) => "");
@@ -28,12 +33,17 @@ final initialIndex = StateProvider<int>((ref) => 0);
 final userId = StateProvider<int>((ref) => 0);
 final netWorkConnectivity = StateProvider<bool>((ref) => true);
 final InstallationClockIn = StateProvider<bool>((ref) => true);
+final ServiceClockIn = StateProvider<bool>((ref) => true);
+
 final Installavailable = StateProvider<bool>((ref) => true);
 
 final overViewId = StateProvider<int>((ref) => 0);
+final ServiceId = StateProvider<int>((ref) => 0);
+
 final taskId = StateProvider<int>((ref) => 0);
 
 final inChargeId = StateProvider<int>((ref) => 0);
+final ServiceinChargeId = StateProvider<String>((ref) => "0");
 
 final userDataProvider = FutureProvider<UserModel>((ref) {
   String? token = ref.watch(newToken);
@@ -50,6 +60,10 @@ final userInstallationListProvider =
 
   return ref.watch(provider).InstalationModelList(token, date);
 });
+final userServiceListProvider = FutureProvider<List<ServiceListModel>>((ref) {
+  String? token = ref.watch(newToken);
+  return ref.watch(provider).ServiceModelList(token);
+});
 
 final InsttalationOverVIewProvider =
     FutureProvider<InstallationOverViewModel>((ref) {
@@ -57,12 +71,28 @@ final InsttalationOverVIewProvider =
   int? id = ref.watch(overViewId);
   return ref.watch(provider).InstallationOverView(token, id);
 });
+final ServiceOverVIewProvider = FutureProvider<ServiceDetailsModel>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(ServiceId);
+  return ref.watch(provider).ServiceOverView(token, id);
+});
 final membersProvider = FutureProvider<List<MemberModel>>((ref) {
   String? token = ref.watch(newToken);
   int? id = ref.watch(overViewId);
-  int? userCheckid = ref.watch(userId);
 
-  return ref.watch(provider).Members(token, id, userCheckid!);
+  return ref.watch(provider).Members(
+        token,
+        id,
+      );
+});
+final serviceMembersProvider = FutureProvider<List<ServiceMemberModel>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(ServiceId);
+
+  return ref.watch(provider).ServiceMembers(
+        token,
+        id,
+      );
 });
 final taskProvider = FutureProvider<List<TaskModel>>((ref) {
   String? token = ref.watch(newToken);
@@ -91,6 +121,11 @@ final expenseProvider = FutureProvider<List<ExpensesModel>>((ref) {
 
   return ref.watch(provider).Expenses(token, id);
 });
+final serviceExpenseProvider = FutureProvider<List<SeviceExpenseModel>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(ServiceId);
+  return ref.watch(provider).ServiceExpenses(token, id);
+});
 final expenseCategoryProvider =
     FutureProvider<List<ExpenseCategoryModel>>((ref) {
   String? token = ref.watch(newToken);
@@ -103,6 +138,12 @@ final fileProvider = FutureProvider<List<FileModel>>((ref) {
   int? id = ref.watch(overViewId);
 
   return ref.watch(provider).Files(token, id);
+});
+final ServicefileProvider = FutureProvider<List<ServiceFileModel>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(ServiceId);
+
+  return ref.watch(provider).ServiceFiles(token, id);
 });
 
 final workUpdateProvider = FutureProvider<List<WorkUpdateMode>>((ref) {

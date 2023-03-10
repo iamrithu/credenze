@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:credenze/const/global_colors.dart';
@@ -14,7 +15,6 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../../../../apis/api.dart';
-import '../../../../models/expenses-model.dart';
 import '../../../lead-screen/tabs/widgets/lead_custom_input.dart';
 import '../../../lead-screen/tabs/widgets/lead_custom_lable.dart';
 
@@ -23,21 +23,20 @@ List<String> fromPlaceList = [
   "Home",
 ];
 
-class ExpenseUpdateAddScreen extends ConsumerStatefulWidget {
+class ServiceExpenseAddScreen extends ConsumerStatefulWidget {
   final Function onclick;
-  final ExpensesModel data;
-  ExpenseUpdateAddScreen({
+  ServiceExpenseAddScreen({
     Key? key,
     required this.onclick,
-    required this.data,
   }) : super(key: key);
 
   @override
-  _ExpenseUpdateAddScreenState createState() => _ExpenseUpdateAddScreenState();
+  _ServiceExpenseAddScreenState createState() =>
+      _ServiceExpenseAddScreenState();
 }
 
-class _ExpenseUpdateAddScreenState
-    extends ConsumerState<ExpenseUpdateAddScreen> {
+class _ServiceExpenseAddScreenState
+    extends ConsumerState<ServiceExpenseAddScreen> {
   List<dynamic> categoryList = [];
   Map<String, dynamic> location = {};
   String category = "--";
@@ -55,7 +54,7 @@ class _ExpenseUpdateAddScreenState
 
   getCategory() {
     Api()
-        .expansesCategory(ref.read(newToken), ref.read(overViewId))
+        .serviceExpansesCategory(ref.read(newToken), ref.read(ServiceId))
         .then((value) {
       setState(() {
         categoryList = value.data["data"];
@@ -66,7 +65,7 @@ class _ExpenseUpdateAddScreenState
 
   getLocation(DateTime date) {
     Api()
-        .expansesLocation(ref.read(newToken), ref.read(overViewId),
+        .serviceExpansesLocation(ref.read(newToken), ref.read(ServiceId),
             DateFormat("dd-MM-yyyy").format(date).toString())
         .then((value) {
       setState(() {
@@ -76,7 +75,7 @@ class _ExpenseUpdateAddScreenState
         fromPlace = location["from_place"];
         toPlace = location["to_place"];
       });
-      print(location.toString());
+      print("88" + location.toString());
     });
   }
 
@@ -84,20 +83,6 @@ class _ExpenseUpdateAddScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    print("bb" + widget.data.toJson().toString());
-
-    setState(() {
-      _amount.text = widget.data.amount!;
-      _selectedDate = widget.data.expensesDate!;
-      fromPlace = widget.data.fromPlace ?? "";
-      toPlace = widget.data.toPlace ?? "";
-      category = widget.data.category!.name!;
-      categoryId = widget.data.categoryId!;
-      _distance.text =
-          widget.data.distance == null ? "" : widget.data.distance.toString();
-      newFile = null;
-    });
 
     getCategory();
   }
@@ -585,7 +570,7 @@ class _ExpenseUpdateAddScreenState
                         setState(() {
                           newFile = file;
                         });
-                      } else {}
+                      }
                     },
                     child: Container(
                         width: width * 0.15,
@@ -676,18 +661,10 @@ class _ExpenseUpdateAddScreenState
                                 autoCloseDuration: null);
                             return null;
                           }
-                          if (_distance.text.trim().isEmpty) {
-                            QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.error,
-                                title: "Enter distance in KM",
-                                autoCloseDuration: null);
-                            return null;
-                          }
                         }
                         print("1oo rithi");
                         Map<String, dynamic> data = {
-                          "installation_id": ref.read(overViewId),
+                          "installation_id": ref.read(ServiceId),
                           "user_id": ref.read(userId),
                           "expenses_date": DateFormat("dd-MM-yyyy")
                               .format(_selectedDate)
@@ -697,22 +674,26 @@ class _ExpenseUpdateAddScreenState
                           "to_place": categoryId == 1 ? toPlace : "",
                           "distance": categoryId == 1 ? _distance.text : "",
                           "amount": categoryId == 1 ? "" : _amount.text,
-                          "status": "pending"
                         };
+                        print("xnx" + newFile.toString());
 
                         Api()
-                            .updateExpense(
-                                expenseId: widget.data.id!,
+                            .AddServiceExpense(
                                 data: data,
-                                file: newFile,
                                 token: ref.watch(newToken),
-                                id: ref.watch(overViewId))
+                                file: newFile,
+                                id: ref.watch(ServiceId))
                             .then((value) {
+                          // if (true) {
+                          //   QuickAlert.show(
+                          //       context: context,
+                          //       type: QuickAlertType.error,
+                          //       title: "${jsonDecode(value)["message"]}",
+                          //       autoCloseDuration: null);
+                          // }
                           widget.onclick();
+                          Navigator.pop(context);
                         });
-                        Navigator.pop(context);
-
-                        // print(data.toString());
                       },
                       child: Text(
                         "Add",

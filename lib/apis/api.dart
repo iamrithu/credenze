@@ -20,6 +20,11 @@ import '../models/instalation-task-model.dart';
 import '../models/installation-employee-model.dart';
 import '../models/installation-work-taskList-model.dart';
 import '../models/installation-work-updatedList-model.dart';
+import '../models/service-detail-model.dart';
+import '../models/service-expense-model.dart';
+import '../models/service-file-model.dart';
+import '../models/service-list-model.dart';
+import '../models/service-member-model.dart';
 import '../models/work-update-model.dart';
 
 class Api {
@@ -135,6 +140,77 @@ class Api {
     }
   }
 
+  Future getServiceIncaherge(String token, int id, String date) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    print("wwservice/${id}/siteincharge/${date}");
+    try {
+      Response response = await dio.get(
+        "service/${id}/siteincharge/${date}",
+      );
+      print("--" + response.toString());
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future<String> ServiceClockIn({
+    required String? token,
+    required int? id,
+    required String? latitude,
+    required String? longitude,
+    required File? photo,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    String fileName = photo == null ? "" : photo.path.split('/').last;
+
+    FormData newData = FormData.fromMap({
+      "photo": await MultipartFile.fromFile(
+        photo!.path,
+        filename: fileName,
+      ),
+      "latitude": latitude!,
+      "longitude": longitude!,
+    });
+
+    print("xx${newData.files}");
+    try {
+      Response response = await dio.post(
+        "service/${id}/dayin",
+        data: newData,
+      );
+      return response.toString();
+    } on DioError catch (e) {
+      return e.response.toString();
+    }
+  }
+
+  Future<String> ServiceClockOut({
+    required String? token,
+    required int? id,
+    required String? latitude,
+    required String? longitude,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    var params = {"latitude": latitude, "longitude": longitude};
+    print("ww" + id.toString());
+    print("ww" + latitude.toString());
+    print("ww" + longitude.toString());
+
+    try {
+      Response response = await dio.post(
+        "service/${id}/dayout",
+        data: jsonEncode(params),
+      );
+      print("ww" + response.toString());
+      return response.toString();
+    } on DioError catch (e) {
+      print("ww" + e.response.toString());
+
+      return e.response.toString();
+    }
+  }
+
   Future InstallationAttendence(String? token, int? id) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
@@ -143,6 +219,19 @@ class Api {
         "installation/$id/attendance",
       );
 
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future ServiceAttendence(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "service/${id}/attendance",
+      );
       return response;
     } on DioError catch (e) {
       return e.response;
@@ -163,12 +252,40 @@ class Api {
     }
   }
 
+  Future serviceExpansesCategory(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "service/${id}/expenses/categories",
+      );
+
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
   Future expansesLocation(String? token, int? id, String date) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
       Response response = await dio.get(
         "installation/${id}/expenses/getlocation/${date}",
+      );
+
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future serviceExpansesLocation(String? token, int? id, String date) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "service/${id}/expenses/getlocation/${date}",
       );
 
       return response;
@@ -194,8 +311,43 @@ class Api {
         ),
       });
 
+      print("l" + data.fields.toString());
+
       Response response = await dio.post(
         "installation/$id/files/add",
+        data: data,
+      );
+
+      return response.toString();
+    } on DioError catch (e) {
+      return e.response.toString();
+    }
+  }
+
+  Future<String> ServiceAddFile({
+    required String? token,
+    required int? id,
+    required List<File> file,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      FormData data = FormData();
+
+      for (var i = 0; i < file.length; i++) {
+        String fileName = file[i].path.split('/').last;
+
+        data.files.add(MapEntry(
+            "file[]",
+            await MultipartFile.fromFile(
+              file[i].path,
+              filename: fileName,
+            )));
+      }
+
+      print("88" + data.files.toString());
+      Response response = await dio.post(
+        "service/${id}/files/upload",
         data: data,
       );
 
@@ -208,14 +360,19 @@ class Api {
   Future<String> AddExpense(
       {required String? token,
       required int? id,
+      required File? file,
       required Map<String, dynamic> data}) async {
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
-      String fileName = data["attachment"] != null
-          ? data["attachment"].path.split('/').last
-          : "";
+      String fileName = file == null ? "" : file.path.split('/').last;
 
-      FormData newData = FormData.fromMap({
+      FormData datas = FormData.fromMap({
+        "attachment": file == null
+            ? ""
+            : await MultipartFile.fromFile(
+                file.path,
+                filename: fileName,
+              ),
         "installation_id": data["installation_id"],
         "user_id": data["user_id"],
         "expenses_date": data["expenses_date"],
@@ -224,27 +381,50 @@ class Api {
         "to_place": data["to_place"],
         "distance": data["distance"],
         "amount": data["amount"],
-        "attachment": data["attachment"] != null
-            ? await MultipartFile.fromFile(
-                data["attachment"].path,
-                filename: fileName,
-              )
-            : File("")
       });
-
-      print(newData.fields.toString());
-      print(fileName.toString());
-      print(data["attachment"].toString());
 
       Response response = await dio.post(
         "installation/${id}/expenses/save",
-        data: data,
+        data: datas,
       );
-      print(response.toString());
-      return response.toString();
+      return "response".toString();
     } on DioError catch (e) {
-      print(e.response.toString());
+      return e.response.toString();
+    }
+  }
 
+  Future<String> AddServiceExpense(
+      {required String? token,
+      required int? id,
+      required File? file,
+      required Map<String, dynamic> data}) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    try {
+      String fileName = file == null ? "" : file.path.split('/').last;
+
+      FormData datas = FormData.fromMap({
+        "attachment": file == null
+            ? ""
+            : await MultipartFile.fromFile(
+                file.path,
+                filename: fileName,
+              ),
+        "installation_id": data["installation_id"],
+        "user_id": data["user_id"],
+        "expenses_date": data["expenses_date"],
+        "category_id": data["category_id"],
+        "from_place": data["from_place"],
+        "to_place": data["to_place"],
+        "distance": data["distance"],
+        "amount": data["amount"],
+      });
+
+      Response response = await dio.post(
+        "service/${id}/expenses/save",
+        data: datas,
+      );
+      return "response".toString();
+    } on DioError catch (e) {
       return e.response.toString();
     }
   }
@@ -252,15 +432,22 @@ class Api {
   Future<String> updateExpense(
       {required String? token,
       required int? id,
+      required File? file,
       required Map<String, dynamic> data,
       required int expenseId}) async {
     dio.options.headers["Authorization"] = "Bearer $token";
+    print(file.toString());
     try {
-      String fileName = data["attachment"] != null
-          ? data["attachment"].path.split('/').last
-          : "";
+      String fileName =
+          file == null || file == " " ? "" : file.path.split('/').last;
 
-      var newData = {
+      FormData newData = FormData.fromMap({
+        "attachment": file == null
+            ? ""
+            : await MultipartFile.fromFile(
+                file.path,
+                filename: fileName,
+              ),
         "installation_id": data["installation_id"],
         "user_id": data["user_id"],
         "expenses_date": data["expenses_date"],
@@ -270,19 +457,58 @@ class Api {
         "distance": data["distance"],
         "amount": data["amount"],
         "status": data["status"],
-        "attachment": data["attachment"] != null
-            ? await MultipartFile.fromFile(
-                data["attachment"].path,
-                filename: fileName,
-              )
-            : File(""),
-      };
+      });
 
       print("z" + newData.toString());
 
       Response response = await dio.post(
         "installation/${id}/expenses/update/${expenseId}",
-        data: data,
+        data: newData,
+      );
+      print("z" + response.toString());
+      return response.toString();
+    } on DioError catch (e) {
+      print("z" + e.message.toString());
+
+      return e.response.toString();
+    }
+  }
+
+  Future<String> serviceUpdateExpense(
+      {required String? token,
+      required int? id,
+      required File? file,
+      required Map<String, dynamic> data,
+      required int expenseId}) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    print(file.toString());
+    try {
+      String fileName =
+          file == null || file == " " ? "" : file.path.split('/').last;
+
+      FormData newData = FormData.fromMap({
+        "attachment": file == null
+            ? ""
+            : await MultipartFile.fromFile(
+                file.path,
+                filename: fileName,
+              ),
+        "installation_id": data["installation_id"],
+        "user_id": data["user_id"],
+        "expenses_date": data["expenses_date"],
+        "category_id": data["category_id"],
+        "from_place": data["from_place"],
+        "to_place": data["to_place"],
+        "distance": data["distance"],
+        "amount": data["amount"],
+        "status": data["status"],
+      });
+
+      print("z" + newData.toString());
+
+      Response response = await dio.post(
+        "service/${id}/expenses/update/${expenseId}",
+        data: newData,
       );
       print("z" + response.toString());
       return response.toString();
@@ -342,6 +568,24 @@ class Api {
     try {
       Response response = await dio.post(
         "installation/$id/files/$fileId/destroy",
+      );
+
+      return response.toString();
+    } on DioError catch (e) {
+      return e.response.toString();
+    }
+  }
+
+  Future<String> DeleteServiceFile({
+    required String? token,
+    required int? id,
+    required int? fileId,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "service/${id}/files/${fileId}/remove",
       );
 
       return response.toString();
@@ -594,6 +838,23 @@ class Api {
       throw Exception(response.statusMessage);
     }
   }
+
+  Future workUpadteLists(
+    String? token,
+    int? id,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "installation/${id}/workupdates",
+    );
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
 }
 
 class ProviderApi {
@@ -659,6 +920,26 @@ class ProviderApi {
     }
   }
 
+  Future<List<ServiceListModel>> ServiceModelList(String? token) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "service/list",
+    );
+
+    print(response.toString());
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<ServiceListModel> services = [];
+      data.map((e) {
+        services.add(ServiceListModel.fromJson(e));
+      }).toList();
+      return services;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
   Future<InstallationOverViewModel> InstallationOverView(
       String? token, int? id) async {
     dio.options.headers["Authorization"] = "Bearer $token";
@@ -674,8 +955,24 @@ class ProviderApi {
     }
   }
 
+  Future<ServiceDetailsModel> ServiceOverView(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "service/list/${id}",
+    );
+    if (response.statusCode == 200) {
+      ServiceDetailsModel overView =
+          ServiceDetailsModel.fromJson(response.data["data"]);
+      return overView;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
   Future<List<MemberModel>> Members(
-      String? token, int? id, int? checkId) async {
+    String? token,
+    int? id,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     dio.options.headers["Authorization"] = "Bearer $token";
     Response response = await dio.get(
@@ -686,6 +983,27 @@ class ProviderApi {
       List<MemberModel> members = [];
       data.map((e) {
         members.add(MemberModel.fromJson(e));
+      }).toList();
+      return members;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<ServiceMemberModel>> ServiceMembers(
+    String? token,
+    int? id,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "service/${id}/assigned",
+    );
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<ServiceMemberModel> members = [];
+      data.map((e) {
+        members.add(ServiceMemberModel.fromJson(e));
       }).toList();
       return members;
     } else {
@@ -720,11 +1038,29 @@ class ProviderApi {
 
     if (response.statusCode == 200) {
       List data = response.data["data"];
-      List<FileModel> installations = [];
+      List<FileModel> files = [];
       data.map((e) {
-        installations.add(FileModel.fromJson(e));
+        files.add(FileModel.fromJson(e));
       }).toList();
-      return installations;
+      return files;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<ServiceFileModel>> ServiceFiles(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "service/${id}/files",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<ServiceFileModel> files = [];
+      data.map((e) {
+        files.add(ServiceFileModel.fromJson(e));
+      }).toList();
+      return files;
     } else {
       throw Exception(response.statusMessage);
     }
@@ -741,6 +1077,25 @@ class ProviderApi {
       List<ExpensesModel> tasks = [];
       data.map((e) {
         tasks.add(ExpensesModel.fromJson(e));
+      }).toList();
+      return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<SeviceExpenseModel>> ServiceExpenses(
+      String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "service/${id}/expenses",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<SeviceExpenseModel> tasks = [];
+      data.map((e) {
+        tasks.add(SeviceExpenseModel.fromJson(e));
       }).toList();
       return tasks;
     } else {

@@ -62,7 +62,6 @@ class MapsAndLocation {
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
     }
-    permission = await Geolocator.requestPermission();
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -77,10 +76,7 @@ class MapsAndLocation {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.medium,
-      forceAndroidLocationManager: true,
-    );
+    return await Geolocator.getCurrentPosition();
   }
 
   Future getCamera() async {

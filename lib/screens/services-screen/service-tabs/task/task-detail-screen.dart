@@ -4,16 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import '../../../const/global_colors.dart';
+import '../../../../const/global_colors.dart';
 
-class TaskDetailsSCreen extends ConsumerStatefulWidget {
-  const TaskDetailsSCreen({Key? key}) : super(key: key);
+class ServiceTaskDetailsSCreen extends ConsumerStatefulWidget {
+  const ServiceTaskDetailsSCreen({Key? key}) : super(key: key);
 
   @override
-  _TaskDetailsSCreenState createState() => _TaskDetailsSCreenState();
+  _ServiceTaskDetailsSCreenState createState() =>
+      _ServiceTaskDetailsSCreenState();
 }
 
-class _TaskDetailsSCreenState extends ConsumerState<TaskDetailsSCreen> {
+class _ServiceTaskDetailsSCreenState
+    extends ConsumerState<ServiceTaskDetailsSCreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;

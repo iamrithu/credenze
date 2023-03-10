@@ -17,6 +17,8 @@ import '../instalation-screen/instalation_screen.dart';
 import '../instalation-screen/installation_detail_screen.dart';
 import '../lead-screen/leads_screen.dart';
 import '../lead-screen/tabs/lead-details-screen.dart';
+import '../services-screen/service-list-details.dart';
+import '../services-screen/services-list.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends ConsumerWidget {
@@ -24,9 +26,9 @@ class HomeScreen extends ConsumerWidget {
   HomeScreen({Key? key}) : super(key: key);
 
   List<IconData> navigationIcon = [
-    FontAwesomeIcons.clock,
+    Icons.house,
+    Icons.trolley,
     Icons.settings,
-    FontAwesomeIcons.calendarDays,
     // FontAwesomeIcons.chartBar,
     Icons.person,
   ];
@@ -47,20 +49,22 @@ class HomeScreen extends ConsumerWidget {
     demo();
     List<String> name = [
       "Dashboard",
-      "My Installations",
-      "Attendance",
+      "Installations",
+      "Service",
       // "Leads",
       "Profile"
     ];
     List<Widget> pages = [
       DashboardScreen(),
       InstalationScreen(),
-      AttendenceScreen(),
+      ServiceListScreen(),
+      // AttendenceScreen(),
       // LeadScreen(),
       ProfileScreen(),
       // LeadDetailsScreen(),
       InstallationDetailScreen(),
       TaskDetailsSCreen(),
+      ServiceDetailScreen()
     ];
     return Scaffold(
       appBar: PreferredSize(

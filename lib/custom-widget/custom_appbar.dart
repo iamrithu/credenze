@@ -33,7 +33,9 @@ class CustomAppBar extends ConsumerWidget {
                         ? 1
                         : page == 5
                             ? 4
-                            : 0);
+                            : page == 6
+                                ? 2
+                                : 0);
                   },
                   color: GlobalColors.white,
                   icon: Icon(
@@ -74,7 +76,7 @@ class CustomAppBar extends ConsumerWidget {
                       )
                     : page == 2
                         ? Text(
-                            "Attendance",
+                            "Service",
                             style: GoogleFonts.ptSans(
                                 fontSize: width < 700 ? width / 20 : width / 24,
                                 fontWeight: FontWeight.w800,
@@ -108,14 +110,25 @@ class CustomAppBar extends ConsumerWidget {
                             // fontWeight: FontWeight.w800,
                             // letterSpacing: 0),
                             // )
-                            : Text(
-                                "Installation Details",
-                                style: GoogleFonts.ptSans(
-                                    fontSize:
-                                        width < 700 ? width / 20 : width / 24,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0),
-                              ),
+                            : page == 4
+                                ? Text(
+                                    "Installation Details",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 20
+                                            : width / 24,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0),
+                                  )
+                                : Text(
+                                    "Service Details",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 20
+                                            : width / 24,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0),
+                                  ),
           ),
           actions: [],
         ),

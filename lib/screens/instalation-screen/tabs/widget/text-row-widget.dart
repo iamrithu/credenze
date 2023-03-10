@@ -23,7 +23,7 @@ class TextRowWidget extends StatelessWidget {
             child: Text(
               lable!,
               style: GoogleFonts.ptSans(
-                  fontSize: width < 700 ? width / 38 : width / 45,
+                  fontSize: width < 700 ? width / 40 : width / 45,
                   fontWeight: FontWeight.w800,
                   color: Color.fromARGB(255, 50, 49, 49),
                   letterSpacing: 0),
@@ -34,7 +34,7 @@ class TextRowWidget extends StatelessWidget {
             child: Text(
               ":",
               style: GoogleFonts.ptSans(
-                  fontSize: width < 700 ? width / 38 : width / 45,
+                  fontSize: width < 700 ? width / 40 : width / 45,
                   fontWeight: FontWeight.w800,
                   color: GlobalColors.black,
                   letterSpacing: 0),

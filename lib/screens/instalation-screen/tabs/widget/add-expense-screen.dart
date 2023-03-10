@@ -281,10 +281,33 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                       label: "Amount",
                       start: "*",
                     ),
-                    LeadCustomInput(
-                      label: "Amount",
-                      controller: _amount,
-                    ),
+                    Container(
+                      width: width * 0.65,
+                      alignment: AlignmentDirectional.center,
+                      padding: EdgeInsets.only(left: width * 0.08),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: GlobalColors.themeColor2),
+                      ),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: _amount,
+                        style: GoogleFonts.ptSans(
+                            color: GlobalColors.themeColor2,
+                            fontSize: width < 700 ? width / 30 : width / 45,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0),
+                        decoration: InputDecoration(
+                          hintText: "00.00",
+                          hintStyle: GoogleFonts.ptSans(
+                              color: GlobalColors.themeColor2,
+                              fontSize: width < 700 ? width / 35 : width / 45,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -376,61 +399,6 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                                                   ),
                                                 ),
                                               ),
-                                            Text(
-                                              "(OR)",
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 40,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      GlobalColors.themeColor,
-                                                  letterSpacing: 0),
-                                            ),
-                                            Container(
-                                              width: width * 0.65,
-                                              margin: EdgeInsets.only(top: 10),
-                                              alignment:
-                                                  AlignmentDirectional.center,
-                                              padding: EdgeInsets.only(
-                                                  left: width * 0.08),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                                border: Border.all(
-                                                    color: GlobalColors
-                                                        .themeColor2),
-                                              ),
-                                              child: TextFormField(
-                                                style: GoogleFonts.ptSans(
-                                                    color: GlobalColors
-                                                        .themeColor2,
-                                                    fontSize: width < 700
-                                                        ? width / 30
-                                                        : width / 45,
-                                                    fontWeight: FontWeight.w400,
-                                                    letterSpacing: 0),
-                                                decoration: InputDecoration(
-                                                  hintText: "Enter place",
-                                                  hintStyle: GoogleFonts.ptSans(
-                                                      color: GlobalColors
-                                                          .themeColor2,
-                                                      fontSize: width < 700
-                                                          ? width / 35
-                                                          : width / 45,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      letterSpacing: 0),
-                                                  border: InputBorder.none,
-                                                ),
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    fromPlace =
-                                                        value.toString();
-                                                  });
-                                                },
-                                              ),
-                                            )
                                           ]),
                                         ),
                                       ),
@@ -515,10 +483,33 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                       label: "KM",
                       start: "*",
                     ),
-                    LeadCustomInput(
-                      label: "Eg:12",
-                      controller: _distance,
-                    ),
+                    Container(
+                      width: width * 0.65,
+                      alignment: AlignmentDirectional.center,
+                      padding: EdgeInsets.only(left: width * 0.08),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: GlobalColors.themeColor2),
+                      ),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: _distance,
+                        style: GoogleFonts.ptSans(
+                            color: GlobalColors.themeColor2,
+                            fontSize: width < 700 ? width / 30 : width / 45,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0),
+                        decoration: InputDecoration(
+                          hintText: "Eg:12",
+                          hintStyle: GoogleFonts.ptSans(
+                              color: GlobalColors.themeColor2,
+                              fontSize: width < 700 ? width / 35 : width / 45,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -562,10 +553,9 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                                 letterSpacing: 0,
                               ),
                             )
-                          : Image.file(
-                              newFile!,
-                              width: width * 1,
-                            ),
+                          : Text(newFile == null
+                              ? "Choose File "
+                              : "${newFile!.path.split('/').last}"),
                     ),
                   ),
                   GestureDetector(
@@ -577,7 +567,7 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                         setState(() {
                           newFile = file;
                         });
-                      } else {}
+                      }
                     },
                     child: Container(
                         width: width * 0.15,
@@ -598,23 +588,23 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
             SizedBox(
               height: 6,
             ),
-            Container(
-              width: width,
-              height: height * 0.057,
-              margin: EdgeInsets.only(bottom: height * 0.01),
-              child: Row(
-                children: [
-                  LeadCustomlabel(
-                    label: "Notes",
-                    start: "*",
-                  ),
-                  LeadCustomInput(
-                    label: "--",
-                    controller: _note,
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   width: width,
+            //   height: height * 0.057,
+            //   margin: EdgeInsets.only(bottom: height * 0.01),
+            //   child: Row(
+            //     children: [
+            //       LeadCustomlabel(
+            //         label: "Notes",
+            //         start: "*",
+            //       ),
+            //       LeadCustomInput(
+            //         label: "--",
+            //         controller: _note,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Divider(),
             Expanded(
                 child: Column(
@@ -681,19 +671,19 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                           "to_place": categoryId == 1 ? toPlace : "",
                           "distance": categoryId == 1 ? _distance.text : "",
                           "amount": categoryId == 1 ? "" : _amount.text,
-                          "attachment": newFile
                         };
+                        print("xnx" + newFile.toString());
 
                         Api()
                             .AddExpense(
                                 data: data,
                                 token: ref.watch(newToken),
+                                file: newFile,
                                 id: ref.watch(overViewId))
                             .then((value) {
                           widget.onclick();
                           Navigator.pop(context);
                         });
-                        // print(data.toString());
                       },
                       child: Text(
                         "Add",

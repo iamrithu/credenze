@@ -1176,7 +1176,6 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                             child: Container(
                               alignment: Alignment.center,
                               child: TextField(
-                                  keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.all(15),
                                       border: OutlineInputBorder(
