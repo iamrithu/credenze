@@ -18,6 +18,7 @@ import '../instalation-screen/installation_detail_screen.dart';
 import '../lead-screen/leads_screen.dart';
 import '../lead-screen/tabs/lead-details-screen.dart';
 import '../services-screen/service-list-details.dart';
+import '../services-screen/service-tabs/task/task-detail-screen.dart';
 import '../services-screen/services-list.dart';
 
 // ignore: must_be_immutable
@@ -64,7 +65,8 @@ class HomeScreen extends ConsumerWidget {
       // LeadDetailsScreen(),
       InstallationDetailScreen(),
       TaskDetailsSCreen(),
-      ServiceDetailScreen()
+      ServiceDetailScreen(),
+      ServiceTaskDetailsSCreen(),
     ];
     return Scaffold(
       appBar: PreferredSize(

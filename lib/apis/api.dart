@@ -25,6 +25,8 @@ import '../models/service-expense-model.dart';
 import '../models/service-file-model.dart';
 import '../models/service-list-model.dart';
 import '../models/service-member-model.dart';
+import '../models/service-task-detail-model.dart';
+import '../models/service-task-model.dart';
 import '../models/work-update-model.dart';
 
 class Api {
@@ -1160,6 +1162,24 @@ class ProviderApi {
     }
   }
 
+  Future<List<ServiceTaskModel>> serviceTask(String? token, int? id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    Response response = await dio.get(
+      "service/${id}/tasks",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<ServiceTaskModel> tasks = [];
+      data.map((e) {
+        tasks.add(ServiceTaskModel.fromJson(e));
+      }).toList();
+      return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
   Future<InstallationTaskDetailsModel> instalationTaskDetails(
       String? token, int? id, int? taskId) async {
     dio.options.headers["Authorization"] = "Bearer $token";
@@ -1170,6 +1190,27 @@ class ProviderApi {
     if (response.statusCode == 200) {
       InstallationTaskDetailsModel tasks =
           InstallationTaskDetailsModel.fromJson(response.data["data"]);
+
+      print(tasks.toJson().toString());
+
+      return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<ServiceTaskDetailsModel> serviceTaskDetails(
+      String? token, int? id, int? taskId) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    print("--${"service/${id}/task/${taskId}/show"}");
+    Response response = await dio.get(
+      "service/${id}/task/${taskId}/show",
+    );
+
+    if (response.statusCode == 200) {
+      ServiceTaskDetailsModel tasks =
+          ServiceTaskDetailsModel.fromJson(response.data["data"]);
 
       print(tasks.toJson().toString());
 

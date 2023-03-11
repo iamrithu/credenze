@@ -19,6 +19,8 @@ import '../models/service-expense-model.dart';
 import '../models/service-file-model.dart';
 import '../models/service-list-model.dart';
 import '../models/service-member-model.dart';
+import '../models/service-task-detail-model.dart';
+import '../models/service-task-model.dart';
 import '../models/work-update-model.dart';
 
 final newToken = StateProvider<String?>((ref) => "");
@@ -107,6 +109,12 @@ final installationTaskProvider =
 
   return ref.watch(provider).instalationTask(token, id);
 });
+final serviceTaskProvider = FutureProvider<List<ServiceTaskModel>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(ServiceId);
+
+  return ref.watch(provider).serviceTask(token, id);
+});
 final installationTaskDetailsProvider =
     FutureProvider<InstallationTaskDetailsModel>((ref) {
   String? token = ref.watch(newToken);
@@ -114,6 +122,14 @@ final installationTaskDetailsProvider =
   int? task = ref.watch(taskId);
 
   return ref.watch(provider).instalationTaskDetails(token, id, task);
+});
+final serviceTaskDetailsProvider =
+    FutureProvider<ServiceTaskDetailsModel>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(ServiceId);
+  int? task = ref.watch(taskId);
+
+  return ref.watch(provider).serviceTaskDetails(token, id, task);
 });
 final expenseProvider = FutureProvider<List<ExpensesModel>>((ref) {
   String? token = ref.watch(newToken);

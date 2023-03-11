@@ -30,7 +30,7 @@ class _ServiceTaskScreenState extends ConsumerState<ServiceTaskScreen> {
 
   @override
   Widget build(BuildContext) {
-    final taskDetail = ref.watch(installationTaskProvider);
+    final taskDetail = ref.watch(serviceTaskProvider);
     return taskDetail.when(
         data: (_data) {
           return RefreshIndicator(
@@ -69,7 +69,7 @@ class _ServiceTaskScreenState extends ConsumerState<ServiceTaskScreen> {
                             ref
                                 .read(taskId.notifier)
                                 .update((state) => _data[i].id!);
-                            ref.read(pageIndex.notifier).update((state) => 5);
+                            ref.read(pageIndex.notifier).update((state) => 7);
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(

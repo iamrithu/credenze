@@ -35,7 +35,9 @@ class CustomAppBar extends ConsumerWidget {
                             ? 4
                             : page == 6
                                 ? 2
-                                : 0);
+                                : page == 7
+                                    ? 6
+                                    : 0);
                   },
                   color: GlobalColors.white,
                   icon: Icon(
