@@ -119,7 +119,9 @@ class _ServiceTaskScreenState extends ConsumerState<ServiceTaskScreen> {
                                               lable: "End Date",
                                               value: _data[i].endDate == null
                                                   ? "--"
-                                                  : "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
+                                                  : _data[i].endDate is String
+                                                      ? "${DateFormat("dd - MMMM - yyyy ").format(DateTime.parse(_data[i].endDate!))}"
+                                                      : "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
                                             ),
                                             Row(
                                               mainAxisAlignment:
@@ -139,7 +141,7 @@ class _ServiceTaskScreenState extends ConsumerState<ServiceTaskScreen> {
                                                             : widget.width! /
                                                                 45,
                                                         fontWeight:
-                                                            FontWeight.w800,
+                                                            FontWeight.w600,
                                                         color:
                                                             GlobalColors.black,
                                                         letterSpacing: 0),

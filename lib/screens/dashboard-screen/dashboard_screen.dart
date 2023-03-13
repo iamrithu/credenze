@@ -172,7 +172,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         QuickAlert.show(
           context: context,
           type: QuickAlertType.error,
-          title: "Are you sure to clock out",
+          title: "Are you sure to day out",
           confirmBtnText: "Ok",
           cancelBtnText: "Cancel",
           showCancelBtn: true,

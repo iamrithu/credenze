@@ -27,6 +27,7 @@ import '../models/service-list-model.dart';
 import '../models/service-member-model.dart';
 import '../models/service-task-detail-model.dart';
 import '../models/service-task-model.dart';
+import '../models/service-workupdate-model.dart';
 import '../models/work-update-model.dart';
 
 class Api {
@@ -757,15 +758,6 @@ class Api {
       }
     }
 
-    // print(installation_id.toString());
-    // print(task_id.toString());
-    // print(task_date.toString());
-    // print(participants.toString());
-    // print(site_incharge.toString());
-    // print(is_removable_task.toString());
-    // print(removed_quantity.toString());
-    // print(productList.toString());
-
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
       var response = await dio.post(
@@ -780,13 +772,121 @@ class Api {
     }
   }
 
+  Future ServiceWorkUpdateAdd(
+    String? token,
+    int? service_id,
+    int? task_id,
+    String? task_date,
+    List participants,
+    String? description,
+    int? site_incharge,
+    int? is_removable_task,
+    int? removed_quantity,
+    List productList,
+  ) async {
+    final formData = FormData.fromMap({});
+    print(formData.fields.toString());
+
+    formData.fields.add(MapEntry("task_id", task_id.toString()));
+    formData.fields.add(MapEntry("service_id", service_id.toString()));
+    formData.fields.add(MapEntry("workupdate_date", task_date.toString()));
+    formData.fields
+        .add(MapEntry("removed_quantity", removed_quantity.toString()));
+    formData.fields
+        .add(MapEntry("is_removable_task", is_removable_task.toString()));
+    formData.fields.add(MapEntry("description", description.toString()));
+
+    for (var i = 0; i < participants.length; i++) {
+      formData.fields.add(
+          MapEntry("participants_id[${i}]", participants[i].userid.toString()));
+    }
+
+    print(productList.toString());
+    print(formData.fields.toString());
+
+    if (productList.isNotEmpty) {
+      for (var i = 0; i < productList.length; i++) {
+        formData.fields.add(MapEntry(
+            "item[${productList[i]["item_id"]}][item_id]",
+            productList[i]["item_id"].toString()));
+        formData.fields.add(MapEntry(
+            "item[${productList[i]["item_id"]}][item_name]",
+            productList[i]["item_name"].toString()));
+        formData.fields.add(MapEntry(
+            "item[${productList[i]["item_id"]}][unit_id]",
+            productList[i]["unit_id"].toString()));
+        formData.fields.add(MapEntry(
+            "item[${productList[i]["item_id"]}][enable_serial_no]",
+            productList[i]["enable_serial_no"].toString()));
+        formData.fields.add(MapEntry(
+            "item[${productList[i]["item_id"]}][task_product]",
+            productList[i]["task_product"].toString()));
+        formData.fields.add(MapEntry(
+            "item[${productList[i]["item_id"]}][task_item_id]",
+            productList[i]["task_item_id"].toString() == "null"
+                ? ""
+                : productList[i]["task_item_id"].toString()));
+
+        if (productList[i]["enable_serial_no"].toString() == "1") {
+          formData.fields.add(MapEntry(
+              "item[${productList[i]["item_id"]}][quantity]",
+              productList[i]["used_serialNos"].length.toString()));
+        } else {
+          formData.fields.add(MapEntry(
+              "item[${productList[i]["item_id"]}][quantity]",
+              productList[i]["used_quantity"]));
+        }
+
+        if (productList[i]["used_serialNos"] != null) {
+          for (var j = 0; j < productList[i]["used_serialNos"].length; j++) {
+            formData.fields.add(MapEntry(
+                "serial_no[${productList[i]["item_id"]}][${j + 1}]",
+                productList[i]["used_serialNos"][j]));
+          }
+        }
+      }
+    }
+
+    dio.options.headers["Authorization"] = "Bearer $token";
+    try {
+      var response = await dio.post("service/${service_id}/workupdates/save",
+          data: formData);
+      print("demoxx" + response.toString());
+
+      return response.toString();
+    } on DioError catch (e) {
+      print("demoxx" + e.response.toString());
+      return e.response;
+    }
+  }
+
   Future<List<InstallationEmployeeModel>> workParticipants(
       String? token, int? id, String? date) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
-    print("installation/${id}/workupdates/participants/${date}");
     Response response = await dio.get(
       "installation/${id}/workupdates/participants/${date}",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+
+      List<InstallationEmployeeModel> tasks = [];
+      data.map((e) {
+        tasks.add(InstallationEmployeeModel.fromJson(e));
+      }).toList();
+      return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<InstallationEmployeeModel>> serviceWorkParticipants(
+      String? token, int? id, String? date) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "service/${id}/workupdates/participants/${date}",
     );
 
     if (response.statusCode == 200) {
@@ -821,6 +921,25 @@ class Api {
     }
   }
 
+  Future serviceWorkTaskList(
+    String? token,
+    int? id,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "service/${id}/workupdates/tasklist",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+
+      return data;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
   Future workProductList(
     String? token,
     int? id,
@@ -830,6 +949,26 @@ class Api {
 
     Response response = await dio.get(
       "installation/${id}/workupdates/taskproducts/${taskId}",
+    );
+
+    if (response.statusCode == 200) {
+      response.data["data"];
+
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future serviceWorkProductList(
+    String? token,
+    int? id,
+    int? taskId,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "service/${id}/workupdates/taskproducts/${taskId}",
     );
 
     if (response.statusCode == 200) {
@@ -1256,6 +1395,28 @@ class ProviderApi {
       List<InstallationWorkUpdateListModel> tasks = [];
       data.map((e) {
         tasks.add(InstallationWorkUpdateListModel.fromJson(e));
+      }).toList();
+      return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<ServiceWorkupdateListModel>> serviceWorkUpdateLists(
+    String? token,
+    int? id,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "service/${id}/workupdates",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<ServiceWorkupdateListModel> tasks = [];
+      data.map((e) {
+        tasks.add(ServiceWorkupdateListModel.fromJson(e));
       }).toList();
       return tasks;
     } else {

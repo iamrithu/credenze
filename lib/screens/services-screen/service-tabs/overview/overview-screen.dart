@@ -286,7 +286,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
   installationClockOut(int? id) async {
     final token = ref.read(newToken);
 
-    if (ref.watch(ServiceinChargeId) == 1) {
+    if (ref.watch(serviceinChargeId) == 1) {
       Api().workUpadteLists(token, ref.watch(ServiceId)).then((value) {
         if (value.isEmpty) {
           return QuickAlert.show(
@@ -410,8 +410,8 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
         confirmBtnText: "Continue",
         onConfirmBtnTap: () {
           // ref.read(pageIndex.notifier).update((state) => 2);
-          // ref.read(pageIndex.notifier).update((state) => 4);
           // ref.read(initialIndex.notifier).update((state) => 4);
+          // ref.read(pageIndex.notifier).update((state) => );
           setState(() {
             loading = true;
             detailVisible = true;
@@ -457,6 +457,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
 
   @override
   void initState() {
+    print("oooo${ref.read(pageIndex)}");
     getInstallationAttendence();
 
     super.initState();

@@ -11,6 +11,7 @@ import 'package:credenze/screens/services-screen/service-tabs/file/file-screen.d
 import 'package:credenze/screens/services-screen/service-tabs/members/member-screen.dart';
 import 'package:credenze/screens/services-screen/service-tabs/overview/overview-screen.dart';
 import 'package:credenze/screens/services-screen/service-tabs/task/task-screen.dart';
+import 'package:credenze/screens/services-screen/service-tabs/work-update/work-update-screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,6 +51,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
 
   @override
   void initState() {
+    print("isIncharge");
     super.initState();
     getServiceIncahrge();
   }
@@ -64,7 +66,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
       "Members",
       "Files",
       if (ref.watch(ServiceClockIn) == false)
-        if (isIncharge) "Workupdate",
+        if (ref.watch(serviceinChargeId) == "1") "Workupdate",
       if (ref.watch(ServiceClockIn) == false) "Expenses",
     ];
     List<IconData> tabIcon = [
@@ -73,7 +75,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
       Icons.person_add,
       Icons.file_upload_outlined,
       if (ref.watch(ServiceClockIn) == false)
-        if (isIncharge) Icons.work_history,
+        if (ref.watch(serviceinChargeId) == "1") Icons.work_history,
       if (ref.watch(ServiceClockIn) == false) FontAwesomeIcons.moneyBills,
     ];
 
@@ -93,14 +95,19 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
               bottom: PreferredSize(
                 preferredSize: Size(width, height * 0.04),
                 child: Card(
+                  // color: Color.fromARGB(255, 250, 242, 243),
+                  // shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(4),
+                  //     side: BorderSide(color: GlobalColors.themeColor)),
                   child: TabBar(
                     labelColor: GlobalColors.themeColor,
-                    unselectedLabelColor: GlobalColors.themeColor2,
+                    controller: null,
+                    unselectedLabelColor: GlobalColors.black,
                     indicatorSize: TabBarIndicatorSize.label,
                     dragStartBehavior: DragStartBehavior.start,
                     isScrollable: tabName.length > 5 ? true : false,
                     onTap: (int) {
-                      ref.read(initialIndex.notifier).update((state) => int);
+                      ref.read(initialIndex.notifier).update((state) => 0);
                     },
                     overlayColor: MaterialStateProperty.resolveWith((states) {
                       if (states.contains(MaterialState.pressed)) {
@@ -122,7 +129,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                                     : width < 700
                                         ? width / 38
                                         : width / 45,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                                 letterSpacing: 0),
                           ),
                           icon: Icon(
@@ -211,7 +218,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                     ],
                   ),
                   if (ref.watch(ServiceClockIn) == false)
-                    if (isIncharge)
+                    if (ref.watch(serviceinChargeId) == "1")
                       Column(
                         children: [
                           Container(
@@ -223,8 +230,9 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                                     : height * 0.7,
                             child:
                                 LayoutBuilder(builder: ((context, constraints) {
-                              return Container(
-                                child: Center(child: Text("Work Update")),
+                              return ServiceWorkUpdateScreen(
+                                height: constraints.maxHeight,
+                                width: constraints.maxWidth,
                               );
                             })),
                           )

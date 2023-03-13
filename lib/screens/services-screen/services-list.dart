@@ -28,6 +28,8 @@ class ServiceListScreen extends ConsumerStatefulWidget {
 class _ServiceListScreenState extends ConsumerState<ServiceListScreen> {
   String text = "UserCurrent Location";
   List<AvailableMap> maps = [];
+  dynamic isIncharge = 0;
+
   DateTime _selectedDate = DateTime.now();
 
   double lat = 0;
@@ -390,13 +392,25 @@ class _ServiceListScreenState extends ConsumerState<ServiceListScreen> {
                                         ref
                                             .read(ServiceId.notifier)
                                             .update((state) => _data[i].id!);
+                                        Api()
+                                            .getServiceIncaherge(
+                                                ref.read(newToken)!,
+                                                ref.read(ServiceId),
+                                                "${DateFormat("dd-MM-yyyy").format(DateTime.now())}")
+                                            .then((value) {
+                                          print("hex" + value.toString());
 
-                                        ref
-                                            .read(initialIndex.notifier)
-                                            .update((state) => 0);
-                                        ref
-                                            .read(pageIndex.notifier)
-                                            .update((state) => 6);
+                                          ref
+                                              .read(initialIndex.notifier)
+                                              .update((state) => 0);
+                                          ref
+                                              .read(pageIndex.notifier)
+                                              .update((state) => 6);
+                                          ref
+                                              .read(serviceinChargeId.notifier)
+                                              .update(
+                                                  (state) => value.toString());
+                                        });
 
                                         // if (_data[i].site ==
                                         //     null) {
@@ -606,7 +620,7 @@ class _ServiceListScreenState extends ConsumerState<ServiceListScreen> {
                                                         Container(
                                                           width: width * 0.25,
                                                           child: Text(
-                                                            "Installation Status",
+                                                            "Service Status",
                                                             style: GoogleFonts.ptSans(
                                                                 color:
                                                                     GlobalColors

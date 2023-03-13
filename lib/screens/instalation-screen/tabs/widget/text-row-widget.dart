@@ -45,8 +45,8 @@ class TextRowWidget extends StatelessWidget {
             child: Text(
               value!,
               style: GoogleFonts.ptSans(
-                  fontSize: width < 700 ? width / 38 : width / 45,
-                  fontWeight: FontWeight.w400,
+                  fontSize: width < 700 ? width / 40 : width / 45,
+                  fontWeight: FontWeight.w600,
                   color: GlobalColors.themeColor,
                   letterSpacing: 0),
             ),

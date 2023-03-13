@@ -143,7 +143,9 @@ class _ServiceTaskDetailsSCreenState
                               child: Text(
                                 _data.endDate == null
                                     ? "--"
-                                    : "${DateFormat("dd-MM-yyyy").format(_data.endDate!)}",
+                                    : _data.endDate is String
+                                        ? "${DateFormat("dd - MMMM - yyyy ").format(DateTime.parse(_data.endDate!))}"
+                                        : "${DateFormat("dd - MMMM - yyyy ").format(_data.endDate!)}",
                                 style: GoogleFonts.ptSans(
                                     color: GlobalColors.themeColor,
                                     fontSize:

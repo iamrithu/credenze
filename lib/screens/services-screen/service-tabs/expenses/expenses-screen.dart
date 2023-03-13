@@ -117,7 +117,7 @@ class _SeviceExpenseScreenState extends ConsumerState<SeviceExpenseScreen> {
                           child: Container(
                             width: widget.width,
                             height: _data[i].categoryId == 1
-                                ? widget.height! * 0.35
+                                ? widget.height! * 0.4
                                 : widget.height! * 0.25,
                           ),
                         ),
@@ -144,7 +144,7 @@ class _SeviceExpenseScreenState extends ConsumerState<SeviceExpenseScreen> {
                                   child: Container(
                                     width: widget.width! * 0.97,
                                     height: _data[i].categoryId == 1
-                                        ? widget.height! * 0.35
+                                        ? widget.height! * 0.4
                                         : widget.height! * 0.25,
                                     padding: EdgeInsets.only(
                                         left: widget.width! * 0.03),
@@ -224,7 +224,7 @@ class _SeviceExpenseScreenState extends ConsumerState<SeviceExpenseScreen> {
                                   child: Container(
                                     width: widget.width! * 0.97,
                                     height: _data[i].categoryId == 1
-                                        ? widget.height! * 0.35
+                                        ? widget.height! * 0.4
                                         : widget.height! * 0.25,
                                     child: Row(
                                       mainAxisAlignment:

@@ -21,6 +21,7 @@ import '../models/service-list-model.dart';
 import '../models/service-member-model.dart';
 import '../models/service-task-detail-model.dart';
 import '../models/service-task-model.dart';
+import '../models/service-workupdate-model.dart';
 import '../models/work-update-model.dart';
 
 final newToken = StateProvider<String?>((ref) => "");
@@ -45,7 +46,7 @@ final ServiceId = StateProvider<int>((ref) => 0);
 final taskId = StateProvider<int>((ref) => 0);
 
 final inChargeId = StateProvider<int>((ref) => 0);
-final ServiceinChargeId = StateProvider<String>((ref) => "0");
+final serviceinChargeId = StateProvider<String>((ref) => "0");
 
 final userDataProvider = FutureProvider<UserModel>((ref) {
   String? token = ref.watch(newToken);
@@ -183,6 +184,16 @@ final workUpdateListProvider =
   int? id = ref.watch(overViewId);
 
   return ref.watch(provider).workUpadteLists(
+        token,
+        id,
+      );
+});
+final serviceWrokupdateListProvider =
+    FutureProvider<List<ServiceWorkupdateListModel>>((ref) {
+  String? token = ref.watch(newToken);
+  int? id = ref.watch(ServiceId);
+
+  return ref.watch(provider).serviceWorkUpdateLists(
         token,
         id,
       );

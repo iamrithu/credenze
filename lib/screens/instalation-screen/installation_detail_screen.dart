@@ -100,7 +100,7 @@ class _InstallationDetailScreenState
                                     : width < 700
                                         ? width / 38
                                         : width / 45,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                                 letterSpacing: 0),
                           ),
                           icon: Icon(

@@ -1,3 +1,4 @@
+import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/add-workupdate.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/text-row-widget.dart';
@@ -5,23 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../../../const/global_colors.dart';
 
-class WorkUpdateScreen extends ConsumerStatefulWidget {
+import 'add-wrokUpdate.dart';
+
+class ServiceWorkUpdateScreen extends ConsumerStatefulWidget {
   final double? height;
   final double? width;
 
-  const WorkUpdateScreen({
+  const ServiceWorkUpdateScreen({
     Key? key,
     required this.height,
     required this.width,
   }) : super(key: key);
 
   @override
-  ConsumerState<WorkUpdateScreen> createState() => _WorkUpdateScreenState();
+  ConsumerState<ServiceWorkUpdateScreen> createState() =>
+      _ServiceWorkUpdateScreenState();
 }
 
-class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
+class _ServiceWorkUpdateScreenState
+    extends ConsumerState<ServiceWorkUpdateScreen> {
   List<String> cat = [];
   int? selectedId = null;
 
@@ -32,11 +36,11 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
 
   @override
   Widget build(BuildContext) {
-    final data = ref.watch(workUpdateListProvider);
+    final data = ref.watch(serviceWrokupdateListProvider);
 
     onRefresh() async {
       return Future<void>.delayed(const Duration(seconds: 1), () {
-        return ref.refresh(workUpdateListProvider);
+        return ref.refresh(serviceWrokupdateListProvider);
       });
     }
 
@@ -47,7 +51,7 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
             isScrollControlled: true,
             context: context,
             builder: (context) {
-              return AddWorkUpdate(
+              return ServiceAddWorkUpdate(
                 onclick: onRefresh,
               );
             },
@@ -81,7 +85,7 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
               strokeWidth: 4.0,
               onRefresh: () async {
                 return Future<void>.delayed(const Duration(seconds: 2), () {
-                  return ref.refresh(workUpdateListProvider);
+                  return ref.refresh(serviceWrokupdateListProvider);
                 });
               },
               child: ListView(
