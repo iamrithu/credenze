@@ -170,10 +170,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
   }
 
   installationClockIn(int? id) async {
-    setState(() {
-      loading = true;
-      detailVisible = true;
-    });
     final token = ref.read(newToken);
 
     await Geolocator.isLocationServiceEnabled().then((value) {
@@ -232,11 +228,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
         );
       } else {
         if (ref.watch(Installavailable) == true) {
-          setState(() {
-            loading = true;
-            detailVisible = true;
-          });
-
           MapsAndLocation().getCamera().then((value) {
             if (value == null) {
               QuickAlert.show(
@@ -246,20 +237,20 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                     "Our attendance functionality requires your photo with the site location.",
                 autoCloseDuration: null,
               );
-              setState(() {
-                loading = false;
-                detailVisible = false;
-              });
             } else {
               setState(() {
                 newImage = value;
               });
-
+              setState(() {
+                loading = true;
+                detailVisible = true;
+              });
               MapsAndLocation().locationPermisson().then((value) {
                 setState(() {
                   lat = value.latitude;
                   long = value.longitude;
                 });
+
                 Api()
                     .ClockIn(
                         token: token!,
@@ -373,15 +364,16 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
             cancelBtnText: "Cancel",
             confirmBtnText: "Continue",
             onConfirmBtnTap: () {
-              setState(() {
-                loading = true;
-                detailVisible = true;
-              });
+             
 
               MapsAndLocation().locationPermisson().then((value) {
                 setState(() {
                   lat = value.latitude;
                   long = value.longitude;
+                });
+                 setState(() {
+                  loading = true;
+                  detailVisible = true;
                 });
                 Api()
                     .ClockOut(

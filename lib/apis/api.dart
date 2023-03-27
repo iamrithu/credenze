@@ -52,13 +52,13 @@ class Api {
     }
   }
 
-  Future DayIn(token) async {
+  Future DayIn(String token, String lat, String long) async {
     dio.options.headers["Authorization"] = "Bearer $token";
+    var params = {"longitude": long, "latitude": lat};
 
     try {
-      Response response = await dio.post(
-        "attendance/clockin",
-      );
+      Response response =
+          await dio.post("attendance/clockin", data: jsonEncode(params));
 
       return response;
     } on DioError catch (e) {
@@ -66,13 +66,14 @@ class Api {
     }
   }
 
-  Future DayOut(token) async {
+  Future DayOut(String token, String lat, String long) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
+    var params = {"longitude": long, "latitude": lat};
+
     try {
-      Response response = await dio.post(
-        "attendance/clockout",
-      );
+      Response response =
+          await dio.post("attendance/clockout", data: jsonEncode(params));
 
       return response;
     } on DioError catch (e) {
@@ -109,7 +110,6 @@ class Api {
       "longitude": longitude!,
       "photo": base64Image,
     };
-
     try {
       Response response = await dio.post(
         "installation/$id/dayin",
