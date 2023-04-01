@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
+import 'package:credenze/screens/dashboard-screen/widget/alertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -25,6 +26,13 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  String isChecked = "office";
+  Map<String, dynamic> OBJ = {};
+  bool isOpen = false;
+  bool isOpen2 = false;
+
+  bool isSubmit = false;
+  String mileage = "";
   String msg = "";
   bool visible = false;
   bool success = false;
@@ -118,6 +126,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    getfinallocation(String val) {
+      print("rihti ${val}");
+      // setState(() {
+      //   isChecked = val;
+      // });
+    }
+
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
@@ -126,6 +141,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
+      setState(() {
+        isLoading = true;
+      });
       Api()
           .DayIn(token!, pos.toJson()["latitude"].toString(),
               pos.toJson()["longitude"].toString())
@@ -137,6 +155,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             success = value.data["success"];
             msg = value.data["data"];
             _dayOut = null;
+            isLoading = false;
           });
           attendenceDetails();
 
@@ -146,6 +165,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             setState(() {
               visible = false;
               success = false;
+              isLoading = false;
             });
           }
         } else {
@@ -155,11 +175,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             visible = true;
             success = value.data["success"];
             msg = value.data["message"];
+            isLoading = true;
           });
           if (visible) {
             setState(() {
               visible = false;
               success = false;
+              isLoading = false;
             });
           }
         }
@@ -169,63 +191,376 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     dayOut() async {
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
+      Position? pos = await MapsAndLocation().locationPermisson();
 
-      print(_loggedInHr.toString());
+      Api().CheckCanSubmit(token: token).then((value) {
+        if (jsonDecode(value)["message"]["ask_expense"] == "YES") {
+          return setState(() {
+            isOpen = true;
+            OBJ = jsonDecode(value);
+          });
+          // return showDialog<void>(
+          //   context: context,
+          //   barrierDismissible: true, // user must tap button!
+          //   builder: (BuildContext context) {
+          //     return AlertDialog(
+          //       title: Text(
+          //         "Add Expense For Day Out",
+          //         style: GoogleFonts.ptSans(
+          //             fontSize: width < 700 ? width / 26 : width / 40,
+          //             fontWeight: FontWeight.w500,
+          //             color: GlobalColors.black,
+          //             letterSpacing: 0),
+          //       ),
+          //       content: Stack(
+          //         children: [
+          //           // if (isOpen == false)
+          //           Container(
+          //             width: width,
+          //             height: height * 0.4,
+          //             child: Card(
+          //               elevation: 1,
+          //               child: SingleChildScrollView(
+          //                 child: Padding(
+          //                   padding: const EdgeInsets.all(4.0),
+          //                   child: ListBody(
+          //                     children: <Widget>[
+          //                       Column(
+          //                         children: [
+          //                           Row(
+          //                             children: [
+          //                               Text(
+          //                                 "Expense Type :",
+          //                                 style: GoogleFonts.ptSans(
+          //                                     fontSize: width < 700
+          //                                         ? width / 30
+          //                                         : width / 40,
+          //                                     fontWeight: FontWeight.w500,
+          //                                     color: GlobalColors.themeColor,
+          //                                     letterSpacing: 0),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                           SizedBox(
+          //                             height: 4,
+          //                           ),
+          //                           Row(
+          //                             children: [
+          //                               Text(
+          //                                 "Petrol",
+          //                                 style: GoogleFonts.ptSans(
+          //                                     fontSize: width < 700
+          //                                         ? width / 38
+          //                                         : width / 40,
+          //                                     fontWeight: FontWeight.w400,
+          //                                     color: GlobalColors.black,
+          //                                     letterSpacing: 0),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                           SizedBox(
+          //                             height: 4,
+          //                           ),
+          //                           Divider(
+          //                             color: Color.fromARGB(255, 108, 107, 107),
+          //                           ),
+          //                           Row(
+          //                             children: [
+          //                               Text(
+          //                                 "From Place :",
+          //                                 style: GoogleFonts.ptSans(
+          //                                     fontSize: width < 700
+          //                                         ? width / 30
+          //                                         : width / 40,
+          //                                     fontWeight: FontWeight.w500,
+          //                                     color: GlobalColors.themeColor,
+          //                                     letterSpacing: 0),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                           SizedBox(
+          //                             height: 4,
+          //                           ),
+          //                           Wrap(
+          //                             children: [
+          //                               Text(
+          //                                 "${jsonDecode(value)["message"]["from_place"]}",
+          //                                 style: GoogleFonts.ptSans(
+          //                                     fontSize: width < 700
+          //                                         ? width / 38
+          //                                         : width / 40,
+          //                                     fontWeight: FontWeight.w400,
+          //                                     color: GlobalColors.black,
+          //                                     letterSpacing: 0),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                           SizedBox(
+          //                             height: 8,
+          //                           ),
+          //                           Divider(
+          //                             color: Color.fromARGB(255, 108, 107, 107),
+          //                           ),
+          //                           Row(
+          //                             children: [
+          //                               Text(
+          //                                 "To Place :",
+          //                                 style: GoogleFonts.ptSans(
+          //                                     fontSize: width < 700
+          //                                         ? width / 30
+          //                                         : width / 40,
+          //                                     fontWeight: FontWeight.w500,
+          //                                     color: GlobalColors.themeColor,
+          //                                     letterSpacing: 0),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                           InkWell(
+          //                             onTap: () {
+          //                               showDialog<void>(
+          //                                   context: context,
+          //                                   barrierDismissible:
+          //                                       true, // user must tap button!
+          //                                   builder: (BuildContext context) {
+          //                                     return AlertDialogBox(
+          //                                       onclikc: getfinallocation,
+          //                                     );
+          //                                   });
+          //                             },
+          //                             child: Card(
+          //                               child: Container(
+          //                                 width: width,
+          //                                 height: height * 0.05,
+          //                                 alignment: Alignment.center,
+          //                                 child: Text(
+          //                                   "${isChecked}",
+          //                                   style: GoogleFonts.ptSans(
+          //                                       fontSize: width < 700
+          //                                           ? width / 30
+          //                                           : width / 40,
+          //                                       fontWeight: FontWeight.w500,
+          //                                       color: GlobalColors.themeColor,
+          //                                       letterSpacing: 0),
+          //                                 ),
+          //                               ),
+          //                             ),
+          //                           ),
+          //                           SizedBox(
+          //                             height: 8,
+          //                           ),
+          //                           Divider(
+          //                             color: Color.fromARGB(255, 108, 107, 107),
+          //                           ),
+          //                           Row(
+          //                             children: [
+          //                               Text(
+          //                                 "Distance :",
+          //                                 style: GoogleFonts.ptSans(
+          //                                     fontSize: width < 700
+          //                                         ? width / 30
+          //                                         : width / 40,
+          //                                     fontWeight: FontWeight.w500,
+          //                                     color: GlobalColors.themeColor,
+          //                                     letterSpacing: 0),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                           SizedBox(
+          //                             height: 2,
+          //                           ),
+          //                           TextFormField(
+          //                             keyboardType: TextInputType.number,
+          //                             decoration: InputDecoration(
+          //                               border: OutlineInputBorder(),
+          //                               hintText: "Eg : 5",
+          //                             ),
+          //                             onChanged: (e) {
+          //                               return setState(() {
+          //                                 mileage = e;
+          //                               });
+          //                             },
+          //                           ),
+          //                           Divider(
+          //                             color: Color.fromARGB(255, 108, 107, 107),
+          //                           ),
+          //                         ],
+          //                       )
+          //                     ],
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //           // if (isOpen)
+          //           //   Container(
+          //           //     width: width,
+          //           //     height: height * 0.4,
+          //           //     child: Column(children: <Widget>[
+          //           //       InkWell(
+          //           //         onTap: () {
+          //           //           setState(() {
+          //           //             isChecked = "home";
+          //           //             isOpen = false;
+          //           //           });
+          //           //           dayOut();
 
-      if (_loggedInHr.inHours.abs() < 10) {
-        QuickAlert.show(
-          context: context,
-          type: QuickAlertType.error,
-          title: "Are you sure to day out",
-          confirmBtnText: "Ok",
-          cancelBtnText: "Cancel",
-          showCancelBtn: true,
-          autoCloseDuration: null,
-          onCancelBtnTap: () {
-            Navigator.pop(context);
-          },
-          onConfirmBtnTap: () async {
-            Position? pos = await MapsAndLocation().locationPermisson();
+          //           //           Navigator.of(context).pop();
+          //           //         },
+          //           //         child: Card(
+          //           //           child: Container(
+          //           //             width: width,
+          //           //             height: height * 0.05,
+          //           //             alignment: Alignment.center,
+          //           //             child: Text(
+          //           //               "home",
+          //           //               style: GoogleFonts.ptSans(
+          //           //                   fontSize:
+          //           //                       width < 700 ? width / 30 : width / 40,
+          //           //                   fontWeight: FontWeight.w500,
+          //           //                   color: GlobalColors.themeColor,
+          //           //                   letterSpacing: 0),
+          //           //             ),
+          //           //           ),
+          //           //         ),
+          //           //       ),
+          //           //       InkWell(
+          //           //         onTap: () {
+          //           //           setState(() {
+          //           //             isChecked = "office";
+          //           //             isOpen = false;
+          //           //           });
+          //           //           dayOut();
 
-            Api()
-                .DayOut(token!, pos.toJson()["latitude"].toString(),
-                    pos.toJson()["longitude"].toString())
-                .then((value) async {
-              if (value.data["success"]) {
-                setState(() {
-                  _action = "DayIn";
-                  visible = true;
-                  success = value.data["success"];
-                  msg = value.data["data"];
-                });
-                attendenceDetails();
-                if (visible) {
+          //           //           Navigator.of(context).pop();
+          //           //         },
+          //           //         child: Card(
+          //           //           child: Container(
+          //           //             width: width,
+          //           //             height: height * 0.05,
+          //           //             alignment: Alignment.center,
+          //           //             child: Text(
+          //           //               "office",
+          //           //               style: GoogleFonts.ptSans(
+          //           //                   fontSize:
+          //           //                       width < 700 ? width / 30 : width / 40,
+          //           //                   fontWeight: FontWeight.w500,
+          //           //                   color: GlobalColors.themeColor,
+          //           //                   letterSpacing: 0),
+          //           //             ),
+          //           //           ),
+          //           //         ),
+          //           //       ),
+          //           //     ]),
+          //           //   ),
+          //         ],
+          //       ),
+          //       actions: <Widget>[
+          //         TextButton(
+          //           child: const Text('Add Expense'),
+          //           onPressed: () {
+          // Api()
+          //     .DayOutExpense(
+          //         category_id: jsonDecode(value)["message"]
+          //             ["category_id"],
+          //         dep_type: jsonDecode(value)["message"]
+          //             ["dep_type"],
+          //         distance: mileage,
+          //         from_place: jsonDecode(value)["message"]
+          //             ["from_place"],
+          //         reference_id: jsonDecode(value)["message"]
+          //             ["reference_id"],
+          //         to_place: isChecked.toString(),
+          //         token: token)
+          //     .then((value) {
+          //   if (value.statusCode == 200) {
+          //     Navigator.of(context).pop();
+          //     dayOut();
+          //   }
+          // });
+          //           },
+          //         ),
+          //       ],
+          //     );
+          //   },
+          // );
+        }
+        if (_loggedInHr.inHours.abs() < 10) {
+          setState(() {
+            isLoading = true;
+          });
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Are you sure to day out",
+            confirmBtnText: "Ok",
+            cancelBtnText: "Cancel",
+            showCancelBtn: true,
+            autoCloseDuration: null,
+            onCancelBtnTap: () {
+              setState(() {
+                _action = "DayOut";
+                isLoading = false;
+              });
+              Navigator.pop(context);
+            },
+            onConfirmBtnTap: () async {
+              Navigator.pop(context);
+
+              // Position? pos = await MapsAndLocation().locationPermisson();
+              setState(() {
+                isLoading = true;
+              });
+
+              Api()
+                  .DayOut(token!, pos.toJson()["latitude"].toString(),
+                      pos.toJson()["longitude"].toString())
+                  .then((value) async {
+                print(value.toString());
+                if (value.data["success"]) {
                   setState(() {
-                    visible = false;
-                    success = false;
+                    _action = "DayIn";
+                    visible = true;
+                    success = value.data["success"];
+                    msg = value.data["data"];
+                    isLoading = false;
                   });
-                }
-              } else {
-                attendenceDetails();
-                setState(() {
-                  _action = "DayOut";
-                  visible = true;
-                  success = value.data["success"];
-                  msg = value.data["message"];
-                });
-                if (visible) {
+                  attendenceDetails();
+                  if (visible) {
+                    setState(() {
+                      visible = false;
+                      success = false;
+                      isLoading = false;
+                    });
+                  }
+                } else {
+                  attendenceDetails();
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.info,
+                    title: value.data["message"],
+                    confirmBtnText: "Ok",
+                    autoCloseDuration: null,
+                  );
                   setState(() {
-                    visible = false;
-                    success = false;
+                    _action = "DayOut";
+                    visible = true;
+                    success = value.data["success"];
+                    msg = value.data["message"];
+                    isLoading = false;
                   });
+                  if (visible) {
+                    setState(() {
+                      visible = false;
+                      success = false;
+                      isLoading = false;
+                    });
+                  }
                 }
-              }
-            });
-            Navigator.pop(context);
-          },
-        );
-      } else {
-        Position? pos = await MapsAndLocation().locationPermisson();
+              });
+            },
+          );
+          return null;
+        }
 
         Api()
             .DayOut(token!, pos.toJson()["latitude"].toString(),
@@ -249,7 +584,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               });
             }
           } else {
+            QuickAlert.show(
+              context: context,
+              type: QuickAlertType.info,
+              title: value.data["message"],
+              confirmBtnText: "Ok",
+              autoCloseDuration: null,
+            );
             attendenceDetails();
+
             setState(() {
               visible = true;
               success = value.data["success"];
@@ -264,7 +607,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             }
           }
         });
-      }
+      });
     }
 
     action(GlobalKey<SlideActionState> key) {
@@ -725,10 +1068,351 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               Container(
                 width: width,
                 height: width < 700 ? height * 0.8 : height * 0.86,
+                color: Color.fromARGB(66, 251, 233, 233),
                 child: Center(
-                  child: CircularProgressIndicator.adaptive(),
+                  child: Card(
+                    elevation: 10,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  ),
                 ),
-              )
+              ),
+            if (isOpen)
+              Container(
+                width: width,
+                height: height,
+                color: Color.fromARGB(108, 0, 0, 0),
+                padding: EdgeInsets.all(5),
+                alignment: Alignment.center,
+                child: Stack(
+                  children: [
+                    Container(
+                      width: width,
+                      height: height * 0.5,
+                      child: Card(
+                        elevation: 1,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ListBody(
+                              children: <Widget>[
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Expense Type :",
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: width < 700
+                                                  ? width / 30
+                                                  : width / 40,
+                                              fontWeight: FontWeight.w500,
+                                              color: GlobalColors.themeColor,
+                                              letterSpacing: 0),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 4,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Petrol",
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: width < 700
+                                                  ? width / 38
+                                                  : width / 40,
+                                              fontWeight: FontWeight.w400,
+                                              color: GlobalColors.black,
+                                              letterSpacing: 0),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 4,
+                                    ),
+                                    Divider(
+                                      color: Color.fromARGB(255, 108, 107, 107),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "From Place :",
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: width < 700
+                                                  ? width / 30
+                                                  : width / 40,
+                                              fontWeight: FontWeight.w500,
+                                              color: GlobalColors.themeColor,
+                                              letterSpacing: 0),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 4,
+                                    ),
+                                    Wrap(
+                                      children: [
+                                        Text(
+                                          "${OBJ["message"]["from_place"]}",
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: width < 700
+                                                  ? width / 38
+                                                  : width / 40,
+                                              fontWeight: FontWeight.w400,
+                                              color: GlobalColors.black,
+                                              letterSpacing: 0),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Divider(
+                                      color: Color.fromARGB(255, 108, 107, 107),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "To Place :",
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: width < 700
+                                                  ? width / 30
+                                                  : width / 40,
+                                              fontWeight: FontWeight.w500,
+                                              color: GlobalColors.themeColor,
+                                              letterSpacing: 0),
+                                        ),
+                                      ],
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          isOpen2 = true;
+                                        });
+                                      },
+                                      child: Card(
+                                        child: Container(
+                                          width: width,
+                                          height: height * 0.05,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "${isChecked}",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: width < 700
+                                                    ? width / 30
+                                                    : width / 40,
+                                                fontWeight: FontWeight.w500,
+                                                color: GlobalColors.themeColor,
+                                                letterSpacing: 0),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Divider(
+                                      color: Color.fromARGB(255, 108, 107, 107),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Distance :",
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: width < 700
+                                                  ? width / 30
+                                                  : width / 40,
+                                              fontWeight: FontWeight.w500,
+                                              color: GlobalColors.themeColor,
+                                              letterSpacing: 0),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 2,
+                                    ),
+                                    TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: "Eg : 5",
+                                      ),
+                                      onChanged: (e) {
+                                        return setState(() {
+                                          mileage = e;
+                                        });
+                                      },
+                                    ),
+                                    Divider(
+                                      color: Color.fromARGB(255, 108, 107, 107),
+                                    ),
+                                    Container(
+                                      width: width,
+                                      height: height * 0.08,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                isOpen = false;
+                                                isOpen2 = false;
+                                                _action = "DayOut";
+                                              });
+                                            },
+                                            child: Container(
+                                              color: GlobalColors.themeColor2,
+                                              width: width * 0.4,
+                                              height: height * 0.05,
+                                              child: Center(
+                                                child: Text(
+                                                  "Cancel",
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: width < 700
+                                                          ? width / 30
+                                                          : width / 40,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: GlobalColors.white,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              Api()
+                                                  .DayOutExpense(
+                                                      category_id:
+                                                          OBJ["message"]
+                                                              ["category_id"],
+                                                      dep_type: OBJ["message"]
+                                                          ["dep_type"],
+                                                      distance: mileage,
+                                                      from_place: OBJ["message"]
+                                                          ["from_place"],
+                                                      reference_id:
+                                                          OBJ["message"]
+                                                              ["reference_id"],
+                                                      to_place:
+                                                          isChecked.toString(),
+                                                      token:
+                                                          ref.watch(newToken))
+                                                  .then((value) {
+                                                if (value.statusCode == 200) {
+                                                  setState(() {
+                                                    isOpen = false;
+                                                    isOpen2 = false;
+                                                  });
+                                                  dayOut();
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              color: GlobalColors.themeColor,
+                                              width: width * 0.4,
+                                              height: height * 0.05,
+                                              child: Center(
+                                                child: Text(
+                                                  "Add",
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: width < 700
+                                                          ? width / 30
+                                                          : width / 40,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: GlobalColors.white,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (isOpen2)
+                      Container(
+                        width: width,
+                        height: height * 0.5,
+                        padding: EdgeInsets.all(20),
+                        alignment: Alignment.center,
+                        color: Color.fromARGB(97, 0, 0, 0),
+                        child: Card(
+                          elevation: 1,
+                          child: Container(
+                            width: width,
+                            height: height * 0.2,
+                            child: Column(children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isChecked = "home";
+                                    isOpen2 = false;
+                                  });
+                                },
+                                child: Card(
+                                  child: Container(
+                                    width: width,
+                                    height: height * 0.05,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "home",
+                                      style: GoogleFonts.ptSans(
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 40,
+                                          fontWeight: FontWeight.w500,
+                                          color: GlobalColors.themeColor,
+                                          letterSpacing: 0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isChecked = "office";
+                                    isOpen2 = false;
+                                  });
+                                },
+                                child: Card(
+                                  child: Container(
+                                    width: width,
+                                    height: height * 0.05,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "office",
+                                      style: GoogleFonts.ptSans(
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 40,
+                                          fontWeight: FontWeight.w500,
+                                          color: GlobalColors.themeColor,
+                                          letterSpacing: 0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),

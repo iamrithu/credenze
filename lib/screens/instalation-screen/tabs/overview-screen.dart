@@ -62,7 +62,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
 
   getclockInAddress(lat, long) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-    print(placemarks.toString());
     setState(() {
       clockInAddress =
           "${placemarks[0].street},${placemarks[0].subLocality},${placemarks[0].locality},${placemarks[0].postalCode},${placemarks[0].administrativeArea},${placemarks[0].country}";
@@ -86,15 +85,16 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
 
     ref.refresh(InstallationClockIn);
     Api().InstallationAttendence(token!, id).then((value) {
-      List data = value.data["data"];
+      List data = [value.data["data"][value.data["data"].length - 1]];
 
-      if (data.isEmpty) {
+      print(data);
+
+      if (value.data["data"].isEmpty) {
         setState(() {
           clockIn = null;
           clockOut = null;
         });
       } else {
-        print("rithi");
         ref.read(InstallationClockIn.notifier).update((state) => true);
 
         var newdata = data
@@ -364,14 +364,12 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
             cancelBtnText: "Cancel",
             confirmBtnText: "Continue",
             onConfirmBtnTap: () {
-             
-
               MapsAndLocation().locationPermisson().then((value) {
                 setState(() {
                   lat = value.latitude;
                   long = value.longitude;
                 });
-                 setState(() {
+                setState(() {
                   loading = true;
                   detailVisible = true;
                 });
@@ -408,8 +406,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
         }
       });
     } else {
-      print("i am working too");
-
       QuickAlert.show(
         context: context,
         type: QuickAlertType.info,
@@ -487,7 +483,6 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
     int? id = ref.watch(overViewId);
     return installation.when(
         data: (_data) {
-          print(_data);
           return RefreshIndicator(
             color: Colors.white,
             backgroundColor: GlobalColors.themeColor,
@@ -575,9 +570,8 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                   width: widget.width!,
                                   padding: EdgeInsets.symmetric(horizontal: 12),
                                   child: ElevatedButton(
-                                    onPressed: installationComplete
-                                        ? null
-                                        : ref.watch(InstallationClockIn) == true
+                                    onPressed:
+                                        ref.watch(InstallationClockIn) == true
                                             ? () {
                                                 installationClockIn(id);
                                               }
@@ -585,12 +579,9 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                                                 installationClockOut(id);
                                               },
                                     child: Text(
-                                      installationComplete
-                                          ? "Installation Completed"
-                                          : ref.watch(InstallationClockIn) ==
-                                                  true
-                                              ? "Clock In"
-                                              : "Clock Out",
+                                      ref.watch(InstallationClockIn) == true
+                                          ? "Clock In"
+                                          : "Clock Out",
                                       textAlign: TextAlign.start,
                                       style: GoogleFonts.ptSans(
                                           fontSize: widget.width! < 700

@@ -70,7 +70,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (value.statusCode == 200) {
         return setState(() {
           setToken(value.data["data"]["token"]);
-          print("from login" + value.data["data"]["token"]);
 
           ref
               .read(newToken.notifier)

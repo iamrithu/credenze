@@ -59,7 +59,6 @@ class _ServiceExpenseAddScreenState
       setState(() {
         categoryList = value.data["data"];
       });
-      print(categoryList.toString());
     });
   }
 
@@ -75,7 +74,6 @@ class _ServiceExpenseAddScreenState
         fromPlace = location["from_place"];
         toPlace = location["to_place"];
       });
-      print("88" + location.toString());
     });
   }
 
@@ -662,7 +660,6 @@ class _ServiceExpenseAddScreenState
                             return null;
                           }
                         }
-                        print("1oo rithi");
                         Map<String, dynamic> data = {
                           "installation_id": ref.read(ServiceId),
                           "user_id": ref.read(userId),
@@ -675,7 +672,6 @@ class _ServiceExpenseAddScreenState
                           "distance": categoryId == 1 ? _distance.text : "",
                           "amount": categoryId == 1 ? "" : _amount.text,
                         };
-                        print("xnx" + newFile.toString());
 
                         Api()
                             .AddServiceExpense(

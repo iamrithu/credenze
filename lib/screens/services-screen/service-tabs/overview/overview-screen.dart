@@ -63,7 +63,6 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
 
   getclockInAddress(lat, long) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-    print(placemarks.toString());
     setState(() {
       clockInAddress =
           "${placemarks[0].street},${placemarks[0].subLocality},${placemarks[0].locality},${placemarks[0].postalCode},${placemarks[0].administrativeArea},${placemarks[0].country}";
@@ -84,8 +83,6 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
     final id = ref.read(ServiceId);
 
     Api().ServiceAttendence(token, id).then((value) {
-      print("yy" + value.data["success"].toString());
-
       if (value.data["success"] == false) {
         setState(() {
           clockIn = null;
@@ -409,9 +406,6 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
         cancelBtnText: "Cancel",
         confirmBtnText: "Continue",
         onConfirmBtnTap: () {
-          // ref.read(pageIndex.notifier).update((state) => 2);
-          // ref.read(initialIndex.notifier).update((state) => 4);
-          // ref.read(pageIndex.notifier).update((state) => );
           setState(() {
             loading = true;
             detailVisible = true;
@@ -430,7 +424,6 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                     latitude: value.latitude.toString(),
                     longitude: value.longitude.toString())
                 .then((value) {
-              print("ww" + value.toString());
               Map<String, dynamic> data = jsonDecode(value);
               if (data["success"]) {
                 getInstallationAttendence();
@@ -457,7 +450,6 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
 
   @override
   void initState() {
-    print("oooo${ref.read(pageIndex)}");
     getInstallationAttendence();
 
     super.initState();
@@ -469,7 +461,6 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
     int? id = ref.watch(ServiceId);
     return installation.when(
         data: (_data) {
-          print(_data);
           return RefreshIndicator(
             color: Colors.white,
             backgroundColor: GlobalColors.themeColor,

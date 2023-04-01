@@ -398,8 +398,6 @@ class _ServiceListScreenState extends ConsumerState<ServiceListScreen> {
                                                 ref.read(ServiceId),
                                                 "${DateFormat("dd-MM-yyyy").format(DateTime.now())}")
                                             .then((value) {
-                                          print("hex" + value.toString());
-
                                           ref
                                               .read(initialIndex.notifier)
                                               .update((state) => 0);

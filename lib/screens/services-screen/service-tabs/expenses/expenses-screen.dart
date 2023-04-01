@@ -39,7 +39,6 @@ class _SeviceExpenseScreenState extends ConsumerState<SeviceExpenseScreen> {
   }
 
   refresh() async {
-    print("dd");
     return Future<void>.delayed(const Duration(seconds: 1), () {
       return ref.refresh(serviceExpenseProvider);
     });

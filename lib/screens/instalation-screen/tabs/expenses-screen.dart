@@ -36,7 +36,6 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
   }
 
   refresh() async {
-    print("dd");
     return Future<void>.delayed(const Duration(seconds: 1), () {
       return ref.refresh(expenseProvider);
     });

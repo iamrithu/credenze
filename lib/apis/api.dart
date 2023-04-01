@@ -122,6 +122,50 @@ class Api {
     }
   }
 
+  Future<String> CheckCanSubmit({
+    required String? token,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "attendance/expensedetailes",
+      );
+
+      return response.toString();
+    } on DioError catch (e) {
+      return e.response.toString();
+    }
+  }
+
+  Future DayOutExpense({
+    required String? token,
+    required int? reference_id,
+    required String? dep_type,
+    required int? category_id,
+    required String? from_place,
+    required String? to_place,
+    required String? distance,
+  }) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      var params = {
+        "category_id": category_id.toString(),
+        "dep_type": dep_type,
+        "distance": distance,
+        "from_place": from_place,
+        "reference_id": reference_id.toString(),
+        "to_place": to_place,
+      };
+      Response response =
+          await dio.post("attendance/dayoutexpense", data: jsonEncode(params));
+      return response;
+    } on DioError catch (e) {
+      return e.response.toString();
+    }
+  }
+
   Future<String> ClockOut({
     required String? token,
     required int? id,
@@ -1010,8 +1054,10 @@ class ProviderApi {
     Response response = await dio.get(
       "user/profile",
     );
+    print(response.toString());
     if (response.statusCode == 200) {
       UserModel user = UserModel.fromJson(response.data["data"]);
+      print(user.toString());
       return user;
     } else {
       throw Exception(response.statusMessage);

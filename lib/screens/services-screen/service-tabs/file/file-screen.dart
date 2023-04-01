@@ -348,9 +348,6 @@ class _ServiceFileScreenState extends ConsumerState<ServiceFileScreen> {
                                                                 null);
                                                       }
                                                     });
-
-                                                    print("${id}");
-                                                    print("${_data[i].id!}");
                                                   },
                                                   child: Card(
                                                     elevation: 10,

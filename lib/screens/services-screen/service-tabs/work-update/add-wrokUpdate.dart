@@ -76,13 +76,10 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
           (element) => element["productId"] == dataList, orElse: () {
         return null;
       });
-      // print("$data");
       if (data == null) {
         return GlobalColors.white;
       }
-      // print(value.toString());
 
-      // print(data["sNo"].contains(value));
       if (data["sNo"].contains(value)) {
         return GlobalColors.themeColor;
       }
@@ -302,12 +299,10 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                             flex: 2,
                             child: InkWell(
                               onTap: () {
-                                print("** hi");
                                 Api()
                                     .serviceWorkTaskList(ref.watch(newToken),
                                         ref.watch(ServiceId))
                                     .then((value) {
-                                  // print(value.toString());
                                   showDialog<void>(
                                     context: context,
                                     barrierDismissible: true,
@@ -831,7 +826,6 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                   });
                                                   data["used_quantity"] = value;
 
-                                                  // print(data.toString());
                                                   // do something
                                                 },
                                               ),
@@ -1137,7 +1131,6 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                   });
                                                   data["used_quantity"] = value;
 
-                                                  print(data.toString());
                                                   // do something
                                                 },
                                               ),
@@ -1199,7 +1192,6 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
 
                           return null;
                         }
-                        print(workTask.toString());
                         if (workTask.isEmpty || workTask == "Select Task") {
                           QuickAlert.show(
                               context: context,
@@ -1223,8 +1215,6 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                 removal_qty,
                                 selectedCheckbox)
                             .then((value) {
-                          print(value.statusCode.toString());
-
                           if (value.statusCode.toString() == "401") {
                             QuickAlert.show(
                                 context: context,

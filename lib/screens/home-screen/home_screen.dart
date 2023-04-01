@@ -2,6 +2,7 @@ import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/custom-widget/custom_appbar.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/attenence-screen/attenence_screen.dart';
+import 'package:credenze/screens/instalation-screen/tabs/task-screen.dart';
 import 'package:credenze/screens/instalation-screen/tabs/taskDetailsSCreen.dart';
 import 'package:credenze/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ import '../lead-screen/tabs/lead-details-screen.dart';
 import '../services-screen/service-list-details.dart';
 import '../services-screen/service-tabs/task/task-detail-screen.dart';
 import '../services-screen/services-list.dart';
+import '../task/taskDetailScreen.dart';
+import '../task/taskScreen.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends ConsumerWidget {
@@ -30,8 +33,9 @@ class HomeScreen extends ConsumerWidget {
     Icons.house,
     Icons.trolley,
     Icons.settings,
+    Icons.task,
     // FontAwesomeIcons.chartBar,
-    Icons.person,
+    // Icons.person,
   ];
 
   @override
@@ -52,21 +56,23 @@ class HomeScreen extends ConsumerWidget {
       "Dashboard",
       "Installations",
       "Service",
+      "Task"
       // "Leads",
-      "Profile"
     ];
     List<Widget> pages = [
       DashboardScreen(),
       InstalationScreen(),
       ServiceListScreen(),
+      MainTaskScreen(),
       // AttendenceScreen(),
       // LeadScreen(),
-      ProfileScreen(),
       // LeadDetailsScreen(),
       InstallationDetailScreen(),
       TaskDetailsSCreen(),
       ServiceDetailScreen(),
       ServiceTaskDetailsSCreen(),
+      ProfileScreen(),
+      TaskDetailScreen(),
     ];
     return Scaffold(
       appBar: PreferredSize(

@@ -1,4 +1,5 @@
 import 'package:credenze/const/global_colors.dart';
+import 'package:credenze/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,7 @@ class CustomAppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final user = ref.watch(userDataProvider);
     return WillPopScope(
       onWillPop: (() async {
         return false;
@@ -37,7 +39,9 @@ class CustomAppBar extends ConsumerWidget {
                                 ? 2
                                 : page == 7
                                     ? 6
-                                    : 0);
+                                    : page == 9
+                                        ? 3
+                                        : 0);
                   },
                   color: GlobalColors.white,
                   icon: Icon(
@@ -95,7 +99,7 @@ class CustomAppBar extends ConsumerWidget {
                         // )
                         : page == 3
                             ? Text(
-                                "Profile",
+                                "Task",
                                 style: GoogleFonts.ptSans(
                                     fontSize:
                                         width < 700 ? width / 20 : width / 24,
@@ -122,17 +126,69 @@ class CustomAppBar extends ConsumerWidget {
                                         fontWeight: FontWeight.w800,
                                         letterSpacing: 0),
                                   )
-                                : Text(
-                                    "Service Details",
-                                    style: GoogleFonts.ptSans(
-                                        fontSize: width < 700
-                                            ? width / 20
-                                            : width / 24,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0),
-                                  ),
+                                : page == 8
+                                    ? Text(
+                                        "Profile",
+                                        style: GoogleFonts.ptSans(
+                                            fontSize: width < 700
+                                                ? width / 20
+                                                : width / 24,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0),
+                                      )
+                                    : page == 9
+                                        ? Text(
+                                            "Task Details",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: width < 700
+                                                    ? width / 20
+                                                    : width / 24,
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: 0),
+                                          )
+                                        : Text(
+                                            "Service Details",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: width < 700
+                                                    ? width / 20
+                                                    : width / 24,
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: 0),
+                                          ),
           ),
-          actions: [],
+          actions: [
+            if (page != 8)
+              user.when(
+                  data: (_data) {
+                    return InkWell(
+                      onTap: () {
+                        ref.read(pageIndex.notifier).update((state) => 8);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(3),
+                        width: 50,
+                        child: CircleAvatar(
+                          radius: 56,
+                          backgroundColor: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2), // Border radius
+                            child: ClipOval(
+                              child: Image.network(
+                                _data.imageUrl.toString(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  error: (e, s) => Center(
+                        child: Text("${e}"),
+                      ),
+                  loading: () => Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ))
+          ],
         ),
       ),
     );

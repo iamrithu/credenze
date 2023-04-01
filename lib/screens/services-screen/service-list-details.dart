@@ -51,7 +51,6 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
 
   @override
   void initState() {
-    print("isIncharge");
     super.initState();
     getServiceIncahrge();
   }
