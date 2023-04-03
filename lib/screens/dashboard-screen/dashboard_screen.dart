@@ -29,6 +29,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String isChecked = "office";
   Map<String, dynamic> OBJ = {};
   bool isOpen = false;
+  bool isOpenExpenseScreen = false;
   bool isOpen2 = false;
 
   bool isSubmit = false;
@@ -192,9 +193,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
       Position? pos = await MapsAndLocation().locationPermisson();
-
+      setState(() {
+        isLoading = true;
+      });
       Api().CheckCanSubmit(token: token).then((value) {
-        if (jsonDecode(value)["message"]["ask_expense"] == "YES") {
+        if (jsonDecode(value)["message"]["ask_expense"] != "YES") {
           return setState(() {
             isOpen = true;
             OBJ = jsonDecode(value);
@@ -1083,6 +1086,130 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               Container(
                 width: width,
                 height: height,
+                color: Color.fromARGB(255, 255, 255, 255),
+                padding: EdgeInsets.all(5),
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      Text(ref.watch(TaskListPRovider).length.toString()),
+                      Expanded(
+                        child: ListView(children: [
+                          if (ref.watch(TaskListPRovider).isNotEmpty)
+                            Text(ref.watch(TaskListPRovider).length.toString())
+                        ]),
+                      ),
+                      Container(
+                        width: width,
+                        height: height * 0.07,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isLoading = false;
+                                  isOpen = false;
+                                  isOpen2 = false;
+                                  _action = "DayOut";
+                                });
+                              },
+                              child: Container(
+                                color: GlobalColors.themeColor2,
+                                width: width * 0.3,
+                                height: height * 0.04,
+                                child: Center(
+                                  child: Text(
+                                    "Cancel",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 30
+                                            : width / 40,
+                                        fontWeight: FontWeight.w500,
+                                        color: GlobalColors.white,
+                                        letterSpacing: 0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isOpenExpenseScreen = true;
+                                });
+                              },
+                              child: Container(
+                                color: GlobalColors.themeColor2,
+                                width: width * 0.3,
+                                height: height * 0.04,
+                                child: Center(
+                                  child: Text(
+                                    "Add Expense",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 30
+                                            : width / 40,
+                                        fontWeight: FontWeight.w500,
+                                        color: GlobalColors.white,
+                                        letterSpacing: 0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Api()
+                                    .DayOutExpense(
+                                        category_id: OBJ["message"]
+                                            ["category_id"],
+                                        dep_type: OBJ["message"]["dep_type"],
+                                        distance: mileage,
+                                        from_place: OBJ["message"]
+                                            ["from_place"],
+                                        reference_id: OBJ["message"]
+                                            ["reference_id"],
+                                        to_place: isChecked.toString(),
+                                        token: ref.watch(newToken))
+                                    .then((value) {
+                                  if (value.statusCode == 200) {
+                                    setState(() {
+                                      isOpen = false;
+                                      isOpen2 = false;
+                                    });
+                                    dayOut();
+                                  }
+                                });
+                              },
+                              child: Container(
+                                color: GlobalColors.themeColor,
+                                width: width * 0.3,
+                                height: height * 0.04,
+                                child: Center(
+                                  child: Text(
+                                    "Next",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 30
+                                            : width / 40,
+                                        fontWeight: FontWeight.w500,
+                                        color: GlobalColors.white,
+                                        letterSpacing: 0),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            if (isOpenExpenseScreen)
+              Container(
+                width: width,
+                height: height,
                 color: Color.fromARGB(108, 0, 0, 0),
                 padding: EdgeInsets.all(5),
                 alignment: Alignment.center,
@@ -1090,7 +1217,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   children: [
                     Container(
                       width: width,
-                      height: height * 0.5,
+                      height: height,
                       child: Card(
                         elevation: 1,
                         child: SingleChildScrollView(
@@ -1260,6 +1387,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           InkWell(
                                             onTap: () {
                                               setState(() {
+                                                isLoading = false;
                                                 isOpen = false;
                                                 isOpen2 = false;
                                                 _action = "DayOut";
