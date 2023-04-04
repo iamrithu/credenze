@@ -816,6 +816,47 @@ class Api {
     }
   }
 
+  Future addPublicExpense(String token, String dep_type, int reference_id,
+      List<Map<String, dynamic>> data) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    final formData = FormData.fromMap({
+      "dep_type": dep_type,
+      "reference_id": reference_id,
+    });
+
+    for (var i = 0; i < data.length; i++)
+      if (data[i]["category_id"] == 1) {
+        formData.fields.add(MapEntry(
+            "item[${i}][category_id]", data[i]["category_id"].toString()));
+        formData.fields.add(MapEntry(
+            "item[${i}][from_place]", data[i]["from_place"].toString()));
+        formData.fields.add(
+            MapEntry("item[${i}][to_place]", data[i]["to_place"].toString()));
+        formData.fields.add(
+            MapEntry("item[${i}][distance]", data[i]["distance"].toString()));
+        formData.fields.add(MapEntry("item[${i}][amount]", "0"));
+        formData.fields.add(MapEntry("item[${i}][notes]", "--"));
+      } else {
+        formData.fields.add(MapEntry(
+            "item[${i}][category_id]", data[i]["category_id"].toString()));
+        formData.fields
+            .add(MapEntry("item[${i}][amount]", data[i]["amount"].toString()));
+        formData.fields.add(MapEntry("item[${i}][notes]", "--"));
+      }
+
+    print(formData.fields.toString());
+    try {
+      var response = await dio.post("attendance/dayoutexpense", data: formData);
+
+      print(response.toString());
+      return response.toString();
+    } on DioError catch (e) {
+      print("demoxx" + e.response.toString());
+      return e.response;
+    }
+  }
+
   Future ServiceWorkUpdateAdd(
     String? token,
     int? service_id,
@@ -1040,6 +1081,142 @@ class Api {
       throw Exception(response.statusMessage);
     }
   }
+
+  Future publicTask(String token) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "tasks/list",
+    );
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future publicTaskView(String token, int id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "tasks/${id}/view",
+    );
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future publicTaskStatus(String token, int id, String data) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.post("tasks/${id}/changestatus",
+        data: jsonEncode({"status": data}));
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future BranchUsers(
+    String token,
+    int id,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "tasks/${id}/getbranchusers",
+    );
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future BranchUsersReassign(
+    String token,
+    int id,
+    List<int> data,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    final formData = FormData.fromMap({});
+
+    for (var i = 0; i < data.length; i++)
+      formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
+
+    Response response = await dio.post(
+      "tasks/${id}/reassigntask",
+      data: formData,
+    );
+
+    if (response.statusCode == 200) {
+      print(response.toString());
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future getComand(
+    String token,
+    int id,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "tasks/${id}/commands",
+    );
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future removeComand(String token, int id, int cid) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    print("tasks/${id}/removecommands/${cid}");
+
+    Response response = await dio.get("tasks/${id}/removecommands/${cid}");
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future submitComand(
+    String token,
+    int id,
+    String data,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    final formData = FormData.fromMap({"comment": data});
+
+    Response response = await dio.post(
+      "tasks/${id}/submitcommands",
+      data: formData,
+    );
+
+    if (response.statusCode == 200) {
+      print(response.toString());
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
 }
 
 class ProviderApi {
@@ -1094,7 +1271,6 @@ class ProviderApi {
       data: jsonEncode(params),
     );
 
-    print(response.toString());
     if (response.statusCode == 200) {
       List data = response.data["data"];
       List<InstallationModel> installations = [];

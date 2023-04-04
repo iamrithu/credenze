@@ -34,6 +34,8 @@ final pageIndex = StateProvider<int>((ref) => 0);
 final initialIndex = StateProvider<int>((ref) => 0);
 
 final userId = StateProvider<int>((ref) => 0);
+final publicTaskId = StateProvider<int>((ref) => 0);
+
 final netWorkConnectivity = StateProvider<bool>((ref) => true);
 final InstallationClockIn = StateProvider<bool>((ref) => true);
 final ServiceClockIn = StateProvider<bool>((ref) => true);
