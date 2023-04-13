@@ -463,8 +463,7 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                         ],
                       ),
                     ),
-                    if (workTaskId != 0)
-                      if (product["task_details"]["is_removable"] == 1)
+                    if (is_removable_task == 1)
                         Container(
                           margin: EdgeInsets.only(bottom: 3),
                           decoration: BoxDecoration(
@@ -1201,6 +1200,28 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
 
                           return null;
                         }
+                         if (selectedCheckbox.length<1&&is_removable_task != 1) {
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              title: "The product field is required",
+                              autoCloseDuration: null);
+
+                          return null;
+                        }
+
+                         for(var i=0;i<selectedCheckbox.length;i++){
+                          
+                         if(selectedCheckbox[i].containsKey('used_quantity')==false){
+                           QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              title: "Enter quantity of ${selectedCheckbox[i]["item_name"]}",
+                              autoCloseDuration: null);
+
+                          return null;
+                         }
+                        }
 
                         Api()
                             .ServiceWorkUpdateAdd(
@@ -1215,28 +1236,40 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                 removal_qty,
                                 selectedCheckbox)
                             .then((value) {
-                          if (value.statusCode.toString() == "401") {
-                            QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.error,
-                                title: "${value.data["message"]}",
-                                autoCloseDuration: null);
-                          }
-                          if (value.statusCode.toString() == "422" ||
-                              value.statusCode.toString() == "500") {
-                            QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.error,
-                                title: "${value.data["error"]["message"]}",
-                                autoCloseDuration: null);
-                          }
-                        });
 
+                              if(value.data["success"]==true){
                         widget.onclick();
                         Navigator.pop(context);
                         Future<void>.delayed(const Duration(seconds: 1), () {
                           return ref.refresh(workUpdateListProvider);
                         });
+                              }else{
+                                 QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "${value.data["message"]}",
+                                autoCloseDuration: null);
+                              }
+
+                    // print("dd"+value.data["success"].toString());
+                    //       if (value.statusCode.toString() == "401") {
+                    //         QuickAlert.show(
+                    //             context: context,
+                    //             type: QuickAlertType.error,
+                    //             title: "${value.data["message"]}",
+                    //             autoCloseDuration: null);
+                    //       }
+                    //       if (value.statusCode.toString() == "422" ||
+                    //           value.statusCode.toString() == "500") {
+                    //         QuickAlert.show(
+                    //             context: context,
+                    //             type: QuickAlertType.error,
+                    //             title: "${value.data["error"]["message"]}",
+                    //             autoCloseDuration: null);
+                    //       }
+                        });
+
+                      
                       },
                       child: Text("Add"),
                     )

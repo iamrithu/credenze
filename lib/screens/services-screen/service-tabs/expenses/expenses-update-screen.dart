@@ -87,7 +87,6 @@ class _ServiceExpenseUpdateScreenState
     // TODO: implement initState
     super.initState();
 
-    print("bb" + widget.data.toJson().toString());
 
     setState(() {
       _amount.text = widget.data.amount!;

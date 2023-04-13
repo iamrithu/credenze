@@ -75,13 +75,10 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
           (element) => element["productId"] == dataList, orElse: () {
         return null;
       });
-      // print("$data");
       if (data == null) {
         return GlobalColors.white;
       }
-      // print(value.toString());
-
-      // print(data["sNo"].contains(value));
+     
       if (data["sNo"].contains(value)) {
         return GlobalColors.themeColor;
       }
@@ -301,6 +298,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                             flex: 2,
                             child: InkWell(
                               onTap: () {
+
                                 Api()
                                     .workTaskList(ref.watch(newToken),
                                         ref.watch(overViewId))
@@ -315,7 +313,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                           child: Text(
                                             "Task",
                                             style: GoogleFonts.ptSans(
-                                                color: GlobalColors.black,
+                                                color: GlobalColors.themeColor,
                                                 fontSize: width < 500
                                                     ? width / 25
                                                     : width / 35),
@@ -347,7 +345,6 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                       removal_qty = value[i]
                                                           ["removeable_count"];
                                                     });
-
                                                     Api()
                                                         .workProductList(
                                                             ref.watch(newToken),
@@ -355,9 +352,13 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                                 overViewId),
                                                             workTaskId)
                                                         .then((value) {
+
+                                                          print(value.toString());
                                                       setState(() {
                                                         product = value;
                                                       });
+
+                                               
                                                       if (product["task_details"]
                                                               [
                                                               "is_removable"] ==
@@ -395,6 +396,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                                 .toList();
                                                           });
                                                         });
+                                                        
                                                       } else {
                                                         productList = [];
                                                         OtherProductList = [];
@@ -404,7 +406,8 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                     Navigator.pop(context);
                                                   },
                                                   child: Card(
-                                                    elevation: 3,
+                                                    elevation: 10,
+                                                    
                                                     child: Container(
                                                       width: width,
                                                       height: height * 0.05,
@@ -425,7 +428,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                             "${value[i]["category"]["name"]}",
                                                             style: GoogleFonts.ptSans(
                                                                 color: GlobalColors
-                                                                    .themeColor2,
+                                                                    .black,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -466,8 +469,9 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                         ],
                       ),
                     ),
-                    if (workTaskId != 0)
-                      if (product["task_details"]["is_removable"] == 1)
+
+                    if (is_removable_task == 1)
+                   
                         Container(
                           margin: EdgeInsets.only(bottom: 3),
                           decoration: BoxDecoration(
@@ -1202,7 +1206,6 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
 
                           return null;
                         }
-                        print(workTask.toString());
                         if (workTask.isEmpty || workTask == "Select Task") {
                           QuickAlert.show(
                               context: context,
@@ -1212,7 +1215,28 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
 
                           return null;
                         }
+                         if (selectedCheckbox.length<1&&is_removable_task != 1) {
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              title: "The product field is required",
+                              autoCloseDuration: null);
 
+                          return null;
+                        }
+                        for(var i=0;i<selectedCheckbox.length;i++){
+                          
+                         if(selectedCheckbox[i].containsKey('used_quantity')==false){
+                           QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              title: "Enter quantity of ${selectedCheckbox[i]["item_name"]}",
+                              autoCloseDuration: null);
+
+                          return null;
+                         }
+                        }
+print(selectedCheckbox.toString());
                         Api()
                             .WorkUpdateAdd(
                                 ref.watch(newToken),
@@ -1226,31 +1250,36 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                 removal_qty,
                                 selectedCheckbox)
                             .then((value) {
-                          print(value.statusCode.toString());
+                                if(value.data["success"]==true){
+                      widget.onclick();
+                        Navigator.pop(context);
+                        Future<void>.delayed(const Duration(seconds: 1), () {
+                          return ref.refresh(workUpdateListProvider);
+                        });
+                        
+                              }else{
 
-                          if (value.statusCode.toString() == "401") {
-                            print("demo");
-                            QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.error,
-                                title: "${value.data["message"]}",
-                                autoCloseDuration: null);
-                          }
-                          if (value.statusCode.toString() == "422" ||
+                                      if (value.statusCode.toString() == "422" ||
                               value.statusCode.toString() == "500") {
                             QuickAlert.show(
                                 context: context,
                                 type: QuickAlertType.error,
                                 title: "${value.data["error"]["message"]}",
                                 autoCloseDuration: null);
+
+                                return null;
                           }
+                                 QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "${value.data["message"]}",
+                                autoCloseDuration: null);
+                              }
+
+                   
                         });
 
-                        widget.onclick();
-                        Navigator.pop(context);
-                        Future<void>.delayed(const Duration(seconds: 1), () {
-                          return ref.refresh(workUpdateListProvider);
-                        });
+                      
                       },
                       child: Text("Add"),
                     )

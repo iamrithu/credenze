@@ -1,19 +1,48 @@
+import 'dart:io';
+
+import 'package:credenze/apis/api.dart';
+import 'package:credenze/river-pod/riverpod_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../const/global_colors.dart';
 
-class MainExpenseScreen extends StatefulWidget {
-  const MainExpenseScreen({Key? key}) : super(key: key);
+class MainExpenseScreen extends ConsumerStatefulWidget {
+  final bool isCompleted;
+  const MainExpenseScreen({Key? key,required this.isCompleted}) : super(key: key);
 
   @override
   _MainExpenseScreenState createState() => _MainExpenseScreenState();
 }
 
-class _MainExpenseScreenState extends State<MainExpenseScreen> {
+class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
+  File? newFile = null;
   String cat = "Petrol";
+  String amt = "";
+  String note = "";
+  String distance = "";
+  List<dynamic> getExpenses = [];
+
   bool chooseCat = false;
   bool openForm = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Api()
+        .publickGetExpense(ref.read(newToken)!, ref.read(publicTaskId))
+        .then((value) {
+      setState(() {
+        getExpenses = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -39,14 +68,131 @@ class _MainExpenseScreenState extends State<MainExpenseScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: ListView(
                         children: [
-                          Row(
-                            children: [Text("rithi"), Text("rithi")],
-                          )
+                             if(getExpenses.isEmpty)
+                          Center(child: Text(
+                              "Expense not found!",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.themeColor,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0),
+                            ),),
+                          if (getExpenses.isNotEmpty)
+                            for (var i = 0; i < getExpenses.length; i++)
+                              Card(
+                                child: Container(
+                                  padding: EdgeInsets.all(5),
+                                   constraints: BoxConstraints(
+                                    minHeight: height*0.06,
+                                    minWidth: width
+                                   ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(
+                                       
+                                        width: width * 0.15,
+                                        height: height * 0.06,
+                                        child: CircleAvatar(
+                                          radius: 50,
+                                backgroundImage: NetworkImage(getExpenses[i]["user"]["image_url"],),
+                              )
+                                      ),
+                                      Container(
+                                        width: width * 0.4,
+                                        height: height * 0.06,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                  "${getExpenses[i]["user"]["name"]}",
+                                                   style: GoogleFonts.ptSans(
+                                      color: GlobalColors.black,
+                                      fontSize:
+                                          width < 700 ? width / 30 : width / 45,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0),
+                                                ),
+                                                 Text(
+                                                "${getExpenses[i]["category_id"] == 1 ? "Petrol" : "Food"}",
+                                                   style: GoogleFonts.ptSans(
+                                      color: GlobalColors.themeColor2,
+                                      fontSize:
+                                          width < 700 ? width / 35 : width / 45,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0),
+                                                ),
+                                              Wrap(
+                                                children: [
+                                                  Text(
+                                                    "${getExpenses[i]["notes"]??"--"}",
+                                                     style: GoogleFonts.ptSans(
+                                      color: GlobalColors.themeColor2,
+                                      fontSize:
+                                          width < 700 ? width / 35 : width / 55,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0),
+                                                  ),
+                                                ],
+                                              ),
+                                           
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        width: width * 0.15,
+                                        height: height * 0.06,
+                                        child: Center(
+                                          child: Text(
+                                            "${getExpenses[i]["amount"]}",
+                                              style: GoogleFonts.ptSans(
+                                      color: GlobalColors.themeColor2,
+                                      fontSize:
+                                          width < 700 ? width / 35 : width / 45,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0),
+                                          ),
+
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Api()
+                                              .removeExpense(
+                                                  ref.watch(newToken)!,
+                                                  ref.watch(publicTaskId),
+                                                  getExpenses[i]["id"])
+                                              .then((value) {
+                                            Api()
+                                                .publickGetExpense(
+                                                    ref.read(newToken)!,
+                                                    ref.read(publicTaskId))
+                                                .then((value) {
+                                              setState(() {
+                                                getExpenses = value;
+                                              });
+                                            });
+                                          });
+                                        },
+                                        child: Container(
+                                           
+                                            width: width * 0.1,
+                                            height: height * 0.06,
+                                            child: Center(child: Icon(Icons.delete,size: width/30,color: Colors.red,),),
+                                          ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
                         ],
                       ),
                     ),
                   ),
-                  Container(
+                  if(widget.isCompleted)Container(
                     width: width,
                     height: height * 0.04,
                     child: Center(
@@ -76,8 +222,8 @@ class _MainExpenseScreenState extends State<MainExpenseScreen> {
                   children: [
                     Container(
                       width: width,
-                      height: height * 0.5,
-                      padding: const EdgeInsets.all(8.0),
+                      height: height * 0.7,
+                      padding: const EdgeInsets.all(4.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -96,7 +242,7 @@ class _MainExpenseScreenState extends State<MainExpenseScreen> {
                           ),
                           Container(
                             width: width,
-                            height: height * 0.06,
+                            height: height * 0.04,
                             child: Row(children: [
                               Container(
                                 alignment: Alignment.centerLeft,
@@ -144,117 +290,261 @@ class _MainExpenseScreenState extends State<MainExpenseScreen> {
                               ),
                             ]),
                           ),
-                          Container(
-                            width: width,
-                            height: height * 0.06,
-                            child: Row(children: [
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                width: width * 0.25,
-                                child: Text(
-                                  "Category",
-                                  style: GoogleFonts.ptSans(
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 48,
-                                      fontWeight: FontWeight.w400,
-                                      color: GlobalColors.black,
-                                      letterSpacing: 0),
+                          if (cat == "Food")
+                            Container(
+                              width: width,
+                              height: height * 0.06,
+                              child: Row(children: [
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: width * 0.25,
+                                  child: Text(
+                                    "Amount",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 30
+                                            : width / 48,
+                                        fontWeight: FontWeight.w400,
+                                        color: GlobalColors.black,
+                                        letterSpacing: 0),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                width: width * 0.05,
-                                child: Text(":"),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    chooseCat = true;
-                                  });
-                                },
-                                child: Card(
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: width * 0.05,
+                                  child: Text(":"),
+                                ),
+                                Card(
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     width: width * 0.5,
                                     height: height * 0.05,
-                                    child: Center(
-                                      child: Text(
-                                        "${cat}",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 30
-                                                : width / 48,
-                                            fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor,
-                                            letterSpacing: 0),
-                                      ),
+                                    child: TextFormField(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          amt = value;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder()),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ]),
-                          ),
-                          Container(
-                            width: width,
-                            height: height * 0.06,
-                            child: Row(children: [
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                width: width * 0.25,
-                                child: Text(
-                                  "Category",
-                                  style: GoogleFonts.ptSans(
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 48,
-                                      fontWeight: FontWeight.w400,
-                                      color: GlobalColors.black,
-                                      letterSpacing: 0),
+                              ]),
+                            ),
+                          if (cat == "Petrol")
+                            Container(
+                              width: width,
+                              height: height * 0.06,
+                              child: Row(children: [
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: width * 0.25,
+                                  child: Text(
+                                    "Distance",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 30
+                                            : width / 48,
+                                        fontWeight: FontWeight.w400,
+                                        color: GlobalColors.black,
+                                        letterSpacing: 0),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                width: width * 0.05,
-                                child: Text(":"),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    chooseCat = true;
-                                  });
-                                },
-                                child: Card(
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: width * 0.05,
+                                  child: Text(":"),
+                                ),
+                                Card(
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     width: width * 0.5,
                                     height: height * 0.05,
-                                    child: Center(
-                                      child: Text(
-                                        "${cat}",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 30
-                                                : width / 48,
-                                            fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor,
-                                            letterSpacing: 0),
-                                      ),
+                                    child: TextFormField(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          distance = value;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder()),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ]),
-                          ),
+                              ]),
+                            ),
                           Container(
                             width: width,
-                            height: height * 0.08,
-                            color: Colors.amber,
+                            height: height * 0.06,
                             child: Row(
+                              children: [
+                                Container(
+                                    width: width * 0.29,
+                                    height: height * 0.05,
+                                    alignment: Alignment.centerLeft,
+                                    margin: EdgeInsets.only(left: width * 0.01),
+                                    child: Text(
+                                      "File ",
+                                      style: GoogleFonts.ptSans(
+                                        color: GlobalColors.black,
+                                        fontSize: width < 700
+                                            ? width / 35
+                                            : width / 44,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0,
+                                      ),
+                                    )),
+                                Container(
+                                  width: width * 0.4,
+                                  height: height * 0.05,
+                                  margin: EdgeInsets.only(left: 5, right: 2),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(
+                                          color: GlobalColors.themeColor2)),
+                                  child: Container(
+                                    width: width * 0.2,
+                                    padding:
+                                        EdgeInsets.only(left: width * 0.07),
+                                    alignment: Alignment.centerLeft,
+                                    child: newFile == null
+                                        ? Text(
+                                            "Choose File ",
+                                            style: GoogleFonts.ptSans(
+                                              color: GlobalColors.themeColor2,
+                                              fontSize: width < 700
+                                                  ? width / 40
+                                                  : width / 44,
+                                              fontWeight: FontWeight.w400,
+                                              letterSpacing: 0,
+                                            ),
+                                          )
+                                        : Text(
+                                          
+                                            newFile == null
+                                                ? "Choose File "
+                                                : "${newFile!.path.split('/').last}",
+                                            style: GoogleFonts.ptSans(
+                                              color: GlobalColors.themeColor2,
+                                              fontSize: width < 700
+                                                  ? width / 40
+                                                  : width / 44,
+                                              fontWeight: FontWeight.w400,
+                                              letterSpacing: 0,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () async {
+                                    FilePickerResult? result = await FilePicker
+                                        .platform
+                                        .pickFiles(allowMultiple: true);
+                                    if (result != null) {
+                                      File file =
+                                          File(result.files.single.path!);
+                                      setState(() {
+                                        newFile = file;
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                      width: width * 0.1,
+                                      height: height * 0.05,
+                                      margin: EdgeInsets.symmetric(vertical: 2),
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: GlobalColors.themeColor2),
+                                          borderRadius:
+                                              BorderRadius.circular(4)),
+                                      child: Center(
+                                        child: Icon(FontAwesomeIcons.file,
+                                            color: GlobalColors.themeColor),
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: width,
+                            height: height * 0.06,
+                            child: Row(children: [
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                width: width * 0.25,
+                                child: Text(
+                                  "Notes",
+                                  style: GoogleFonts.ptSans(
+                                      fontSize:
+                                          width < 700 ? width / 30 : width / 48,
+                                      fontWeight: FontWeight.w400,
+                                      color: GlobalColors.black,
+                                      letterSpacing: 0),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                width: width * 0.05,
+                                child: Text(":"),
+                              ),
+                              Card(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: width * 0.5,
+                                  height: height * 0.05,
+                                  child: TextFormField(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        note = value;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder()),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                          ),
+                          Container(
+                            width: width,
+                            height: height * 0.04,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 ElevatedButton(
                                     onPressed: () {
-                                      setState(() {
-                                        openForm = false;
+                                      Map<String, dynamic> data = {
+                                        "category_id": cat == "Petrol" ? 1 : 2,
+                                        "expense_km":
+                                            cat == "Petrol" ? distance : "",
+                                        "notes": note,
+                                        "amount": cat == "Petrol" ? "0" : amt,
+                                        "attachment": newFile 
+                                      };
+                                      Api()
+                                          .publicExpenseAdd(
+                                              ref.watch(newToken)!,
+                                              ref.watch(publicTaskId),
+                                              data)
+                                          .then((value) {
+                                        Api()
+                                            .publickGetExpense(
+                                                ref.read(newToken)!,
+                                                ref.read(publicTaskId))
+                                            .then((value) {
+                                          setState(() {
+                                            getExpenses = value;
+                                          });
+                                        });
+                                        setState(() {
+                                          openForm = false;
+                                        });
                                       });
+
+                                      print(data.toString());
                                     },
                                     child: Text("Save"))
                               ],
@@ -273,66 +563,73 @@ class _MainExpenseScreenState extends State<MainExpenseScreen> {
               height: height * 0.5,
               color: Color.fromARGB(95, 71, 70, 70),
               padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: width,
-                height: height * 0.15,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          cat = "Petrol";
-                          chooseCat = false;
-                        });
-                      },
-                      child: Card(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          width: width,
-                          height: height * 0.05,
-                          child: Center(
-                            child: Text(
-                              "Petrol",
-                              style: GoogleFonts.ptSans(
-                                  fontSize:
-                                      width < 700 ? width / 30 : width / 48,
-                                  fontWeight: FontWeight.w400,
-                                  color: GlobalColors.themeColor,
-                                  letterSpacing: 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: width,
+                    color: Colors.white,
+                    height: height * 0.15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              cat = "Petrol";
+                              chooseCat = false;
+                            });
+                          },
+                          child: Card(
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              width: width,
+                              height: height * 0.05,
+                              child: Center(
+                                child: Text(
+                                  "Petrol",
+                                  style: GoogleFonts.ptSans(
+                                      fontSize:
+                                          width < 700 ? width / 30 : width / 48,
+                                      fontWeight: FontWeight.w400,
+                                      color: GlobalColors.themeColor,
+                                      letterSpacing: 0),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          cat = "Food";
-                          chooseCat = false;
-                        });
-                      },
-                      child: Card(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          width: width,
-                          height: height * 0.05,
-                          child: Center(
-                            child: Text(
-                              "Food",
-                              style: GoogleFonts.ptSans(
-                                  fontSize:
-                                      width < 700 ? width / 30 : width / 48,
-                                  fontWeight: FontWeight.w400,
-                                  color: GlobalColors.themeColor,
-                                  letterSpacing: 0),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              cat = "Food";
+                              chooseCat = false;
+                            });
+                          },
+                          child: Card(
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              width: width,
+                              height: height * 0.05,
+                              child: Center(
+                                child: Text(
+                                  "Food",
+                                  style: GoogleFonts.ptSans(
+                                      fontSize:
+                                          width < 700 ? width / 30 : width / 48,
+                                      fontWeight: FontWeight.w400,
+                                      color: GlobalColors.themeColor,
+                                      letterSpacing: 0),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
         ],

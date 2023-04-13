@@ -73,7 +73,7 @@ class _InstallationDetailScreenState
                 child: Card(
                   child: TabBar(
                     labelColor: GlobalColors.themeColor,
-                    unselectedLabelColor: GlobalColors.themeColor2,
+                    unselectedLabelColor: GlobalColors.black,
                     indicatorSize: TabBarIndicatorSize.label,
                     dragStartBehavior: DragStartBehavior.start,
                     isScrollable: tabName.length > 5 ? true : false,

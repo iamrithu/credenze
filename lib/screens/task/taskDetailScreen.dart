@@ -31,7 +31,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
 
   List<dynamic> getUsers = [];
   List<int> getUsersId = [];
-  List<String> getUsersName = [];
+  List<dynamic> getUsersName = [];
 
   bool isTimerOn = true;
   bool isCompleted = true;
@@ -51,20 +51,28 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
       setState(() {
         object = value;
         getUsersName = jsonDecode(value["assigned_names"]);
+                isCompleted = object["status"] == "completed" ? false : true;
+
+
       });
 
-      setState(() {
-        isCompleted = object["status"] == "completed" ? false : true;
-      });
-    });
-
-    Api()
-        .BranchUsers(ref.read(newToken)!, ref.read(publicTaskId))
+      for(var i=0;i<jsonDecode(object["assigned_ids"]).length;i++){
+        setState(() {
+          getUsersId.add(jsonDecode(object["assigned_ids"])[i]);
+        });
+      }
+       Api()
+        .BranchUsers(ref.read(newToken)!, object["branch_id"])
         .then((value) {
       setState(() {
         getUsers = value;
       });
     });
+
+
+    
+    });
+   
     tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
@@ -284,7 +292,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                         : [
                             Container(
                               width: width,
-                              height: height * 0.25,
+                              height: height * 0.2,
                               margin: EdgeInsets.all(2),
                               child: Card(
                                 elevation: 1,
@@ -313,7 +321,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                           ),
                                           Text(":"),
                                           SizedBox(
-                                            width: 20,
+                                            width: 10,
                                           ),
                                           Container(
                                             width: width * 0.45,
@@ -348,7 +356,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                           ),
                                           Text(":"),
                                           SizedBox(
-                                            width: 20,
+                                            width: 10,
                                           ),
                                           Container(
                                             width: width * 0.45,
@@ -383,7 +391,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                           ),
                                           Text(":"),
                                           SizedBox(
-                                            width: 20,
+                                            width: 10,
                                           ),
                                           Container(
                                             width: width * 0.45,
@@ -418,7 +426,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                           ),
                                           Text(":"),
                                           SizedBox(
-                                            width: 20,
+                                            width: 10,
                                           ),
                                           Container(
                                             width: width * 0.45,
@@ -453,7 +461,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                           ),
                                           Text(":"),
                                           SizedBox(
-                                            width: 20,
+                                            width: 10,
                                           ),
                                           Container(
                                             width: width * 0.45,
@@ -488,7 +496,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                           ),
                                           Text(":"),
                                           SizedBox(
-                                            width: 20,
+                                            width: 10,
                                           ),
                                           Container(
                                             width: width * 0.45,
@@ -514,7 +522,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                             if (isCompleted)
                               Container(
                                   width: width,
-                                  height: height * 0.07,
+                                  height: height * 0.05,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -544,11 +552,40 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                         ),
                                       ),
                                       InkWell(
-                                        onTap: () {
-                                          Api().BranchUsersReassign(
-                                              ref.watch(newToken)!,
-                                              ref.read(publicTaskId),
-                                              getUsersId);
+                                        onTap: () {      
+
+
+                                          
+
+Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),getUsersId);                                        
+
+    //                                            Api()
+    //     .publicTaskView(ref.read(newToken)!, ref.read(publicTaskId))
+    //     .then((value) {
+    //   setState(() {
+    //     object = value;
+    //     getUsersName = jsonDecode(value["assigned_names"]);
+    //             isCompleted = object["status"] == "completed" ? false : true;
+
+
+    //             print(getUsersName.toString());
+
+    //   });
+
+    //    Api()
+    //     .BranchUsers(ref.read(newToken)!, object["branch_id"])
+    //     .then((value) {
+    //   setState(() {
+    //     getUsers = value;
+    //   });
+
+    // });
+
+
+    
+    // });
+   
+                                              
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -612,19 +649,37 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                               Container(
                                 width: width,
                                 height: height * 0.38,
-                                child: CommentScreen(),
+                                child: CommentScreen(isCompleted: isCompleted,),
                               ),
                             // if (tabPage == 1)
                             //   Container(
                             //       width: width,
                             //       height: height * 0.38,
                             //       child: TimeLogScreen()),
+
                             if (tabPage == 1)
-                              Container(
-                                width: width,
-                                height: height * 0.38,
-                                child: MainExpenseScreen(),
-                              ),
+                              object["is_with_expense"] == null
+                                  ? Container(
+                                      width: width,
+                                      height: height * 0.38,
+                                      child: Center(
+                                        child: Text(
+                                          "Its not Expense Task",
+                                          style: GoogleFonts.ptSans(
+                                              color: GlobalColors.themeColor,
+                                              fontSize: width < 700
+                                                  ? width / 35
+                                                  : width / 45,
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 0),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      width: width,
+                                      height: height * 0.38,
+                                      child: MainExpenseScreen(isCompleted:isCompleted,),
+                                    ),
                           ],
                   ),
                 ),
@@ -721,8 +776,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                 InkWell(
                                   onTap: () {
                                     setState(() {
-                                      getUsersId = [];
-                                      getUsersName = [];
+                                    
                                       reassignMember = false;
                                     });
                                   },

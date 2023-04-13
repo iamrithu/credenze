@@ -273,12 +273,13 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                                               .viewInsets
                                                               .bottom),
                                                   child: Container(
-                                                    width: widget.width,
-                                                    height: widget.height,
+                                                    width: widget.width!,
+                                                    height: widget.height!,
                                                     child:
                                                         ExpenseUpdateAddScreen(
+                                                          data: _data[i],
                                                       onclick: refresh,
-                                                      data: _data[i],
+                                                      // data: _data[i],
                                                     ),
                                                   ),
                                                 );
@@ -339,7 +340,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                         children: [
                           Center(
                             child: Text(
-                              "Not Available",
+                              "Not Available ",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor2,

@@ -235,6 +235,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             isLoading = true;
           });
           QuickAlert.show(
+            barrierDismissible:false,
             context: context,
             type: QuickAlertType.error,
             title: "Are you sure to day out",

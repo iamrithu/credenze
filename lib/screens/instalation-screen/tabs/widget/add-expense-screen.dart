@@ -659,7 +659,6 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                             return null;
                           }
                         }
-                        print("1oo rithi");
                         Map<String, dynamic> data = {
                           "installation_id": ref.read(overViewId),
                           "user_id": ref.read(userId),
@@ -672,7 +671,6 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                           "distance": categoryId == 1 ? _distance.text : "",
                           "amount": categoryId == 1 ? "" : _amount.text,
                         };
-                        print("xnx" + newFile.toString());
 
                         Api()
                             .AddExpense(
@@ -681,6 +679,8 @@ class _ExpenseAddScreenState extends ConsumerState<ExpenseAddScreen> {
                                 file: newFile,
                                 id: ref.watch(overViewId))
                             .then((value) {
+
+                              print(value.toString());
                           widget.onclick();
                           Navigator.pop(context);
                         });

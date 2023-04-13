@@ -85,7 +85,7 @@ class _ExpenseUpdateAddScreenState
     // TODO: implement initState
     super.initState();
 
-    print("bb" + widget.data.toJson().toString());
+    print("bb" + widget.data.toString());
 
     setState(() {
       _amount.text = widget.data.amount!;
@@ -99,7 +99,7 @@ class _ExpenseUpdateAddScreenState
       newFile = null;
     });
 
-    getCategory();
+  getCategory();
   }
 
   @override

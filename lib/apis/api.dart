@@ -42,12 +42,13 @@ class Api {
     try {
       var params = {"email": email, "password": password};
       Response response = await dio.post(
-        "login",
+        "http://dev.credenze.in/api/login",
         data: jsonEncode(params),
       );
-
+print(response.toString());
       return response;
     } on DioError catch (e) {
+      print(e.response.toString());
       return e.response;
     }
   }
@@ -434,7 +435,7 @@ class Api {
         "installation/${id}/expenses/save",
         data: datas,
       );
-      return "response".toString();
+      return response.toString();
     } on DioError catch (e) {
       return e.response.toString();
     }
@@ -938,7 +939,7 @@ class Api {
           data: formData);
       print("demoxx" + response.toString());
 
-      return response.toString();
+      return response;
     } on DioError catch (e) {
       print("demoxx" + e.response.toString());
       return e.response;
@@ -1140,20 +1141,80 @@ class Api {
     }
   }
 
-  Future BranchUsersReassign(
+  Future publickGetExpense(
     String token,
+    int id,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "tasks/${id}/expenses",
+    );
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future publicBranchUsersReassign(
+    String? token,
     int id,
     List<int> data,
   ) async {
     dio.options.headers["Authorization"] = "Bearer $token";
+
+    print(token!.toString());
+        print(data.toString());
+
 
     final formData = FormData.fromMap({});
 
     for (var i = 0; i < data.length; i++)
       formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
 
+
+print(formData.fields.toString());
+
+
     Response response = await dio.post(
       "tasks/${id}/reassigntask",
+      data: formData,
+    );
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future publicExpenseAdd(
+    String token,
+    int id,
+    Map<String, dynamic> data,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    final formData = FormData.fromMap({
+      "amount": data["amount"],
+      "category_id": data["category_id"],
+      "expense_km": data["expense_km"],
+      "notes": data["notes"],
+      "attachment": data["attachment"] == null
+          ? ""
+          : await MultipartFile.fromFile(
+              data["attachment"].path,
+              filename: data["attachment"].path.split('/').last,
+            ),
+    });
+
+    for (var i = 0; i < data.length; i++)
+      formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
+
+    Response response = await dio.post(
+      "tasks/${id}/submitexpenses",
       data: formData,
     );
 
@@ -1188,6 +1249,20 @@ class Api {
     print("tasks/${id}/removecommands/${cid}");
 
     Response response = await dio.get("tasks/${id}/removecommands/${cid}");
+
+    if (response.statusCode == 200) {
+      return response.data["data"];
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future removeExpense(String token, int id, int cid) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    print("tasks/${id}/removeexpense/${cid}");
+
+    Response response = await dio.get("tasks/${id}/removeexpense/${cid}");
 
     if (response.statusCode == 200) {
       return response.data["data"];
@@ -1434,6 +1509,9 @@ class ProviderApi {
     Response response = await dio.get(
       "installation/${id}/expenses",
     );
+
+
+    print("demo"+response.toString());
 
     if (response.statusCode == 200) {
       List data = response.data["data"];

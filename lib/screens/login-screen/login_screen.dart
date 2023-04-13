@@ -67,6 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     Api()
         .authendication(_emailController.text, _passwordController.text)
         .then((value) {
+          print(value.toString());
       if (value.statusCode == 200) {
         return setState(() {
           setToken(value.data["data"]["token"]);
