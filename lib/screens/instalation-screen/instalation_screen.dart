@@ -390,7 +390,7 @@ class _InstalationScreenState extends ConsumerState<InstalationScreen> {
                                             .update((state) => 0);
                                         ref
                                             .read(pageIndex.notifier)
-                                            .update((state) => 4);
+                                            .update((state) => 5);
 
                                         if (_data[i].siteInchargeToday ==
                                             null) {
@@ -495,21 +495,25 @@ class _InstalationScreenState extends ConsumerState<InstalationScreen> {
                                                         ),
                                                         Container(
                                                           width: width * 0.45,
-                                                          child: Text(
-                                                            "${_data[i].installationName}",
-                                                            style: GoogleFonts.ptSans(
-                                                                color: GlobalColors
-                                                                    .themeColor,
-                                                                fontSize: width <
-                                                                        700
-                                                                    ? width / 35
-                                                                    : width /
-                                                                        45,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                letterSpacing:
-                                                                    0),
+                                                          child: Wrap(
+                                                            children: [
+                                                              Text(
+                                                                "${_data[i].installationName}",
+                                                                style: GoogleFonts.ptSans(
+                                                                    color: GlobalColors
+                                                                        .themeColor,
+                                                                    fontSize: width <
+                                                                            700
+                                                                        ? width / 35
+                                                                        : width /
+                                                                            45,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    letterSpacing:
+                                                                        0),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ],
@@ -538,21 +542,25 @@ class _InstalationScreenState extends ConsumerState<InstalationScreen> {
                                                         ),
                                                         Container(
                                                           width: width * 0.45,
-                                                          child: Text(
-                                                            "${_data[i].customerName}",
-                                                            style: GoogleFonts.ptSans(
-                                                                color: GlobalColors
-                                                                    .themeColor,
-                                                                fontSize: width <
-                                                                        700
-                                                                    ? width / 35
-                                                                    : width /
-                                                                        45,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                letterSpacing:
-                                                                    0),
+                                                          child: Wrap(
+                                                            children: [
+                                                              Text(
+                                                                "${_data[i].customerName}",
+                                                                style: GoogleFonts.ptSans(
+                                                                    color: GlobalColors
+                                                                        .themeColor,
+                                                                    fontSize: width <
+                                                                            700
+                                                                        ? width / 35
+                                                                        : width /
+                                                                            45,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    letterSpacing:
+                                                                        0),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ],

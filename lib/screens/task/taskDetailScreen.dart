@@ -35,6 +35,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
 
   bool isTimerOn = true;
   bool isCompleted = true;
+  bool isLoading=false;
   int tabPage = 0;
 
   bool reassignMember = false;
@@ -51,28 +52,21 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
       setState(() {
         object = value;
         getUsersName = jsonDecode(value["assigned_names"]);
-                isCompleted = object["status"] == "completed" ? false : true;
-
-
+        isCompleted = object["status"] == "completed" ? false : true;
       });
 
-      for(var i=0;i<jsonDecode(object["assigned_ids"]).length;i++){
+      for (var i = 0; i < jsonDecode(object["assigned_ids"]).length; i++) {
         setState(() {
           getUsersId.add(jsonDecode(object["assigned_ids"])[i]);
         });
       }
-       Api()
-        .BranchUsers(ref.read(newToken)!, object["branch_id"])
-        .then((value) {
-      setState(() {
-        getUsers = value;
+      Api().BranchUsers(ref.read(newToken)!, object["branch_id"]).then((value) {
+        setState(() {
+          getUsers = value;
+        });
       });
     });
 
-
-    
-    });
-   
     tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
@@ -111,7 +105,9 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                           height: height * 0.8,
                           child: InkWell(
                             onTap: () {
-                              print(object["status"]);
+                              setState(() {
+                                isLoading=true;
+                              });
                               Api()
                                   .publicTaskStatus(
                                       ref.read(newToken)!,
@@ -130,8 +126,8 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                     object = value;
                                   });
 
-                                  print(object["status"]);
                                   setState(() {
+                                    isLoading=false;
                                     isCompleted =
                                         object["status"] == "completed"
                                             ? false
@@ -527,65 +523,49 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color:
+                                                    GlobalColors.themeColor)),
+                                        width: width * 0.6,
+                                        height: height * 0.06,
+                                        child: ListView(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.all(5),
+                                              child: Wrap(
+                                                alignment: WrapAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    getUsersName
+                                                        .toString()
+                                                        .replaceAll('[', "")
+                                                        .replaceAll(']', "")
+                                                        .replaceAll('"', ""),
+                                                    style: GoogleFonts.ptSans(
+                                                        color: GlobalColors
+                                                            .themeColor2,
+                                                        fontSize: width < 700
+                                                            ? width / 35
+                                                            : width / 45,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        letterSpacing: 0),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                       InkWell(
                                         onTap: () {
                                           setState(() {
                                             reassignMember = true;
                                           });
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              border: Border.all(
-                                                  color:
-                                                      GlobalColors.themeColor)),
-                                          width: width * 0.6,
-                                          height: height * 0.06,
-                                          child: Center(
-                                            child: Text(getUsersName
-                                                .toString()
-                                                .replaceAll('[', "")
-                                                .replaceAll(']', "")
-                                                .replaceAll('"', "")),
-                                          ),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {      
-
-
-                                          
-
-Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),getUsersId);                                        
-
-    //                                            Api()
-    //     .publicTaskView(ref.read(newToken)!, ref.read(publicTaskId))
-    //     .then((value) {
-    //   setState(() {
-    //     object = value;
-    //     getUsersName = jsonDecode(value["assigned_names"]);
-    //             isCompleted = object["status"] == "completed" ? false : true;
-
-
-    //             print(getUsersName.toString());
-
-    //   });
-
-    //    Api()
-    //     .BranchUsers(ref.read(newToken)!, object["branch_id"])
-    //     .then((value) {
-    //   setState(() {
-    //     getUsers = value;
-    //   });
-
-    // });
-
-
-    
-    // });
-   
-                                              
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -649,7 +629,9 @@ Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),get
                               Container(
                                 width: width,
                                 height: height * 0.38,
-                                child: CommentScreen(isCompleted: isCompleted,),
+                                child: CommentScreen(
+                                  isCompleted: isCompleted,
+                                ),
                               ),
                             // if (tabPage == 1)
                             //   Container(
@@ -678,7 +660,9 @@ Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),get
                                   : Container(
                                       width: width,
                                       height: height * 0.38,
-                                      child: MainExpenseScreen(isCompleted:isCompleted,),
+                                      child: MainExpenseScreen(
+                                        isCompleted: isCompleted,
+                                      ),
                                     ),
                           ],
                   ),
@@ -740,8 +724,7 @@ Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),get
                                             }
                                           }
 
-                                          print(getUsers[i]["id"]);
-                                          print(getUsersId.toString());
+                                       
                                           // setState(() {
                                           //   reassignMember = false;
                                           // });
@@ -776,14 +759,13 @@ Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),get
                                 InkWell(
                                   onTap: () {
                                     setState(() {
-                                    
                                       reassignMember = false;
                                     });
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: GlobalColors.themeColor2,
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(5),
                                     ),
                                     width: width * 0.3,
                                     height: height * 0.04,
@@ -791,7 +773,7 @@ Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),get
                                       child: Text(
                                         "Cancel",
                                         style: GoogleFonts.ptSans(
-                                            color: GlobalColors.black,
+                                            color: GlobalColors.white,
                                             fontSize: width < 700
                                                 ? width / 35
                                                 : width / 45,
@@ -803,20 +785,27 @@ Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),get
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    setState(() {
-                                      reassignMember = false;
+                                    Api()
+                                        .publicBranchUsersReassign(
+                                            ref.watch(newToken)!,
+                                            ref.watch(publicTaskId),
+                                            getUsersId)
+                                        .then((value) {
+                                      setState(() {
+                                        reassignMember = false;
+                                      });
                                     });
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: GlobalColors.themeColor,
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(5),
                                     ),
                                     width: width * 0.3,
                                     height: height * 0.04,
                                     child: Center(
                                       child: Text(
-                                        "Add",
+                                        "Reassign",
                                         style: GoogleFonts.ptSans(
                                             color: GlobalColors.white,
                                             fontSize: width < 700
@@ -837,6 +826,13 @@ Api().publicBranchUsersReassign(ref.watch(newToken)!,ref.watch(publicTaskId),get
                   ),
                 ],
               ),
+            ),
+if(isLoading)
+            Container(
+              width: width,
+              height: height,
+              color: Color.fromARGB(81, 255, 255, 255),
+              child: Center(child: CircularProgressIndicator.adaptive(),),
             )
         ],
       ),

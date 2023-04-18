@@ -106,7 +106,7 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                     dragStartBehavior: DragStartBehavior.start,
                     isScrollable: tabName.length > 5 ? true : false,
                     onTap: (int) {
-                      ref.read(initialIndex.notifier).update((state) => 0);
+                      ref.read(initialIndex.notifier).update((state) => int);
                     },
                     overlayColor: MaterialStateProperty.resolveWith((states) {
                       if (states.contains(MaterialState.pressed)) {

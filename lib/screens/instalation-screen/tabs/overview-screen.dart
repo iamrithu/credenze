@@ -373,6 +373,9 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                   loading = true;
                   detailVisible = true;
                 });
+
+                print(lat.toString());
+                print(long.toString());
                 Api()
                     .ClockOut(
                         token: token!,
@@ -380,21 +383,24 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
                         latitude: value.latitude.toString(),
                         longitude: value.longitude.toString())
                     .then((value) {
+                      print(value.toString());
                   Map<String, dynamic> data = jsonDecode(value);
-                  if (data["success"]) {
+                  if (data.containsKey("success")) {
                     ref.read(Installavailable.notifier).update((state) => true);
 
                     getInstallationAttendence();
+                     setState(() {
+                  loading = false;
+                  detailVisible = false;
+                });
+
                   } else {
                     QuickAlert.show(
                         context: context,
                         type: QuickAlertType.error,
                         title: "${data["message"]}",
                         autoCloseDuration: null);
-                    setState(() {
-                      loading = false;
-                      detailVisible = false;
-                    });
+                   
                   }
                 });
               });

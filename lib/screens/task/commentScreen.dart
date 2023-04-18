@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../../apis/api.dart';
 import '../../const/global_colors.dart';
 
 class CommentScreen extends ConsumerStatefulWidget {
   final bool isCompleted;
-  const CommentScreen({Key? key,required this.isCompleted}) : super(key: key);
+  const CommentScreen({Key? key, required this.isCompleted}) : super(key: key);
 
   @override
   _CommentScreenState createState() => _CommentScreenState();
@@ -56,65 +58,71 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                       padding: const EdgeInsets.all(10.0),
                       child: ListView(
                         children: [
-                          if(getComents.isEmpty)
-                          Center(child: Text(
-                              "Command not found!",
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.themeColor,
-                                  fontSize:
-                                      width < 700 ? width / 30 : width / 45,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0),
-                            ),),
+                          if (getComents.isEmpty)
+                            Center(
+                              child: Text(
+                                "Command not found!",
+                                style: GoogleFonts.ptSans(
+                                    color: GlobalColors.themeColor,
+                                    fontSize:
+                                        width < 700 ? width / 30 : width / 45,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0),
+                              ),
+                            ),
                           if (getComents.isNotEmpty)
                             for (var i = 0; i < getComents.length; i++)
                               Card(
                                 child: Container(
                                   width: width,
-                                  height: height*0.08,
+                                  height: height * 0.08,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Container(
-                                       
-                                        width: width * 0.2,
-                                        height: height * 0.06,
-                                        child: CircleAvatar(
-                                          radius: 50,
-                                backgroundImage: NetworkImage(getComents[i]["user"]["image_url"],),
-                              )
-                                      ),
+                                          width: width * 0.2,
+                                          height: height * 0.06,
+                                          child: CircleAvatar(
+                                            radius: 50,
+                                            backgroundImage: NetworkImage(
+                                              getComents[i]["user"]
+                                                  ["image_url"],
+                                            ),
+                                          )),
                                       Container(
-                                       
                                         width: width * 0.5,
-                              
                                         constraints: BoxConstraints(
-                                          minHeight: height * 0.06
-                                        ),
+                                            minHeight: height * 0.06),
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                                "${getComents[i]["user"]["name"]}",
-                                                 style: GoogleFonts.ptSans(
-                                    color: GlobalColors.black,
-                                    fontSize:
-                                        width < 700 ? width / 30 : width / 45,
-                                    fontWeight: FontWeight.w500,
-                                    letterSpacing: 0),
-                                              ),
+                                              "${getComents[i]["user"]["name"]}",
+                                              style: GoogleFonts.ptSans(
+                                                  color: GlobalColors.black,
+                                                  fontSize: width < 700
+                                                      ? width / 30
+                                                      : width / 45,
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: 0),
+                                            ),
                                             Wrap(
                                               children: [
                                                 Text(
                                                   "${getComents[i]["comment"]}",
-                                                   style: GoogleFonts.ptSans(
-                                    color: GlobalColors.themeColor2,
-                                    fontSize:
-                                        width < 700 ? width / 35 : width / 55,
-                                    fontWeight: FontWeight.w500,
-                                    letterSpacing: 0),
+                                                  style: GoogleFonts.ptSans(
+                                                      color: GlobalColors
+                                                          .themeColor2,
+                                                      fontSize: width < 700
+                                                          ? width / 35
+                                                          : width / 55,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      letterSpacing: 0),
                                                 ),
                                               ],
                                             ),
@@ -140,10 +148,15 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                                           });
                                         },
                                         child: Container(
-                                         
                                           width: width * 0.1,
                                           height: height * 0.06,
-                                          child: Center(child: Icon(Icons.delete,size: width/30,color: Colors.red,),),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.delete,
+                                              size: width / 30,
+                                              color: Colors.red,
+                                            ),
+                                          ),
                                         ),
                                       )
                                     ],
@@ -154,20 +167,21 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                       ),
                     ),
                   ),
-                  if(widget.isCompleted)Container(
-                    width: width,
-                    height: height * 0.04,
-                    child: Center(
-                      child: ElevatedButton(
-                        child: Text("Add Comment"),
-                        onPressed: () {
-                          setState(() {
-                            openComment = true;
-                          });
-                        },
+                  if (widget.isCompleted)
+                    Container(
+                      width: width,
+                      height: height * 0.04,
+                      child: Center(
+                        child: ElevatedButton(
+                          child: Text("Add Comment"),
+                          onPressed: () {
+                            setState(() {
+                              openComment = true;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                  )
+                    )
                 ],
               ),
             ),
@@ -238,17 +252,39 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                                         .submitComand(ref.watch(newToken)!,
                                             ref.watch(publicTaskId), cmd)
                                         .then((value) {
-                                      Api()
-                                          .getComand(ref.read(newToken)!,
-                                              ref.read(publicTaskId))
-                                          .then((value) {
-                                        setState(() {
-                                          getComents = value;
+                                      print(value.statusCode.toString());
+                                      if (value.statusCode == 200) {
+                                        Api()
+                                            .getComand(ref.read(newToken)!,
+                                                ref.read(publicTaskId))
+                                            .then((value) {
+                                          setState(() {
+                                            getComents = value;
+                                          });
+                                          setState(() {
+                                            openComment = false;
+                                            cmd="";
+                                          });
                                         });
-                                      });
-                                    });
-                                    setState(() {
-                                      openComment = false;
+                                      }else{
+                                         QuickAlert.show(
+                                            context: context,
+                                            type: QuickAlertType.info,
+                                            widget: Text(
+                                              "${value.data["error"]["message"]}",
+                                              style: GoogleFonts.ptSans(
+                                                  fontSize: width < 700
+                                                      ? width / 30
+                                                      : width / 48,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      GlobalColors.themeColor2,
+                                                  letterSpacing: 0),
+                                            ),
+                                            autoCloseDuration:
+                                                Duration(seconds: 1),
+                                          );
+                                      }
                                     });
                                   },
                                 ),

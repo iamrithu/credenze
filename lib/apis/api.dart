@@ -182,8 +182,10 @@ print(response.toString());
         data: jsonEncode(params),
       );
 
+print(response.toString());
       return response.toString();
     } on DioError catch (e) {
+      print(e.response.toString());
       return e.response.toString();
     }
   }
@@ -808,9 +810,8 @@ print(response.toString());
       var response = await dio.post(
           "installation/${installation_id}/workupdates/save",
           data: formData);
-      print("demoxx" + response.toString());
 
-      return response.toString();
+      return response;
     } on DioError catch (e) {
       print("demoxx" + e.response.toString());
       return e.response;
@@ -887,8 +888,7 @@ print(response.toString());
           MapEntry("participants_id[${i}]", participants[i].userid.toString()));
     }
 
-    print(productList.toString());
-    print(formData.fields.toString());
+
 
     if (productList.isNotEmpty) {
       for (var i = 0; i < productList.length; i++) {
@@ -937,7 +937,6 @@ print(response.toString());
     try {
       var response = await dio.post("service/${service_id}/workupdates/save",
           data: formData);
-      print("demoxx" + response.toString());
 
       return response;
     } on DioError catch (e) {
@@ -1175,7 +1174,6 @@ print(response.toString());
       formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
 
 
-print(formData.fields.toString());
 
 
     Response response = await dio.post(
@@ -1213,17 +1211,20 @@ print(formData.fields.toString());
     for (var i = 0; i < data.length; i++)
       formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
 
-    Response response = await dio.post(
+
+        try {
+       Response response = await dio.post(
       "tasks/${id}/submitexpenses",
       data: formData,
     );
-
-    if (response.statusCode == 200) {
-      print(response.toString());
-      return response.data["data"];
-    } else {
-      throw Exception(response.statusMessage);
+    print("${response}");
+      return response;
+    } on DioError catch (e) {
+      print("demoxx" + e.response.toString());
+      return e.response;
     }
+
+   
   }
 
   Future getComand(
@@ -1260,15 +1261,17 @@ print(formData.fields.toString());
   Future removeExpense(String token, int id, int cid) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
-    print("tasks/${id}/removeexpense/${cid}");
 
+
+    try{
     Response response = await dio.get("tasks/${id}/removeexpense/${cid}");
-
-    if (response.statusCode == 200) {
-      return response.data["data"];
-    } else {
-      throw Exception(response.statusMessage);
+    return response;
+    } on DioError catch (e) {
+      print("remove" + e.response.toString());
+      return e.response;
     }
+
+   
   }
 
   Future submitComand(
@@ -1280,17 +1283,19 @@ print(formData.fields.toString());
 
     final formData = FormData.fromMap({"comment": data});
 
+     try{
     Response response = await dio.post(
       "tasks/${id}/submitcommands",
       data: formData,
     );
-
-    if (response.statusCode == 200) {
-      print(response.toString());
-      return response.data["data"];
-    } else {
-      throw Exception(response.statusMessage);
+    return response;
+    } on DioError catch (e) {
+      return e.response;
     }
+
+   
+
+    
   }
 }
 

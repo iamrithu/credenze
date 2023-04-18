@@ -8,12 +8,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../../const/global_colors.dart';
 
 class MainExpenseScreen extends ConsumerStatefulWidget {
   final bool isCompleted;
-  const MainExpenseScreen({Key? key,required this.isCompleted}) : super(key: key);
+  const MainExpenseScreen({Key? key, required this.isCompleted})
+      : super(key: key);
 
   @override
   _MainExpenseScreenState createState() => _MainExpenseScreenState();
@@ -68,95 +71,110 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: ListView(
                         children: [
-                             if(getExpenses.isEmpty)
-                          Center(child: Text(
-                              "Expense not found!",
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.themeColor,
-                                  fontSize:
-                                      width < 700 ? width / 30 : width / 45,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0),
-                            ),),
+                          if (getExpenses.isEmpty)
+                            Center(
+                              child: Text(
+                                "Expense not found!",
+                                style: GoogleFonts.ptSans(
+                                    color: GlobalColors.themeColor,
+                                    fontSize:
+                                        width < 700 ? width / 30 : width / 45,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0),
+                              ),
+                            ),
                           if (getExpenses.isNotEmpty)
                             for (var i = 0; i < getExpenses.length; i++)
                               Card(
                                 child: Container(
                                   padding: EdgeInsets.all(5),
-                                   constraints: BoxConstraints(
-                                    minHeight: height*0.06,
-                                    minWidth: width
-                                   ),
+                                  constraints: BoxConstraints(
+                                      minHeight: height * 0.06,
+                                      minWidth: width),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Container(
-                                       
-                                        width: width * 0.15,
-                                        height: height * 0.06,
-                                        child: CircleAvatar(
-                                          radius: 50,
-                                backgroundImage: NetworkImage(getExpenses[i]["user"]["image_url"],),
-                              )
-                                      ),
+                                          width: width * 0.15,
+                                          height: height * 0.06,
+                                          child: CircleAvatar(
+                                            radius: 50,
+                                            backgroundImage: NetworkImage(
+                                              getExpenses[i]["user"]
+                                                  ["image_url"],
+                                            ),
+                                          )),
                                       Container(
                                         width: width * 0.4,
                                         height: height * 0.06,
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                                  "${getExpenses[i]["user"]["name"]}",
-                                                   style: GoogleFonts.ptSans(
-                                      color: GlobalColors.black,
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 45,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0),
+                                              "${getExpenses[i]["user"]["name"]}",
+                                              style: GoogleFonts.ptSans(
+                                                  color: GlobalColors.black,
+                                                  fontSize: width < 700
+                                                      ? width / 30
+                                                      : width / 45,
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: 0),
+                                            ),
+                                            Text(
+                                              "${getExpenses[i]["category_id"] == 1 ? "Petrol" : "Food"}",
+                                              style: GoogleFonts.ptSans(
+                                                  color:
+                                                      GlobalColors.themeColor2,
+                                                  fontSize: width < 700
+                                                      ? width / 35
+                                                      : width / 45,
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: 0),
+                                            ),
+                                            Wrap(
+                                              children: [
+                                                Text(
+                                                  "${getExpenses[i]["notes"] ?? "--"}",
+                                                  style: GoogleFonts.ptSans(
+                                                      color: GlobalColors
+                                                          .themeColor2,
+                                                      fontSize: width < 700
+                                                          ? width / 35
+                                                          : width / 55,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      letterSpacing: 0),
                                                 ),
-                                                 Text(
-                                                "${getExpenses[i]["category_id"] == 1 ? "Petrol" : "Food"}",
-                                                   style: GoogleFonts.ptSans(
-                                      color: GlobalColors.themeColor2,
-                                      fontSize:
-                                          width < 700 ? width / 35 : width / 45,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0),
-                                                ),
-                                              Wrap(
-                                                children: [
-                                                  Text(
-                                                    "${getExpenses[i]["notes"]??"--"}",
-                                                     style: GoogleFonts.ptSans(
-                                      color: GlobalColors.themeColor2,
-                                      fontSize:
-                                          width < 700 ? width / 35 : width / 55,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0),
-                                                  ),
-                                                ],
-                                              ),
-                                           
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ),
-                                      Container(
-                                        width: width * 0.15,
-                                        height: height * 0.06,
-                                        child: Center(
-                                          child: Text(
-                                            "${getExpenses[i]["amount"]}",
-                                              style: GoogleFonts.ptSans(
-                                      color: GlobalColors.themeColor2,
-                                      fontSize:
-                                          width < 700 ? width / 35 : width / 45,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0),
+                                      Column(
+                                        children: [
+                                          Container(
+                                            width: width * 0.15,
+                                            height: height * 0.06,
+                                            child: Center(
+                                              child: Text(
+                                                getExpenses[i]["category_id"]==1?"${getExpenses[i]["amount"]}\n(${getExpenses[i]["expense_km"]}km)":
+                                                "${getExpenses[i]["amount"]}",
+                                                style: GoogleFonts.ptSans(
+                                                    color: GlobalColors.themeColor2,
+                                                    fontSize: width < 700
+                                                        ? width / 35
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w500,
+                                                    letterSpacing: 0),
+                                              ),
+                                            ),
                                           ),
-
-                                        ),
+                                           
+                                        ],
                                       ),
                                       InkWell(
                                         onTap: () {
@@ -166,23 +184,52 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                                   ref.watch(publicTaskId),
                                                   getExpenses[i]["id"])
                                               .then((value) {
-                                            Api()
-                                                .publickGetExpense(
-                                                    ref.read(newToken)!,
-                                                    ref.read(publicTaskId))
-                                                .then((value) {
-                                              setState(() {
-                                                getExpenses = value;
+                                            if (value.data["success"]) {
+                                              Api()
+                                                  .publickGetExpense(
+                                                      ref.read(newToken)!,
+                                                      ref.read(publicTaskId))
+                                                  .then((value) {
+                                                setState(() {
+                                                  getExpenses = value;
+                                                });
                                               });
-                                            });
+                                            } else {
+                                              QuickAlert.show(
+                                                context: context,
+                                                type: QuickAlertType.info,
+                                                onConfirmBtnTap:(){
+
+                                                },
+                                                widget: Text(
+                                                  "${value.data["message"]}",
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: width < 700
+                                                          ? width / 30
+                                                          : width / 48,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: GlobalColors
+                                                          .themeColor2,
+                                                      letterSpacing: 0),
+                                                ),
+                                                autoCloseDuration:
+                                                    Duration(seconds: 1),
+                                              );
+                                            }
                                           });
                                         },
                                         child: Container(
-                                           
-                                            width: width * 0.1,
-                                            height: height * 0.06,
-                                            child: Center(child: Icon(Icons.delete,size: width/30,color: Colors.red,),),
+                                          width: width * 0.1,
+                                          height: height * 0.06,
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.delete,
+                                              size: width / 30,
+                                              color: Colors.red,
+                                            ),
                                           ),
+                                        ),
                                       )
                                     ],
                                   ),
@@ -192,20 +239,21 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                       ),
                     ),
                   ),
-                  if(widget.isCompleted)Container(
-                    width: width,
-                    height: height * 0.04,
-                    child: Center(
-                      child: ElevatedButton(
-                        child: Text("Add Expense"),
-                        onPressed: () {
-                          setState(() {
-                            openForm = true;
-                          });
-                        },
+                  if (widget.isCompleted)
+                    Container(
+                      width: width,
+                      height: height * 0.04,
+                      child: Center(
+                        child: ElevatedButton(
+                          child: Text("Add Expense"),
+                          onPressed: () {
+                            setState(() {
+                              openForm = true;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                  )
+                    )
                 ],
               ),
             ),
@@ -320,6 +368,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                     width: width * 0.5,
                                     height: height * 0.05,
                                     child: TextFormField(
+                                      keyboardType: TextInputType.number,
                                       onChanged: (value) {
                                         setState(() {
                                           amt = value;
@@ -362,6 +411,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                     width: width * 0.5,
                                     height: height * 0.05,
                                     child: TextFormField(
+                                      keyboardType: TextInputType.number,
                                       onChanged: (value) {
                                         setState(() {
                                           distance = value;
@@ -421,7 +471,6 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                             ),
                                           )
                                         : Text(
-                                          
                                             newFile == null
                                                 ? "Choose File "
                                                 : "${newFile!.path.split('/').last}",
@@ -511,9 +560,19 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                             width: width,
                             height: height * 0.04,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey),
+                                  onPressed: () {
+                                    setState(() {
+                                      openForm = false;
+                                    });
+                                  },
+                                  child: Text("Cancel"),
+                                ),
                                 ElevatedButton(
                                     onPressed: () {
                                       Map<String, dynamic> data = {
@@ -522,31 +581,96 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                             cat == "Petrol" ? distance : "",
                                         "notes": note,
                                         "amount": cat == "Petrol" ? "0" : amt,
-                                        "attachment": newFile 
+                                        "attachment": newFile
                                       };
+
                                       Api()
                                           .publicExpenseAdd(
                                               ref.watch(newToken)!,
                                               ref.watch(publicTaskId),
                                               data)
                                           .then((value) {
-                                        Api()
-                                            .publickGetExpense(
-                                                ref.read(newToken)!,
-                                                ref.read(publicTaskId))
-                                            .then((value) {
-                                          setState(() {
-                                            getExpenses = value;
-                                          });
-                                        });
-                                        setState(() {
-                                          openForm = false;
-                                        });
-                                      });
+                                        print(value.statusCode.toString());
 
-                                      print(data.toString());
+                                        if (value.statusCode == 422) {
+                                          QuickAlert.show(
+                                            context: context,
+                                            type: QuickAlertType.info,
+                                            widget: Text(
+                                              "${value.data["error"]["message"]}",
+                                              style: GoogleFonts.ptSans(
+                                                  fontSize: width < 700
+                                                      ? width / 30
+                                                      : width / 48,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      GlobalColors.themeColor2,
+                                                  letterSpacing: 0),
+                                            ),
+                                            autoCloseDuration:
+                                                Duration(seconds: 1),
+                                          );
+                                        }
+                                        if (value.data["success"]) {
+                                          Api()
+                                              .publickGetExpense(
+                                                  ref.read(newToken)!,
+                                                  ref.read(publicTaskId))
+                                              .then((value) {
+                                            setState(() {
+                                              getExpenses = value;
+                                            });
+                                          });
+                                          setState(() {
+                                            openForm = false;
+                                            amt = "";
+                                            distance = "";
+                                          });
+
+                                          QuickAlert.show(
+                                            context: context,
+                                            type: QuickAlertType.info,
+                                            widget: Text(
+                                              "${value.data["message"]}",
+                                              style: GoogleFonts.ptSans(
+                                                  fontSize: width < 700
+                                                      ? width / 30
+                                                      : width / 48,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      GlobalColors.themeColor2,
+                                                  letterSpacing: 0),
+                                            ),
+                                            autoCloseDuration:
+                                                Duration(seconds: 1),
+                                          );
+                                        } else {
+                                          QuickAlert.show(
+                                            context: context,
+                                            type: QuickAlertType.info,
+                                            widget: Text(
+                                              "${value.data["message"]}",
+                                              style: GoogleFonts.ptSans(
+                                                  fontSize: width < 700
+                                                      ? width / 30
+                                                      : width / 48,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      GlobalColors.themeColor2,
+                                                  letterSpacing: 0),
+                                            ),
+                                            autoCloseDuration:
+                                                Duration(seconds: 2),
+                                          );
+                                          setState(() {
+                                            openForm = false;
+                                            amt = "";
+                                            distance = "";
+                                          });
+                                        }
+                                      });
                                     },
-                                    child: Text("Save"))
+                                    child: Text("Save")),
                               ],
                             ),
                           ),
@@ -567,66 +691,73 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: width,
-                    color: Colors.white,
-                    height: height * 0.15,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              cat = "Petrol";
-                              chooseCat = false;
-                            });
-                          },
-                          child: Card(
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              width: width,
-                              height: height * 0.05,
-                              child: Center(
-                                child: Text(
-                                  "Petrol",
-                                  style: GoogleFonts.ptSans(
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 48,
-                                      fontWeight: FontWeight.w400,
-                                      color: GlobalColors.themeColor,
-                                      letterSpacing: 0),
+                  Card(
+                    child: Container(
+                      width: width,
+                      color: Colors.white,
+                      height: height * 0.2,
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                cat = "Petrol";
+                                chooseCat = false;
+                              });
+                            },
+                            child: Card(
+                              elevation: 10,
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                width: width,
+                                height: height * 0.05,
+                                child: Center(
+                                  child: Text(
+                                    "Petrol",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 30
+                                            : width / 48,
+                                        fontWeight: FontWeight.w400,
+                                        color: GlobalColors.themeColor,
+                                        letterSpacing: 0),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              cat = "Food";
-                              chooseCat = false;
-                            });
-                          },
-                          child: Card(
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              width: width,
-                              height: height * 0.05,
-                              child: Center(
-                                child: Text(
-                                  "Food",
-                                  style: GoogleFonts.ptSans(
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 48,
-                                      fontWeight: FontWeight.w400,
-                                      color: GlobalColors.themeColor,
-                                      letterSpacing: 0),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                cat = "Food";
+                                chooseCat = false;
+                              });
+                            },
+                            child: Card(
+                              elevation: 10,
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                width: width,
+                                height: height * 0.05,
+                                child: Center(
+                                  child: Text(
+                                    "Food",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 30
+                                            : width / 48,
+                                        fontWeight: FontWeight.w400,
+                                        color: GlobalColors.themeColor,
+                                        letterSpacing: 0),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],

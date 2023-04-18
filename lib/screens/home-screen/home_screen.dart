@@ -34,7 +34,7 @@ class HomeScreen extends ConsumerWidget {
     Icons.trolley,
     Icons.settings,
     Icons.task,
-    // FontAwesomeIcons.chartBar,
+    Icons.margin,
     // Icons.person,
   ];
 
@@ -56,15 +56,15 @@ class HomeScreen extends ConsumerWidget {
       "Dashboard",
       "Installations",
       "Service",
-      "Task"
-      // "Leads",
+      "Task",
+       "Attendence",
     ];
     List<Widget> pages = [
       DashboardScreen(),
       InstalationScreen(),
       ServiceListScreen(),
       MainTaskScreen(),
-      // AttendenceScreen(),
+      AttendenceScreen(),
       // LeadScreen(),
       // LeadDetailsScreen(),
       InstallationDetailScreen(),
@@ -138,27 +138,24 @@ class HomeScreen extends ConsumerWidget {
                               size: _page == i ? height * 0.025 : height * 0.02,
                             ),
                           ),
-                          _page == i
-                              ? Text(
+                           Text(
                                   name[i],
                                   style: GoogleFonts.ptSans(
-                                      fontSize:
-                                          width < 700 ? width / 38 : width / 45,
+                                      fontSize:_page == i?
+                                          width < 700 ? width / 38 : width / 50: width < 700 ? width / 44: width / 60,
                                       fontWeight: FontWeight.w400,
                                       letterSpacing: 0,
-                                      color: GlobalColors.themeColor),
+                                        color: _page == i
+                                ? GlobalColors.themeColor
+                                : GlobalColors.themeColor2,
                                 )
-                              : Text(
-                                  "",
-                                  style: GoogleFonts.ptSans(
-                                      fontSize: 0,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0,
-                                      color: GlobalColors.themeColor),
-                                ),
+                           )
+                             
                         ],
                       ),
                     ),
+                    
+
                   if (ref.watch(pageIndex) > 4)
                     Container(
                       decoration: BoxDecoration(
@@ -182,7 +179,7 @@ class HomeScreen extends ConsumerWidget {
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: 0,
                                 color: GlobalColors.themeColor),
-                          )
+                          ),
                         ],
                       ),
                     ),

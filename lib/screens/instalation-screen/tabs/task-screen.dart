@@ -68,7 +68,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                             ref
                                 .read(taskId.notifier)
                                 .update((state) => _data[i].id!);
-                            ref.read(pageIndex.notifier).update((state) => 5);
+                            ref.read(pageIndex.notifier).update((state) => 6);
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(

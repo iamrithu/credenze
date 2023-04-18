@@ -403,7 +403,7 @@ class _ServiceListScreenState extends ConsumerState<ServiceListScreen> {
                                               .update((state) => 0);
                                           ref
                                               .read(pageIndex.notifier)
-                                              .update((state) => 6);
+                                              .update((state) => 7);
                                           ref
                                               .read(serviceinChargeId.notifier)
                                               .update(

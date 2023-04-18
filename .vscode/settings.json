@@ -1,0 +1,5 @@
+{
+    "prettier.proseWrap": "always",
+    "prettier.quoteProps": "consistent",
+    "prettier.requireConfig": true
+}

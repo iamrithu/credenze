@@ -69,7 +69,7 @@ class _ServiceTaskScreenState extends ConsumerState<ServiceTaskScreen> {
                             ref
                                 .read(taskId.notifier)
                                 .update((state) => _data[i].id!);
-                            ref.read(pageIndex.notifier).update((state) => 7);
+                            ref.read(pageIndex.notifier).update((state) => 8);
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(

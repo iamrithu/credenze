@@ -29,17 +29,18 @@ class CustomAppBar extends ConsumerWidget {
                     if (page == 5) {
                       ref.read(initialIndex.notifier).update((state) => 1);
                     }
-                    ref.read(pageIndex.notifier).update((state) => page == 4
+                    ref.read(pageIndex.notifier).update((state) => page == 5
                         // ? 3
                         // : page == 6
                         ? 1
                         : page == 5
-                            ? 4
+                            ? 1
                             : page == 6
-                                ? 2
+                                ? 5
                                 : page == 7
-                                    ? 6
-                                    : page == 9
+                                    ? 2:page == 8?
+                                    7
+                                    : page == 10
                                         ? 3
                                         : 0);
                   },
@@ -116,7 +117,7 @@ class CustomAppBar extends ConsumerWidget {
                             // fontWeight: FontWeight.w800,
                             // letterSpacing: 0),
                             // )
-                            : page == 4
+                            : page == 5 ||page==6
                                 ? Text(
                                     "Installation Details",
                                     style: GoogleFonts.ptSans(
@@ -126,19 +127,19 @@ class CustomAppBar extends ConsumerWidget {
                                         fontWeight: FontWeight.w800,
                                         letterSpacing: 0),
                                   )
-                                : page == 8
-                                    ? Text(
-                                        "Profile",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 20
-                                                : width / 24,
-                                            fontWeight: FontWeight.w800,
-                                            letterSpacing: 0),
-                                      )
-                                    : page == 9
+                                : page == 4 
+                                ? Text(
+                                    "Attendence Details",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 20
+                                            : width / 24,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0),
+                                  )
+                                : page ==8
                                         ? Text(
-                                            "Task Details",
+                                            "Service Details",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
                                                     ? width / 20
@@ -146,7 +147,27 @@ class CustomAppBar extends ConsumerWidget {
                                                 fontWeight: FontWeight.w800,
                                                 letterSpacing: 0),
                                           )
-                                        : Text(
+                                        : page == 9
+                                        ? Text(
+                                            "Profile",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: width < 700
+                                                    ? width / 20
+                                                    : width / 24,
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: 0),
+                                          )
+                                        : page == 10
+                                    ? Text(
+                                        "Task Details",
+                                        style: GoogleFonts.ptSans(
+                                            fontSize: width < 700
+                                                ? width / 20
+                                                : width / 24,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0),
+                                      ):
+                                    Text(
                                             "Service Details",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
@@ -162,7 +183,7 @@ class CustomAppBar extends ConsumerWidget {
                   data: (_data) {
                     return InkWell(
                       onTap: () {
-                        ref.read(pageIndex.notifier).update((state) => 8);
+                        ref.read(pageIndex.notifier).update((state) => 9);
                       },
                       child: Container(
                         margin: EdgeInsets.all(3),

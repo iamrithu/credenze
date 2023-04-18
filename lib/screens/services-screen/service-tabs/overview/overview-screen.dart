@@ -354,6 +354,9 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                   lat = value.latitude;
                   long = value.longitude;
                 });
+
+                print(lat.toString());
+                print(long.toString());
                 Api()
                     .ServiceClockOut(
                         token: token!,
@@ -361,6 +364,8 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                         latitude: value.latitude.toString(),
                         longitude: value.longitude.toString())
                     .then((value) {
+
+                      print(value.toString());
                   Map<String, dynamic> data = jsonDecode(value);
                   if (data["success"]) {
                     getInstallationAttendence();
