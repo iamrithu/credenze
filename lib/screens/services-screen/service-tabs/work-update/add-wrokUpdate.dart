@@ -1253,6 +1253,57 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                     Divider(
                       thickness: 2,
                     ),
+                    Container(
+                          margin: EdgeInsets.only(bottom: 3),
+                         
+                          constraints: BoxConstraints(
+                              minWidth: width, minHeight: height * 0.05),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: width*0.3,
+                                child: Text(
+                              "Notes",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                                ),
+                              ),
+                               Container(
+                                width: width*0.05,
+                                child: Text(
+                              ":",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: TextField(
+                                      decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(15),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4))),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          notes = value.trim();
+                                        });
+                                      }),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                   ],
                 ),
               ),

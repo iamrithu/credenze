@@ -11,6 +11,7 @@ import 'package:credenze/models/task-model.dart';
 import 'package:credenze/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/expense-category-model.dart';
@@ -1290,6 +1291,88 @@ print(response.toString());
     );
     return response;
     } on DioError catch (e) {
+      return e.response;
+    }
+
+   
+
+    
+  }
+
+  //Addendence
+
+
+Future leaveDuration(
+    String token,
+   
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+   
+
+     try{
+    Response response = await dio.get(
+      "leaves/duration",
+    );
+    return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+
+   
+
+    
+  }
+  Future leaveType(
+    String token,
+   
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+   
+
+     try{
+    Response response = await dio.get(
+      "leaves/leavetypes",
+    );
+    return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+
+   
+
+    
+  }
+  Future addLeave(
+    String token,
+    int _leaveType,
+    String _leaveDuration,
+    String reason,
+    DateTime? selectedDate,
+    List<DateTime>?selectedDateList
+   
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+if(_leaveDuration=="single"){
+  
+}
+    final formData = FormData.fromMap({
+    "leave_type_id":_leaveType.toString(),
+    "duration":_leaveDuration,
+    "leave_date":selectedDate==null?selectedDateList:DateFormat("dd-MM-yyyy").format(selectedDate),
+    "reason":reason.isEmpty?"--":reason
+    });
+     try{
+    Response response = await dio.post(
+      "leaves/request",
+      data: formData
+    );
+    print(response.toString());
+    return response;
+    } on DioError catch (e) {
+          print(e.response.toString());
+
       return e.response;
     }
 

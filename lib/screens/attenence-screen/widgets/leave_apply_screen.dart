@@ -1,30 +1,35 @@
 import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/custom-widget/custom_drop_down_button.dart';
 import 'package:credenze/custom-widget/custom_input.dart';
+import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-const List<String> leaveTypeList = <String>['Casual', 'Sick', 'Earned'];
-const List<String> leaveDuration = <String>[
-  'One Day',
-  'Multiple Days',
-  'Forenoon',
-  'Afternoon'
-];
+import '../../../apis/api.dart';
 
-class LeaveApplyScreen extends StatefulWidget {
+List<String> leaveTypeList = <String>["--"];
+List<String> leaveDuration = <String>["--"];
+List<dynamic> leaveTypeListRaw = [];
+
+class LeaveApplyScreen extends ConsumerStatefulWidget {
   const LeaveApplyScreen({Key? key}) : super(key: key);
 
   @override
   _LeaveApplyScreenState createState() => _LeaveApplyScreenState();
 }
 
-class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
+class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
   String _leaveType = leaveTypeList[0];
+  int _leaveId = 0;
   String _leaveDuration = leaveDuration[0];
+  String reason = "";
   bool singleday = true;
   DateTime _selectedDate = DateTime.now();
   List<DateTime> _selectedDateList = [];
@@ -33,13 +38,20 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
     setState(() {
       _leaveType = value;
     });
+    for (var i = 0; i < leaveTypeListRaw.length; i++) {
+      setState(() {
+        if (leaveTypeListRaw[i]["type_name"] == _leaveType) {
+          return _leaveId = leaveTypeListRaw[i]["id"];
+        }
+      });
+    }
   }
 
   leaveduration(value) {
     setState(() {
       _leaveDuration = value;
     });
-    if (_leaveDuration == 'Multiple Days') {
+    if (_leaveDuration == 'multiple') {
       setState(() {
         singleday = false;
       });
@@ -59,6 +71,99 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
       });
     }
     Navigator.pop(context);
+  }
+
+  getDuration() {
+    Api().leaveDuration(ref.read(newToken)!).then((value) {
+      setState(() {
+        leaveDuration = ["--"];
+        value.data["data"].map((e) => leaveDuration.add(e)).toList();
+
+        leaveDuration.toSet().toList();
+      });
+    });
+  }
+
+  getType() {
+    Api().leaveType(ref.read(newToken)!).then((value) {
+      setState(() {
+        leaveTypeList = ["--"];
+        leaveTypeListRaw = value.data["data"];
+        value.data["data"]
+            .map((e) => leaveTypeList.add(e["type_name"]))
+            .toList();
+      });
+    });
+  }
+
+  addLeave() {
+    if (_leaveType == "--") {
+      return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Choose \"Leave Type\"",
+          autoCloseDuration: null);
+    }
+    if (_leaveDuration == "--") {
+      return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Choose \"Leave Duration\"",
+          autoCloseDuration: null);
+    }
+    if (_leaveDuration == 'multiple') {
+      if (_selectedDateList.length < 1) {
+        return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Select one or more dates",
+            autoCloseDuration: null);
+      }
+    }
+
+    Api()
+        .addLeave(
+            ref.read(newToken)!,
+            _leaveId,
+            _leaveDuration,
+            reason,
+            _leaveDuration == 'single' ? _selectedDate : null,
+            _leaveDuration == 'single' ? null : _selectedDateList)
+        .then((value) {
+      print(value.statusCode.toString());
+      if (value.statusCode == 401) {
+        Navigator.pop(context);
+
+        return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.info,
+            title: "${value.data["message"]}",
+            autoCloseDuration: Duration(seconds: 2));
+      }
+      if (value.statusCode == 200) {
+        Navigator.pop(context);
+
+        return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.success,
+            title: "${value.data["message"]}",
+            autoCloseDuration: Duration(seconds: 2));
+      } else {
+        return QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "${value.data["error"]["message"]}",
+            autoCloseDuration: Duration(seconds: 2));
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDuration();
+    getType();
   }
 
   @override
@@ -334,6 +439,11 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                             borderRadius: BorderRadius.circular(4)),
                         alignment: Alignment.centerLeft,
                         child: TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              reason = value;
+                            });
+                          },
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Enter your reason.. ",
@@ -353,7 +463,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pop(context);
+                      addLeave();
                     },
                     icon: Icon(Icons.add),
                     label: Text(

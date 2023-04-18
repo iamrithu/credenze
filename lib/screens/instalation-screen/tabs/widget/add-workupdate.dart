@@ -104,7 +104,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
         width: width,
         height: height*0.9,
         decoration: BoxDecoration(
-          border: Border.all(color: GlobalColors.themeColor2)
+          border: Border.all(color: GlobalColors.black)
         ),
         child: Column(
           children: [
@@ -187,14 +187,14 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                         
                                   height: height*0.04,
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: GlobalColors.themeColor2),
+                                    border: Border.all(color: GlobalColors.black),
                                     borderRadius: BorderRadius.circular(5)
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     "${DateFormat("dd-MM-yyyy").format(workUpdateDate)}",
                                     style: GoogleFonts.ptSans(
-                                        color: GlobalColors.themeColor2,
+                                        color: GlobalColors.black,
                                         fontSize:
                                             width < 700 ? width / 30 : width / 45,
                                         fontWeight: FontWeight.w400,
@@ -306,7 +306,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: GlobalColors.themeColor2)
+                              border: Border.all(color: GlobalColors.black)
                             ),
                             child: IconButton(
                               icon: Icon(Icons.add),
@@ -481,7 +481,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                     height: height * 0.05,
                                                     decoration: BoxDecoration(
                                                       borderRadius: BorderRadius.circular(2),
-                                                      border: Border.all(color: GlobalColors.themeColor2)
+                                                      border: Border.all(color: GlobalColors.black)
                                                     ),
                                                     alignment:
                                                         Alignment.center,
@@ -501,7 +501,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                           style: GoogleFonts.ptSans(
                                                               color:
                                                                   GlobalColors
-                                                                      .themeColor2,
+                                                                      .black,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w600,
@@ -532,13 +532,13 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                 constraints: BoxConstraints(minHeight: height*0.04),
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: GlobalColors.themeColor2),
+                                  border: Border.all(color: GlobalColors.black),
                                   borderRadius: BorderRadius.circular(4)
                                 ),
                                 child: Text(
                                   workTask,
                                   style: GoogleFonts.ptSans(
-                                      color: GlobalColors.themeColor2,
+                                      color: GlobalColors.black,
                                       fontSize:
                                           width < 700 ? width / 30 : width / 45,
                                       fontWeight: FontWeight.w500,
@@ -724,7 +724,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                 child: Text(
                                                   "S No:",
                                                   style: GoogleFonts.ptSans(
-                                                      color: GlobalColors.themeColor2,
+                                                      color: GlobalColors.black,
                                                       fontSize: width < 500
                                                           ? width / 35
                                                           : width / 35),
@@ -868,7 +868,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                               child: Text(
                                                 "Used Quantity",
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor2,
+                                                    color: GlobalColors.black,
                                                     fontSize: width < 500
                                                         ? width / 35
                                                         : width / 35),
@@ -1035,7 +1035,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                 child: Text(
                                                   "S No:",
                                                   style: GoogleFonts.ptSans(
-                                                      color: GlobalColors.themeColor2,
+                                                      color: GlobalColors.black,
                                                       fontSize: width < 500
                                                           ? width / 35
                                                           : width / 35),
@@ -1182,7 +1182,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                               child: Text(
                                                 "Used Quantity",
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor2,
+                                                    color: GlobalColors.black,
                                                     fontSize: width < 500
                                                         ? width / 35
                                                         : width / 35),
@@ -1253,6 +1253,57 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                     Divider(
                       thickness: 2,
                     ),
+                    Container(
+                          margin: EdgeInsets.only(bottom: 3),
+                         
+                          constraints: BoxConstraints(
+                              minWidth: width, minHeight: height * 0.05),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: width*0.3,
+                                child: Text(
+                              "Notes",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                                ),
+                              ),
+                               Container(
+                                width: width*0.05,
+                                child: Text(
+                              ":",
+                              style: GoogleFonts.ptSans(
+                                  color: GlobalColors.black,
+                                  fontSize:
+                                      width < 700 ? width / 30 : width / 45,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: TextField(
+                                      decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(15),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4))),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          notes = value.trim();
+                                        });
+                                      }),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                   ],
                 ),
               ),
