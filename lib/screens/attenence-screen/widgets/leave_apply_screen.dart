@@ -127,7 +127,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
             _leaveId,
             _leaveDuration,
             reason,
-            _leaveDuration == 'single' ? _selectedDate : null,
+            _leaveDuration == 'multiple' ? null : _selectedDate,
             _leaveDuration == 'single' ? null : _selectedDateList)
         .then((value) {
       print(value.statusCode.toString());
@@ -142,12 +142,13 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
       }
       if (value.statusCode == 200) {
         Navigator.pop(context);
-
-        return QuickAlert.show(
+        QuickAlert.show(
             context: context,
             type: QuickAlertType.success,
             title: "${value.data["message"]}",
             autoCloseDuration: Duration(seconds: 2));
+        return ref.refresh(leaveListModelProvider);
+
       } else {
         return QuickAlert.show(
             context: context,

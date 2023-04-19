@@ -21,6 +21,7 @@ import '../models/instalation-task-model.dart';
 import '../models/installation-employee-model.dart';
 import '../models/installation-work-taskList-model.dart';
 import '../models/installation-work-updatedList-model.dart';
+import '../models/leaveListModel.dart';
 import '../models/service-detail-model.dart';
 import '../models/service-expense-model.dart';
 import '../models/service-file-model.dart';
@@ -1354,15 +1355,31 @@ Future leaveDuration(
    
   ) async {
     dio.options.headers["Authorization"] = "Bearer $token";
-if(_leaveDuration=="single"){
-  
-}
-    final formData = FormData.fromMap({
+      final formData = FormData.fromMap({
     "leave_type_id":_leaveType.toString(),
     "duration":_leaveDuration,
-    "leave_date":selectedDate==null?selectedDateList:DateFormat("dd-MM-yyyy").format(selectedDate),
+    // "leave_date":selectedDate==null?selectedDateList:DateFormat("dd-MM-yyyy").format(selectedDate),
     "reason":reason.isEmpty?"--":reason
     });
+if(_leaveDuration=="multiple"){
+   var multidata="";
+  for(var i=0;i<selectedDateList!.length;i++){
+    print(DateFormat("dd-MM-yyyy").format(selectedDateList[i]));
+
+    multidata+=DateFormat("dd-MM-yyyy").format(selectedDateList[i])+",";
+  }
+ multidata = multidata.substring(0, multidata.length - 1);
+   formData.fields.add(MapEntry(
+                "multi_date",
+                multidata));
+}else{
+    formData.fields.add(MapEntry(
+                "leave_date",
+                DateFormat("dd-MM-yyyy").format(selectedDate!)));
+}
+  
+      
+    print(formData.fields.toString());
      try{
     Response response = await dio.post(
       "leaves/request",
@@ -1805,6 +1822,26 @@ class ProviderApi {
       List<ServiceWorkupdateListModel> tasks = [];
       data.map((e) {
         tasks.add(ServiceWorkupdateListModel.fromJson(e));
+      }).toList();
+      return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+  Future<List<LeaveListModel>> leaveList(
+    String? token,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "leaves",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<LeaveListModel> tasks = [];
+      data.map((e) {
+        tasks.add(LeaveListModel.fromJson(e));
       }).toList();
       return tasks;
     } else {
