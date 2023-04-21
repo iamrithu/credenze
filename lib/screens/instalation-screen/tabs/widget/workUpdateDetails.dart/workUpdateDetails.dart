@@ -64,21 +64,19 @@ class _WorkUpdateDetailsScreenState
           margin: EdgeInsets.all(1),
           child: data.isEmpty
               ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                                        "-- Data not found --",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 40
-                                                : width / 45,
-                                            fontWeight: FontWeight.w800,
-                                            color: Color.fromARGB(255, 50, 49, 49),
-                                            letterSpacing: 0),
-                                      ),
-                ],
-              )
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "-- Data not found --",
+                      style: GoogleFonts.ptSans(
+                          fontSize: width < 700 ? width / 40 : width / 45,
+                          fontWeight: FontWeight.w800,
+                          color: Color.fromARGB(255, 50, 49, 49),
+                          letterSpacing: 0),
+                    ),
+                  ],
+                )
               : ListView(
                   children: [
                     Padding(
@@ -93,7 +91,8 @@ class _WorkUpdateDetailsScreenState
                             Text(
                               "Work Update Details",
                               style: GoogleFonts.ptSans(
-                                  fontSize: width < 700 ? width / 40 : width / 45,
+                                  fontSize:
+                                      width < 700 ? width / 40 : width / 45,
                                   fontWeight: FontWeight.w800,
                                   color: Color.fromARGB(255, 255, 250, 250),
                                   letterSpacing: 0),
@@ -147,7 +146,9 @@ class _WorkUpdateDetailsScreenState
                                 Container(
                                   width: width * 0.4,
                                   child: Text(
-                                    DateFormat("dd-MM-yyyy").format(DateTime.parse( data["workupdate_date"])),
+                                    DateFormat("dd-MM-yyyy").format(
+                                        DateTime.parse(
+                                            data["workupdate_date"])),
                                     style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 40
@@ -465,122 +466,126 @@ class _WorkUpdateDetailsScreenState
                                       ),
                                     ],
                                   ),
-                                  for(var j=0;j<data["items"].length;j++)
+                                  for (var j = 0; j < data["items"].length; j++)
                                     Column(
                                       children: [
                                         Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            width: width * 0.4,
-                                            padding: EdgeInsets.all(4),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              textAlign:TextAlign.center,
-                                              "${data["items"][j]["product"]["name"]}",
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 40
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w800,
-                                                  color: GlobalColors.black,
-                                                  letterSpacing: 0),
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              width: width * 0.4,
+                                              padding: EdgeInsets.all(4),
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                textAlign: TextAlign.center,
+                                                "${data["items"][j]["product"]["name"]}",
+                                                style: GoogleFonts.ptSans(
+                                                    fontSize: width < 700
+                                                        ? width / 40
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w800,
+                                                    color: GlobalColors.black,
+                                                    letterSpacing: 0),
+                                              ),
                                             ),
+                                            Container(
+                                              width: width * 0.2,
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.all(4),
+                                              child: Text(
+                                                "${data["items"][j]["unit"]["short_name"]}",
+                                                style: GoogleFonts.ptSans(
+                                                    fontSize: width < 700
+                                                        ? width / 40
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w800,
+                                                    color: GlobalColors.black,
+                                                    letterSpacing: 0),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: width * 0.3,
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.all(4),
+                                              child: Text(
+                                                "${data["items"][j]["quantity"]}",
+                                                style: GoogleFonts.ptSans(
+                                                    fontSize: width < 700
+                                                        ? width / 40
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: GlobalColors.black,
+                                                    letterSpacing: 0),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        if (data["items"][j]
+                                                ["enable_barcode"] ==
+                                            1)
+                                          Row(
+                                            children: [
+                                              for (var k = 0;
+                                                  k <
+                                                      data["items"][j]
+                                                              ["itemsbarcodes"]
+                                                          .length;
+                                                  k++)
+                                                Card(
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(10),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      "${data["items"][j]["itemsbarcodes"][k]["serial_nos"]}",
+                                                      style: GoogleFonts.ptSans(
+                                                          fontSize: width < 700
+                                                              ? width / 40
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          color: GlobalColors
+                                                              .black,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                  ),
+                                                )
+                                            ],
                                           ),
-                                          Container(
-                                            width: width * 0.2,
-                                            alignment: Alignment.center,
-                                            padding: EdgeInsets.all(4),
-                                            child: Text(
-                                                                                        "${data["items"][j]["unit"]["short_name"]}",
-
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 40
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w800,
-                                                  color: GlobalColors.black,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                          Container(
-                                            width: width * 0.3,
-                                            alignment: Alignment.center,
-                                            padding: EdgeInsets.all(4),
-                                            child: Text(
-                                                                                                                                  "${data["items"][j]["quantity"]}",
-
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 40
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: GlobalColors.black,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                        ],
-                                  
-                                  ),
-                                
-                                  if(data["items"][j]["enable_barcode"]==1)
-
-                                  Row(
-                                    children: [
-                                       for(var k=0;k<data["items"][j]["itemsbarcodes"].length;k++)
-                                  Card(
-                                    child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                                                                        "${data["items"][j]["itemsbarcodes"][k]["serial_nos"]}",
-
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 40
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w800,
-                                                  color: GlobalColors.black,
-                                                  letterSpacing: 0),
-                                            ),
-                                    ),
-                                  )
-                                    ],
-                                  ),
-                                   Divider(thickness: 2,),
+                                        Divider(
+                                          thickness: 2,
+                                        ),
                                       ],
                                     ),
-],
+                                ],
                               ),
-                            
                           ],
                         ),
                       ),
                     ),
                     Container(
                       width: width,
-                      padding: EdgeInsets.symmetric(horizontal:6),
+                      padding: EdgeInsets.symmetric(horizontal: 6),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          ElevatedButton(onPressed: (){
-
-                            Navigator.pop(context);
-                            
-                          }, child: Text(
-                                                textAlign:TextAlign.center,
-                                                "Back",
-                                                style: GoogleFonts.ptSans(
-                                                    fontSize: width < 700
-                                                        ? width / 40
-                                                        : width / 45,
-                                                    fontWeight: FontWeight.w800,
-                                                    color: GlobalColors.white,
-                                                    letterSpacing: 0),
-                                              ),)
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              "Back",
+                              style: GoogleFonts.ptSans(
+                                  fontSize:
+                                      width < 700 ? width / 40 : width / 45,
+                                  fontWeight: FontWeight.w800,
+                                  color: GlobalColors.white,
+                                  letterSpacing: 0),
+                            ),
+                          )
                         ],
                       ),
                     )

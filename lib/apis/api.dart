@@ -409,7 +409,7 @@ class Api {
     }
   }
 
-  Future<String> AddExpense(
+  Future AddExpense(
       {required String? token,
       required int? id,
       required File? file,
@@ -439,13 +439,13 @@ class Api {
         "installation/${id}/expenses/save",
         data: datas,
       );
-      return response.toString();
+      return response;
     } on DioError catch (e) {
       return e.response.toString();
     }
   }
 
-  Future  AddServiceExpense(
+  Future AddServiceExpense(
       {required String? token,
       required int? id,
       required File? file,
@@ -481,14 +481,13 @@ class Api {
     }
   }
 
-  Future<String> updateExpense(
+  Future updateExpense(
       {required String? token,
       required int? id,
       required File? file,
       required Map<String, dynamic> data,
       required int expenseId}) async {
     dio.options.headers["Authorization"] = "Bearer $token";
-    print(file.toString());
     try {
       String fileName =
           file == null || file == " " ? "" : file.path.split('/').last;
@@ -511,29 +510,25 @@ class Api {
         "status": data["status"],
       });
 
-      print("z" + newData.toString());
 
       Response response = await dio.post(
         "installation/${id}/expenses/update/${expenseId}",
         data: newData,
       );
-      print("z" + response.toString());
-      return response.toString();
+      return response;
     } on DioError catch (e) {
-      print("z" + e.message.toString());
 
-      return e.response.toString();
+      return e.response;
     }
   }
 
-  Future<String> serviceUpdateExpense(
+  Future serviceUpdateExpense(
       {required String? token,
       required int? id,
       required File? file,
       required Map<String, dynamic> data,
       required int expenseId}) async {
     dio.options.headers["Authorization"] = "Bearer $token";
-    print(file.toString());
     try {
       String fileName =
           file == null || file == " " ? "" : file.path.split('/').last;
@@ -562,12 +557,10 @@ class Api {
         "service/${id}/expenses/update/${expenseId}",
         data: newData,
       );
-      print("z" + response.toString());
-      return response.toString();
+      return response;
     } on DioError catch (e) {
-      print("z" + e.message.toString());
 
-      return e.response.toString();
+      return e.response;
     }
   }
 
@@ -694,7 +687,7 @@ class Api {
       'description': description!.isEmpty ? "--" : description
     });
 
-    print("serialValue" + serialList.toString());
+    print("serialValue" + itemList.toString());
     serialList.map((e) {
       print(e["product_id"].toString());
       formData.fields.add(MapEntry(
@@ -761,9 +754,6 @@ class Api {
           MapEntry("participants_id[${i}]", participants[i].userid.toString()));
     }
 
-    print(productList.toString());
-    print(formData.fields.toString());
-
     if (productList.isNotEmpty) {
       for (var i = 0; i < productList.length; i++) {
         formData.fields.add(MapEntry(
@@ -806,6 +796,7 @@ class Api {
         }
       }
     }
+    print(formData.fields.toString());
 
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
@@ -873,6 +864,7 @@ class Api {
     int? removed_quantity,
     List productList,
   ) async {
+    print(productList.toString());
     final formData = FormData.fromMap({});
 
     formData.fields.add(MapEntry("task_id", task_id.toString()));
@@ -907,6 +899,13 @@ class Api {
             "item[${productList[i]["item_id"]}][task_product]",
             productList[i]["task_product"].toString()));
         formData.fields.add(MapEntry(
+            "item[${productList[i]["item_id"]}][sp_product]",
+            productList[i]["sp_product"].toString()));
+        formData.fields.add(MapEntry(
+            "item[${productList[i]["item_id"]}][serial_no]",
+           
+                 productList[i]["serial_no"].toString()));
+        formData.fields.add(MapEntry(
             "item[${productList[i]["item_id"]}][task_item_id]",
             productList[i]["task_item_id"].toString() == "null"
                 ? ""
@@ -931,14 +930,16 @@ class Api {
         }
       }
     }
-print(formData.fields.toString());
+    print(formData.fields.toString());
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
       var response = await dio.post("service/${service_id}/workupdates/save",
           data: formData);
+      print(response.toString());
 
       return response;
     } on DioError catch (e) {
+      print(e.response.toString());
       return e.response;
     }
   }
@@ -1381,6 +1382,7 @@ print(formData.fields.toString());
       return e.response;
     }
   }
+
   Future getAbsentList(
     String token,
   ) async {
@@ -1395,6 +1397,7 @@ print(formData.fields.toString());
       return e.response;
     }
   }
+
   Future getPresentList(
     String token,
   ) async {
@@ -1409,6 +1412,7 @@ print(formData.fields.toString());
       return e.response;
     }
   }
+
   Future getAchivement(
     String token,
   ) async {
@@ -1423,7 +1427,8 @@ print(formData.fields.toString());
       return e.response;
     }
   }
-   Future getAllExpense(
+
+  Future getAllExpense(
     String token,
   ) async {
     dio.options.headers["Authorization"] = "Bearer $token";
@@ -1437,11 +1442,8 @@ print(formData.fields.toString());
       return e.response;
     }
   }
-   Future getHoliday(
-    String token,
-    String year,
-    String month
-  ) async {
+
+  Future getHoliday(String token, String year, String month) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -1453,10 +1455,8 @@ print(formData.fields.toString());
       return e.response;
     }
   }
-   Future getActiveTimer(
-    String token,
-    int taskId
-  ) async {
+
+  Future getActiveTimer(String token, int taskId) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -1468,10 +1468,8 @@ print(formData.fields.toString());
       return e.response;
     }
   }
-  Future startTimer(
-    String token,
-    int taskId
-  ) async {
+
+  Future startTimer(String token, int taskId) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -1483,10 +1481,8 @@ print(formData.fields.toString());
       return e.response;
     }
   }
-   Future stopTimer(
-    String token,
-    int taskId
-  ) async {
+
+  Future stopTimer(String token, int taskId) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -1498,10 +1494,8 @@ print(formData.fields.toString());
       return e.response;
     }
   }
-  Future pauseTimer(
-    String token,
-    int taskId
-  ) async {
+
+  Future pauseTimer(String token, int taskId) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -1513,10 +1507,8 @@ print(formData.fields.toString());
       return e.response;
     }
   }
-   Future resumeTimer(
-    String token,
-    int taskId
-  ) async {
+
+  Future resumeTimer(String token, int taskId) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -1528,7 +1520,8 @@ print(formData.fields.toString());
       return e.response;
     }
   }
-   Future getWorkUpdateDetails(
+
+  Future getWorkUpdateDetails(
     String token,
     int id,
     int taskId,
@@ -1544,6 +1537,7 @@ print(formData.fields.toString());
       return e.response;
     }
   }
+
   Future getServiceWorkUpdateDetails(
     String token,
     int id,

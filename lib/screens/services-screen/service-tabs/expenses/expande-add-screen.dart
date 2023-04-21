@@ -681,16 +681,29 @@ class _ServiceExpenseAddScreenState
                                 id: ref.watch(ServiceId))
                             .then((value) {
 
-                              if(value.data[""])
-                          // if (true) {
-                          //   QuickAlert.show(
-                          //       context: context,
-                          //       type: QuickAlertType.error,
-                          //       title: "${jsonDecode(value)["message"]}",
-                          //       autoCloseDuration: null);
-                          // }
-                          widget.onclick();
-                          Navigator.pop(context);
+                              if (value.data["success"]) {
+                            widget.onclick();
+                            Navigator.pop(context);
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.success,
+                                title: "${value.data["message"]}",
+                                autoCloseDuration: null);
+                          } else {
+                            if (value.statusCode.toString() == "422" ||
+                                value.statusCode.toString() == "500") {
+                              QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.error,
+                                  title: "${value.data["error"]["message"]}",
+                                  autoCloseDuration: null);
+                            }
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "${value.data["message"]}",
+                                autoCloseDuration: null);
+                          }
                         });
                       },
                       child: Text(

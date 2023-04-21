@@ -709,9 +709,30 @@ class _ServiceExpenseUpdateScreenState
                                 token: ref.watch(newToken),
                                 id: ref.watch(ServiceId))
                             .then((value) {
-                          widget.onclick();
+                             if (value.data["success"]) {
+                            widget.onclick();
+                            Navigator.pop(context);
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.success,
+                                title: "${value.data["message"]}",
+                                autoCloseDuration: null);
+                          } else {
+                            if (value.statusCode.toString() == "422" ||
+                                value.statusCode.toString() == "500") {
+                              QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.error,
+                                  title: "${value.data["error"]["message"]}",
+                                  autoCloseDuration: null);
+                            }
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: "${value.data["message"]}",
+                                autoCloseDuration: null);
+                          }
                         });
-                        Navigator.pop(context);
 
                         // print(data.toString());
                       },

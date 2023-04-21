@@ -91,6 +91,23 @@ class _ServiceWorkUpdateScreenState
               },
               child: ListView(
                 children: [
+                  if(_data.isEmpty)
+                  Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                                        "-- Data not found --",
+                                        style: GoogleFonts.ptSans(
+                                            fontSize: widget.width! < 700
+                                                ? widget.width! / 40
+                                                : widget.width! / 45,
+                                            fontWeight: FontWeight.w800,
+                                            color: Color.fromARGB(255, 50, 49, 49),
+                                            letterSpacing: 0),
+                                      ),
+                ],
+              ),
                   for (var i = 0; i < _data.length; i++)
                     InkWell(
                       onTap: (){
