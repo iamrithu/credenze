@@ -1,6 +1,7 @@
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/add-workupdate.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/text-row-widget.dart';
+import 'package:credenze/screens/instalation-screen/tabs/widget/workUpdateDetails.dart/workUpdateDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -88,8 +89,13 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
                 children: [
                   for (var i = 0; i < _data.length; i++)
                     InkWell(
-                      onTap: (){
-                        print(_data[i].id!);
+                      onTap: ()  {
+                         showModalBottomSheet(
+                          isScrollControlled:true,
+                            context: context,
+                            builder: (context) {
+                              return WorkUpdateDetailsScreen(height:widget.height,width: widget.width,id:_data[i].id!);
+                            });
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(

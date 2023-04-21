@@ -2,6 +2,7 @@ import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/add-workupdate.dart';
 import 'package:credenze/screens/instalation-screen/tabs/widget/text-row-widget.dart';
+import 'package:credenze/screens/services-screen/service-tabs/work-update/workUpdateDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -91,53 +92,63 @@ class _ServiceWorkUpdateScreenState
               child: ListView(
                 children: [
                   for (var i = 0; i < _data.length; i++)
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: Color.fromARGB(255, 249, 188, 189)),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: Container(
-                        width: widget.width,
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: widget.width! * 0.9,
-                                  child: Column(
-                                    children: [
-                                      TextRowWidget(
-                                        width: widget.width!,
-                                        lable: " Id",
-                                        value: "#${_data[i].id!}",
-                                      ),
-                                      TextRowWidget(
-                                        width: widget.width!,
-                                        lable: "Members",
-                                        value: "${_data[i].participantsName}",
-                                      ),
-                                      TextRowWidget(
-                                        width: widget.width!,
-                                        lable: "Task",
-                                        value:
-                                            "${_data[i].category!.name ?? "--"}",
-                                      ),
-                                      TextRowWidget(
-                                        width: widget.width!,
-                                        lable: "Work Updated Date",
-                                        value:
-                                            "${DateFormat("dd - MMMM - yyyy ").format(_data[i].workupdateDate!)}",
-                                      ),
-                                    ],
+                    InkWell(
+                      onTap: (){
+                         showModalBottomSheet(
+                          isScrollControlled:true,
+                            context: context,
+                            builder: (context) {
+                              return ServiceWorkUpdateDetailsScreen (height:widget.height,width: widget.width,id:_data[i].id!);
+                            });
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: Color.fromARGB(255, 249, 188, 189)),
+                            borderRadius: BorderRadius.circular(4)),
+                        child: Container(
+                          width: widget.width,
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: widget.width! * 0.9,
+                                    child: Column(
+                                      children: [
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: " Id",
+                                          value: "#${_data[i].id!}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Members",
+                                          value: "${_data[i].participantsName}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Task",
+                                          value:
+                                              "${_data[i].category!.name ?? "--"}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Work Updated Date",
+                                          value:
+                                              "${DateFormat("dd - MMMM - yyyy ").format(_data[i].workupdateDate!)}",
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Spacer(),
-                              ],
-                            ),
-                          ],
+                                  Spacer(),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

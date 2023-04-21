@@ -67,10 +67,12 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
         if (value.data["data"]["breaks"].length < 1) {
           DateTime dt2 =
               DateTime.parse(value.data["data"]["start_time"]).toLocal();
-          DateTime dt1 = DateTime.now();
+      
           _stopWatchTimer.onStopTimer();
           _stopWatchTimer.clearPresetTime();
-          triggerTimaer(dt1, dt2);
+          _stopWatchTimer.setPresetHoursTime(int.parse(value.data["data"]["timer"][0]+value.data["data"]["timer"][1]));
+          _stopWatchTimer.setPresetMinuteTime(int.parse(value.data["data"]["timer"][3]+value.data["data"]["timer"][4]));
+          _stopWatchTimer.setPresetSecondTime(int.parse(value.data["data"]["timer"][6]+value.data["data"]["timer"][7]));
           _stopWatchTimer.onStartTimer();
           setState(() {
             isTimerOn = false;
@@ -86,50 +88,23 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
               value.data["data"]["breaks"]
                       [value.data["data"]["breaks"].length - 1]["end_time"] !=
                   null) {
-
-
-                      DateTime dt3 = DateTime.parse(value.data["data"]["breaks"]
-                    [value.data["data"]["breaks"].length - 1]["start_time"])
-                .toLocal();
-
-            DateTime dt4 =
-                DateTime.parse(value.data["data"]["breaks"]
-                    [value.data["data"]["breaks"].length - 1]["end_time"])
-                .toLocal();
-
-Duration diff2 = dt4.difference(dt3);
-
-
-
-            DateTime dt2 =
-                DateTime.parse(value.data["data"]["start_time"]).toLocal();
-            DateTime dt1 = DateTime.now();
+        
             _stopWatchTimer.onStopTimer();
             _stopWatchTimer.clearPresetTime();
-          Duration diff = dt1.difference(dt2);
-
-    _stopWatchTimer.setPresetHoursTime(diff.inHours % 24.abs()-diff2.inHours % 24.abs());
-    _stopWatchTimer.setPresetMinuteTime(diff.inMinutes % 60.abs()-diff2.inMinutes % 60.abs());
-    _stopWatchTimer.setPresetSecondTime(diff.inSeconds % 60.abs()-diff2.inSeconds % 60.abs());
+           _stopWatchTimer.setPresetHoursTime(int.parse(value.data["data"]["timer"][0]+value.data["data"]["timer"][1]));
+          _stopWatchTimer.setPresetMinuteTime(int.parse(value.data["data"]["timer"][3]+value.data["data"]["timer"][4]));
+          _stopWatchTimer.setPresetSecondTime(int.parse(value.data["data"]["timer"][6]+value.data["data"]["timer"][7]));
             _stopWatchTimer.onStartTimer();
             setState(() {
               isTimerOn = false;
             });
-
-
           } else {
-
-           
-
-            DateTime dt1 = DateTime.parse(value.data["data"]["breaks"]
-                    [value.data["data"]["breaks"].length - 1]["start_time"])
-                .toLocal();
-
-            DateTime dt2 =
-                DateTime.parse(value.data["data"]["start_time"]).toLocal();
+                
             _stopWatchTimer.onStopTimer();
             _stopWatchTimer.clearPresetTime();
-            triggerTimaer(dt1, dt2);
+          _stopWatchTimer.setPresetHoursTime(int.parse(value.data["data"]["timer"][0]+value.data["data"]["timer"][1]));
+          _stopWatchTimer.setPresetMinuteTime(int.parse(value.data["data"]["timer"][3]+value.data["data"]["timer"][4]));
+          _stopWatchTimer.setPresetSecondTime(int.parse(value.data["data"]["timer"][6]+value.data["data"]["timer"][7]));
             setState(() {
               isTimerOn = false;
               isPaused = true;
@@ -147,14 +122,12 @@ Duration diff2 = dt4.difference(dt3);
           isTimerOn = false;
         });
         _stopWatchTimer.onStartTimer();
-        getActiveTimer();
       } else {
         QuickAlert.show(
             context: context,
             type: QuickAlertType.error,
             title: "${value.data["message"]}",
             autoCloseDuration: null);
-        getActiveTimer();
       }
     });
   }
@@ -184,6 +157,7 @@ Duration diff2 = dt4.difference(dt3);
         setState(() {
           isPaused = true;
         });
+  
         _stopWatchTimer.onStopTimer();
         getActiveTimer();
       } else {
@@ -199,14 +173,11 @@ Duration diff2 = dt4.difference(dt3);
 
   resumeTimer() {
     Api().resumeTimer(ref.read(newToken)!, pauseTimerId).then((value) {
-
-      print(value.toString());
       if (value.data["success"]) {
-        _stopWatchTimer.onStartTimer();
         setState(() {
           isPaused = false;
         });
-        getActiveTimer();
+         getActiveTimer();
       } else {
         QuickAlert.show(
             context: context,
@@ -221,7 +192,6 @@ Duration diff2 = dt4.difference(dt3);
   @override
   void initState() {
     // TODO: implement initState
-
     Api()
         .publicTaskView(ref.read(newToken)!, ref.read(publicTaskId))
         .then((value) {
@@ -349,7 +319,6 @@ Duration diff2 = dt4.difference(dt3);
                                       size:
                                           width < 700 ? width / 25 : width / 45,
                                     ),
-                                  
                                     Text(
                                       isCompleted
                                           ? "Mark As Complete"

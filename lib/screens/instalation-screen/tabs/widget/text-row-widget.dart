@@ -19,7 +19,7 @@ class TextRowWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: width * 0.3,
+            width: width * 0.25,
             child: Text(
               lable!,
               style: GoogleFonts.ptSans(
@@ -41,7 +41,7 @@ class TextRowWidget extends StatelessWidget {
             ),
           ),
           Container(
-            width: width * 0.4,
+            width: width * 0.45,
             child: Text(
               value!,
               style: GoogleFonts.ptSans(

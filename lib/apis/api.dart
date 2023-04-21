@@ -398,7 +398,6 @@ class Api {
             )));
       }
 
-      print("88" + data.files.toString());
       Response response = await dio.post(
         "service/${id}/files/upload",
         data: data,
@@ -932,7 +931,7 @@ class Api {
         }
       }
     }
-
+print(formData.fields.toString());
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
       var response = await dio.post("service/${service_id}/workupdates/save",
@@ -1523,6 +1522,38 @@ class Api {
     try {
       Response response = await dio.get(
         "tasks/resumetimer/${taskId}",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+   Future getWorkUpdateDetails(
+    String token,
+    int id,
+    int taskId,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "installation/${id}/workupdates/${taskId}/show",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+  Future getServiceWorkUpdateDetails(
+    String token,
+    int id,
+    int taskId,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "service/${id}/workupdates/${taskId}/show",
       );
       return response;
     } on DioError catch (e) {

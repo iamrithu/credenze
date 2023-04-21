@@ -1439,10 +1439,8 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                             context: context,
                             type: QuickAlertType.success,
                             title: "${value.data["message"]}",
-                            onConfirmBtnTap: () {
-                              Navigator.pop(context);
-                            },
-                            autoCloseDuration: Duration(seconds: 2));
+                            autoCloseDuration: Duration(seconds: 2)
+                          );
                       } else {
                         if (value.statusCode.toString() == "422" ||
                             value.statusCode.toString() == "500") {
