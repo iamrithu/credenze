@@ -112,7 +112,7 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
                                             Container(
                                               width: width * 0.3,
                                               child: Text(
-                                                "Brance",
+                                                "Branch",
                                                 style: GoogleFonts.ptSans(
                                                     color: GlobalColors.black,
                                                     fontSize: width < 700

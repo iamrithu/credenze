@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/screens/attenence-screen/tab-widgets/attendence_details_screen.dart';
 import 'package:credenze/screens/attenence-screen/tab-widgets/holidy_details.dart';
+import 'package:credenze/screens/attenence-screen/tab-widgets/permission_details_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -33,7 +34,7 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
       child: LayoutBuilder(builder: ((context, constraints) {
         return DefaultTabController(
           initialIndex: 0,
-          length: 3,
+          length: 4,
           child: Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -59,39 +60,52 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
                         child: Text(
                           "Working Days",
                           style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 28 : width / 45,
+                              fontSize: width < 700 ? width / 38 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
                         ),
                         icon: Icon(
                           Icons.work_history,
-                          size: width < 700 ? width / 28 : width / 45,
+                          size: width < 700 ? width / 38 : width / 45,
                         ),
                       ),
                       Tab(
                         child: Text(
                           "Holidays",
                           style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 28 : width / 45,
+                              fontSize: width < 700 ? width / 38 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
                         ),
                         icon: Icon(
                           Icons.holiday_village,
-                          size: width < 700 ? width / 28 : width / 45,
+                          size: width < 700 ? width / 38 : width / 45,
                         ),
                       ),
                       Tab(
                         child: Text(
                           "Leaves",
                           style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 28 : width / 45,
+                              fontSize: width < 700 ? width / 38 : width / 45,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0),
                         ),
                         icon: Icon(
                           Icons.leave_bags_at_home_outlined,
-                          size: width < 700 ? width / 28 : width / 45,
+                          size: width < 700 ? width / 38 : width / 45,
+                        ),
+                      ),
+                       Tab(
+                        child: Text(
+                          "Permissions",
+                          style: GoogleFonts.ptSans(
+                              fontSize: width < 700 ? width / 34 : width / 45,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0),
+                        ),
+                        icon: Icon(
+                          Icons.leave_bags_at_home_outlined,
+                          size: width < 700 ? width / 34 : width / 45,
                         ),
                       ),
                     ],
@@ -108,7 +122,9 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
                   ),
                   // AttendenceDetailsScreen(),
                   HolidayDetailsScreen(),
-                  LeaveDetailsScreen()
+                  LeaveDetailsScreen(),
+                  PermissionDetailsScreen()
+
                 ],
               ),
             ),

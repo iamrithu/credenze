@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/dashboard-screen/widget/alertDialog.dart';
+import 'package:credenze/screens/dashboard-screen/widget/dashboardContainer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,6 +30,11 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  String bonus = "0";
+  String presentList = "0";
+  String achivement = "0";
+  String absents = "0";
+
   List<Map<String, dynamic>> expenseList = [];
   String isChecked = "office";
   Map<String, dynamic> OBJ = {};
@@ -52,6 +58,38 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String? _dayOut;
   bool _dayCompleted = false;
   late Duration _loggedInHr;
+
+  getBonus() {
+    Api().getBonus(ref.read(newToken)!).then((value) {
+      setState(() {
+        bonus = value.data["data"].toString();
+      });
+    });
+  }
+
+  getPresentList() {
+    Api().getPresentList(ref.read(newToken)!).then((value) {
+      setState(() {
+        presentList = value.data["data"].toString();
+      });
+    });
+  }
+
+  getAchivement() {
+    Api().getAchivement(ref.read(newToken)!).then((value) {
+      setState(() {
+        achivement = value.data["data"].toString();
+      });
+    });
+  }
+
+  getAbsents() {
+    Api().getAbsentList(ref.read(newToken)!).then((value) {
+      setState(() {
+        absents = value.data["data"].toString();
+      });
+    });
+  }
 
   attendenceDetails() async {
     final prefs = await SharedPreferences.getInstance();
@@ -123,6 +161,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     // TODO: implement initState
     super.initState();
     attendenceDetails();
+    getBonus();
+    getPresentList();
+    getAchivement();
+    getAbsents();
     // setState(() {
     //   expenseList = ref.read(TaskListPRovider);
     // });
@@ -201,18 +243,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
 
     dayOut() async {
+        setState(() {
+        isLoading = true;
+      });
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
       Position? pos = await MapsAndLocation().locationPermisson();
-      setState(() {
-        isLoading = true;
-      });
+     
       Api().CheckCanSubmit(token: token).then((value) {
-        print(value.toString());
+       
         if (jsonDecode(value)["success"] == false) {
           setState(() {
-            isLoading = false;
             _action = "DayOut";
+           isLoading = false;
+
           });
 
           return QuickAlert.show(
@@ -235,7 +279,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             isLoading = true;
           });
           QuickAlert.show(
-            barrierDismissible:false,
+            barrierDismissible: false,
             context: context,
             type: QuickAlertType.error,
             title: "Are you sure to day out",
@@ -245,6 +289,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             autoCloseDuration: null,
             onCancelBtnTap: () {
               setState(() {
+                 isLoading = true;
                 _action = "DayOut";
                 isLoading = false;
               });
@@ -254,10 +299,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               Navigator.pop(context);
 
               // Position? pos = await MapsAndLocation().locationPermisson();
-              setState(() {
-                isLoading = true;
-              });
-
+           
               Api()
                   .DayOut(token!, pos.toJson()["latitude"].toString(),
                       pos.toJson()["longitude"].toString())
@@ -267,16 +309,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   setState(() {
                     _action = "DayIn";
                     visible = true;
+                     isLoading = false;
                     success = value.data["success"];
                     msg = value.data["data"];
-                    isLoading = false;
                   });
                   attendenceDetails();
                   if (visible) {
                     setState(() {
                       visible = false;
                       success = false;
-                      isLoading = false;
                     });
                   }
                 } else {
@@ -299,7 +340,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     setState(() {
                       visible = false;
                       success = false;
-                      isLoading = false;
                     });
                   }
                 }
@@ -318,6 +358,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               visible = true;
               success = value.data["success"];
               msg = value.data["data"];
+                    isLoading = false;
             });
             attendenceDetails();
             if (visible) {
@@ -325,6 +366,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
               Timer(const Duration(milliseconds: 1500), () {
                 setState(() {
+                               
+
                   visible = false;
                   success = false;
                 });
@@ -341,12 +384,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             attendenceDetails();
 
             setState(() {
+              isLoading = false;
               visible = true;
               success = value.data["success"];
               msg = value.data["message"];
             });
             if (visible) {
               setState(() {
+ 
                 _action = "DayOut";
                 visible = false;
                 success = false;
@@ -355,21 +400,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           }
         });
       });
+      
     }
 
     action(GlobalKey<SlideActionState> key) {
       if (_action != "DayOut") {
         dayIn();
-
-        // key.currentState!.reset();
       } else {
         dayOut();
-        // key.currentState!.reset();
       }
     }
 
     return Scaffold(
       body: SafeArea(
+        
         child: Stack(
           children: [
             Container(
@@ -479,16 +523,76 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ],
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Container(
+                            padding: EdgeInsets.all(2),
+                            width: width,
+                            height: height * 0.14,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                 CardContainer(
+                                  title: "Target Achieved",
+                                  value: achivement+"%",
+                                ),
+                                 SizedBox(
+                                  width: 12,
+                                ),
+                                CardContainer(
+                                  title: "Earning value",
+                                  value: bonus,
+                                ),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                CardContainer(
+                                  title: "Presence",
+                                  value: presentList + "\ndays",
+                                ),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                CardContainer(
+                                  title: "Absence",
+                                  value: absents + "\ndays",
+                                ),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                              
+                               
+                              ],
+                            ),
+                          ),
+                        ),
                         Card(
                           margin: EdgeInsets.symmetric(
                               horizontal: width * 0.025,
                               vertical: height * 0.01),
-                          elevation: 10,
+                          elevation: 1,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            side: BorderSide(color: GlobalColors.themeColor),
+                            borderRadius: BorderRadius.circular(10),
+                            
                           ),
                           child: Container(
+                            decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(10),
+
+                              gradient:  LinearGradient(
+              colors: [
+                                Color.fromARGB(255, 247, 247, 247),
+
+                Color.fromARGB(255, 252, 227, 226),
+              ],
+              stops: [0, 1],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            )
+                            ),
                             width: width,
                             height: constraints.maxHeight * 0.15,
                             child: Column(
@@ -502,10 +606,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       "Today's Status ",
                                       style: GoogleFonts.ptSans(
                                           fontSize: width < 700
-                                              ? width / 25
+                                              ? width / 28
                                               : width / 48,
-                                          fontWeight: FontWeight.w400,
-                                          color: GlobalColors.textColor,
+                                          fontWeight: FontWeight.w500,
+                                          color: GlobalColors.themeColor,
                                           letterSpacing: 0),
                                     ),
                                   ],
@@ -513,7 +617,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 Divider(
                                   height: 2,
                                   thickness: 1,
-                                  color: GlobalColors.themeColor,
+                                  color: GlobalColors.white,
                                 ),
                                 Row(
                                   mainAxisAlignment:
@@ -529,7 +633,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             "Day In ",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
-                                                    ? width / 21
+                                                    ? width / 25
                                                     : width / 24,
                                                 fontWeight: FontWeight.w400,
                                                 color: GlobalColors.themeColor,
@@ -539,14 +643,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             _dayIn ?? "--/--",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
-                                                    ? width / 20
-                                                    : width / 23,
+                                                    ? width / 28
+                                                    : width / 25,
                                                 fontWeight: FontWeight.w400,
-                                                color: GlobalColors.themeColor2,
+                                                color: GlobalColors.black,
                                                 letterSpacing: 0),
                                           ),
                                         ],
                                       ),
+                                      
                                     ),
                                     Expanded(
                                       child: Column(
@@ -557,7 +662,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             "Day Out ",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
-                                                    ? width / 21
+                                                    ? width / 28
                                                     : width / 24,
                                                 fontWeight: FontWeight.w400,
                                                 color: GlobalColors.themeColor,
@@ -567,10 +672,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             _dayOut ?? "--/--",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
-                                                    ? width / 20
+                                                    ? width / 25
                                                     : width / 23,
                                                 fontWeight: FontWeight.w400,
-                                                color: GlobalColors.themeColor2,
+                                                color: GlobalColors.black,
                                                 letterSpacing: 0),
                                           ),
                                         ],
@@ -652,11 +757,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           elevation: 10,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(width * 0.5),
-                              side: BorderSide(
-                                  color: GlobalColors.themeColor, width: 2)),
+                              // side: BorderSide(
+                              //     color: GlobalColors.themeColor, width: 2),
+                                  ),
                           child: Container(
-                            width: width < 500 ? width * 0.45 : width * 0.35,
-                            height: width < 500 ? width * 0.45 : width * 0.35,
+                            width: width < 500 ? width * 0.35 : width * 0.3,
+                            height: width < 500 ? width * 0.35 : width * 0.3,
+                           decoration: BoxDecoration(
+
+                                                          borderRadius: BorderRadius.circular(width*0.5),
+
+                              gradient:  LinearGradient(
+              colors: [
+                                Color.fromARGB(255, 247, 247, 247),
+
+                Color.fromARGB(255, 252, 227, 226),
+              ],
+              stops: [0, 1],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            )
+                            ),
                             child: Center(
                                 child: StreamBuilder(
                               stream: _stopWatchTimer.rawTime,
@@ -683,8 +804,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       "Logged In Time",
                                       style: GoogleFonts.ptSans(
                                           fontSize: width < 700
-                                              ? width / 30
-                                              : width / 42,
+                                              ? width / 35
+                                              : width / 48,
                                           fontWeight: FontWeight.w600,
                                           color: GlobalColors.themeColor,
                                           letterSpacing: 0),
@@ -696,7 +817,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             BorderRadius.circular(width * 0.1),
                                       ),
                                       child: Padding(
-                                        padding: EdgeInsets.all(width * 0.02),
+                                        padding: EdgeInsets.all(width * 0.01),
                                         child: RichText(
                                           text: TextSpan(
                                               text: displayTimeWithoutSec
@@ -734,77 +855,87 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             )),
                           ),
                         ),
-                        !_dayCompleted
-                            ? Builder(
-                                builder: (context) {
-                                  final GlobalKey<SlideActionState> _key =
-                                      GlobalKey();
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: width * 0.03,
-                                        vertical: height * 0.03),
-                                    child: SlideAction(
-                                      animationDuration:
-                                          Duration(milliseconds: 500),
-                                      reversed:
-                                          _action != "DayIn" ? true : false,
-                                      sliderButtonYOffset: 0,
-                                      height: width < 700
-                                          ? height * 0.08
-                                          : height * 0.08,
-                                      child: Text(
-                                        _action == "DayIn"
-                                            ? "Slide To Day In"
-                                            : "Slide To Day Out",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 28
-                                                : width / 42,
-                                            fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor,
-                                            letterSpacing: 0),
-                                      ),
-                                      borderRadius: 10,
-                                      outerColor: GlobalColors.white,
-                                      innerColor: GlobalColors.themeColor,
-                                      elevation: 10,
-                                      key: _key,
-                                      onSubmit: () {
-                                        action(_key);
-                                      },
-                                    ),
-                                  );
+                        Builder(
+                          builder: (context) {
+                            final GlobalKey<SlideActionState> _key =
+                                GlobalKey();
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.02,
+                                  vertical: height * 0.02),
+                              child: SlideAction(
+                                animationDuration: Duration(milliseconds: 500),
+                                reversed: _action != "DayIn" ? true : false,
+                                sliderButtonYOffset: 0,
+                                height:
+                                    width < 700 ? height * 0.08 : height * 0.08,
+                                child: Text(
+                                  _action == "DayIn"
+                                      ? "Slide To Day In"
+                                      : "Slide To Day Out",
+                                  style: GoogleFonts.ptSans(
+                                      fontSize:
+                                          width < 700 ? width / 28 : width / 42,
+                                      fontWeight: FontWeight.w400,
+                                      color: GlobalColors.themeColor,
+                                      letterSpacing: 0),
+                                ),
+                                borderRadius: 100,
+                                outerColor: GlobalColors.white,
+                                innerColor: GlobalColors.themeColor,
+                                elevation: 1,
+                                key: _key,
+                                onSubmit: () {
+                                  action(_key);
                                 },
-                              )
-                            : Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.03),
-                                child: Card(
-                                    margin:
-                                        EdgeInsets.only(top: height * 0.026),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        side: BorderSide(
-                                            color: GlobalColors.themeColor)),
-                                    elevation: 10,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: width * 0.03),
-                                      width: width,
-                                      height: constraints.maxHeight * 0.12,
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "YOU HAVE DONE A GOOD JOB TODAY 🤝🤝🤝",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 22
-                                                : width / 48,
-                                            fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor2,
-                                            letterSpacing: 1),
-                                      ),
-                                    )),
                               ),
+                            );
+                          },
+                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.all(8.0),
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.all(8.0),
+                        //     child: Column(children: [
+                        //       Padding(
+                        //         padding:
+                        //             const EdgeInsets.symmetric(horizontal: 8.0),
+                        //         child: Row(
+                        //           mainAxisAlignment:
+                        //               MainAxisAlignment.spaceEvenly,
+                        //           children: [
+                        //             CardContainer(
+                        //               title: "Earning value",
+                        //               value: bonus,
+                        //             ),
+                        //             CardContainer(
+                        //               title: "Presence",
+                        //               value: presentList+"\ndays",
+                        //             ),
+                        //             CardContainer(
+                        //               title: "Absence",
+                        //               value: absents+"\ndays",
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ),
+                        //       Padding(
+                        //         padding:
+                        //             const EdgeInsets.symmetric(horizontal: 8.0),
+                        //         child: Row(
+                        //           mainAxisAlignment:
+                        //               MainAxisAlignment.spaceEvenly,
+                        //           children: [
+                        //             CardContainer(
+                        //               title: "Target Achieved",
+                        //               value: achivement,
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       )
+                        //     ]),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),

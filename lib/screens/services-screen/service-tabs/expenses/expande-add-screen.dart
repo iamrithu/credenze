@@ -680,6 +680,8 @@ class _ServiceExpenseAddScreenState
                                 file: newFile,
                                 id: ref.watch(ServiceId))
                             .then((value) {
+
+                              if(value.data[""])
                           // if (true) {
                           //   QuickAlert.show(
                           //       context: context,

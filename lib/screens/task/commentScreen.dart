@@ -173,7 +173,7 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                       height: height * 0.04,
                       child: Center(
                         child: ElevatedButton(
-                          child: Text("Add Comment"),
+                          child: Text("Add Command"),
                           onPressed: () {
                             setState(() {
                               openComment = true;
@@ -208,7 +208,7 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Add Comment",
+                              "Add Command",
                               style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor,
                                   fontSize:

@@ -22,6 +22,7 @@ import '../models/installation-employee-model.dart';
 import '../models/installation-work-taskList-model.dart';
 import '../models/installation-work-updatedList-model.dart';
 import '../models/leaveListModel.dart';
+import '../models/permoissionListModel.dart';
 import '../models/service-detail-model.dart';
 import '../models/service-expense-model.dart';
 import '../models/service-file-model.dart';
@@ -47,7 +48,7 @@ class Api {
         "http://dev.credenze.in/api/login",
         data: jsonEncode(params),
       );
-print(response.toString());
+      print(response.toString());
       return response;
     } on DioError catch (e) {
       print(e.response.toString());
@@ -184,7 +185,7 @@ print(response.toString());
         data: jsonEncode(params),
       );
 
-print(response.toString());
+      print(response.toString());
       return response.toString();
     } on DioError catch (e) {
       print(e.response.toString());
@@ -445,7 +446,7 @@ print(response.toString());
     }
   }
 
-  Future<String> AddServiceExpense(
+  Future  AddServiceExpense(
       {required String? token,
       required int? id,
       required File? file,
@@ -475,7 +476,7 @@ print(response.toString());
         "service/${id}/expenses/save",
         data: datas,
       );
-      return "response".toString();
+      return response;
     } on DioError catch (e) {
       return e.response.toString();
     }
@@ -874,7 +875,6 @@ print(response.toString());
     List productList,
   ) async {
     final formData = FormData.fromMap({});
-    print(formData.fields.toString());
 
     formData.fields.add(MapEntry("task_id", task_id.toString()));
     formData.fields.add(MapEntry("service_id", service_id.toString()));
@@ -889,8 +889,6 @@ print(response.toString());
       formData.fields.add(
           MapEntry("participants_id[${i}]", participants[i].userid.toString()));
     }
-
-
 
     if (productList.isNotEmpty) {
       for (var i = 0; i < productList.length; i++) {
@@ -942,7 +940,6 @@ print(response.toString());
 
       return response;
     } on DioError catch (e) {
-      print("demoxx" + e.response.toString());
       return e.response;
     }
   }
@@ -1165,18 +1162,10 @@ print(response.toString());
     List<int> data,
   ) async {
     dio.options.headers["Authorization"] = "Bearer $token";
-
-    print(token!.toString());
-        print(data.toString());
-
-
     final formData = FormData.fromMap({});
 
     for (var i = 0; i < data.length; i++)
       formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
-
-
-
 
     Response response = await dio.post(
       "tasks/${id}/reassigntask",
@@ -1213,20 +1202,17 @@ print(response.toString());
     for (var i = 0; i < data.length; i++)
       formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
 
-
-        try {
-       Response response = await dio.post(
-      "tasks/${id}/submitexpenses",
-      data: formData,
-    );
-    print("${response}");
+    try {
+      Response response = await dio.post(
+        "tasks/${id}/submitexpenses",
+        data: formData,
+      );
+      print("${response}");
       return response;
     } on DioError catch (e) {
       print("demoxx" + e.response.toString());
       return e.response;
     }
-
-   
   }
 
   Future getComand(
@@ -1263,17 +1249,13 @@ print(response.toString());
   Future removeExpense(String token, int id, int cid) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
-
-
-    try{
-    Response response = await dio.get("tasks/${id}/removeexpense/${cid}");
-    return response;
+    try {
+      Response response = await dio.get("tasks/${id}/removeexpense/${cid}");
+      return response;
     } on DioError catch (e) {
       print("remove" + e.response.toString());
       return e.response;
     }
-
-   
   }
 
   Future submitComand(
@@ -1285,117 +1267,267 @@ print(response.toString());
 
     final formData = FormData.fromMap({"comment": data});
 
-     try{
-    Response response = await dio.post(
-      "tasks/${id}/submitcommands",
-      data: formData,
-    );
-    return response;
+    try {
+      Response response = await dio.post(
+        "tasks/${id}/submitcommands",
+        data: formData,
+      );
+      return response;
     } on DioError catch (e) {
       return e.response;
     }
-
-   
-
-    
   }
 
   //Addendence
 
-
-Future leaveDuration(
+  Future leaveDuration(
     String token,
-   
   ) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
-   
-
-     try{
-    Response response = await dio.get(
-      "leaves/duration",
-    );
-    return response;
+    try {
+      Response response = await dio.get(
+        "leaves/duration",
+      );
+      return response;
     } on DioError catch (e) {
       return e.response;
     }
-
-   
-
-    
   }
+
   Future leaveType(
     String token,
-   
   ) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
-   
-
-     try{
-    Response response = await dio.get(
-      "leaves/leavetypes",
-    );
-    return response;
+    try {
+      Response response = await dio.get(
+        "leaves/leavetypes",
+      );
+      return response;
     } on DioError catch (e) {
       return e.response;
     }
-
-   
-
-    
   }
+
   Future addLeave(
-    String token,
-    int _leaveType,
-    String _leaveDuration,
-    String reason,
-    DateTime? selectedDate,
-    List<DateTime>?selectedDateList
-   
-  ) async {
+      String token,
+      int _leaveType,
+      String _leaveDuration,
+      String reason,
+      DateTime? selectedDate,
+      List<DateTime>? selectedDateList) async {
     dio.options.headers["Authorization"] = "Bearer $token";
-      final formData = FormData.fromMap({
-    "leave_type_id":_leaveType.toString(),
-    "duration":_leaveDuration,
-    // "leave_date":selectedDate==null?selectedDateList:DateFormat("dd-MM-yyyy").format(selectedDate),
-    "reason":reason.isEmpty?"--":reason
+    final formData = FormData.fromMap({
+      "leave_type_id": _leaveType.toString(),
+      "duration": _leaveDuration,
+      // "leave_date":selectedDate==null?selectedDateList:DateFormat("dd-MM-yyyy").format(selectedDate),
+      "reason": reason.isEmpty ? "--" : reason
     });
-if(_leaveDuration=="multiple"){
-   var multidata="";
-  for(var i=0;i<selectedDateList!.length;i++){
-    print(DateFormat("dd-MM-yyyy").format(selectedDateList[i]));
+    if (_leaveDuration == "multiple") {
+      var multidata = "";
+      for (var i = 0; i < selectedDateList!.length; i++) {
+        print(DateFormat("dd-MM-yyyy").format(selectedDateList[i]));
 
-    multidata+=DateFormat("dd-MM-yyyy").format(selectedDateList[i])+",";
-  }
- multidata = multidata.substring(0, multidata.length - 1);
-   formData.fields.add(MapEntry(
-                "multi_date",
-                multidata));
-}else{
-    formData.fields.add(MapEntry(
-                "leave_date",
-                DateFormat("dd-MM-yyyy").format(selectedDate!)));
-}
-  
-      
-    print(formData.fields.toString());
-     try{
-    Response response = await dio.post(
-      "leaves/request",
-      data: formData
-    );
-    print(response.toString());
-    return response;
+        multidata += DateFormat("dd-MM-yyyy").format(selectedDateList[i]) + ",";
+      }
+      multidata = multidata.substring(0, multidata.length - 1);
+      formData.fields.add(MapEntry("multi_date", multidata));
+    } else {
+      formData.fields.add(MapEntry(
+          "leave_date", DateFormat("dd-MM-yyyy").format(selectedDate!)));
+    }
+
+    try {
+      Response response = await dio.post("leaves/request", data: formData);
+      print(response.toString());
+      return response;
     } on DioError catch (e) {
-          print(e.response.toString());
+      print(e.response.toString());
 
       return e.response;
     }
+  }
 
-   
+  Future addPermission(String token, String toTime, String fromTime,
+      String date, String reason, int id) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    final formData = FormData.fromMap({
+      "date": date,
+      "user_id": id,
+      "from_time": fromTime,
+      "to_time": toTime,
+      "reason": reason.isEmpty ? "--" : reason
+    });
 
-    
+    try {
+      Response response = await dio.post("permission/request", data: formData);
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
+  Future getBonus(
+    String token,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "dashboard/bonusamt",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+  Future getAbsentList(
+    String token,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "dashboard/absentdays",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+  Future getPresentList(
+    String token,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "dashboard/presentdays",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+  Future getAchivement(
+    String token,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "dashboard/targetachieved",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+   Future getAllExpense(
+    String token,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "expenses",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+   Future getHoliday(
+    String token,
+    String year,
+    String month
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "dashboard/holidays/${year}/${month}",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+   Future getActiveTimer(
+    String token,
+    int taskId
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "tasks/${taskId}/getactivetimer",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+  Future startTimer(
+    String token,
+    int taskId
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "tasks/${taskId}/starttimer",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+   Future stopTimer(
+    String token,
+    int taskId
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "tasks/${taskId}/stoptimer",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+  Future pauseTimer(
+    String token,
+    int taskId
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "tasks/pausetimer/${taskId}",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+   Future resumeTimer(
+    String token,
+    int taskId
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "tasks/resumetimer/${taskId}",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
   }
 }
 
@@ -1615,9 +1747,6 @@ class ProviderApi {
       "installation/${id}/expenses",
     );
 
-
-    print("demo"+response.toString());
-
     if (response.statusCode == 200) {
       List data = response.data["data"];
       List<ExpensesModel> tasks = [];
@@ -1828,6 +1957,7 @@ class ProviderApi {
       throw Exception(response.statusMessage);
     }
   }
+
   Future<List<LeaveListModel>> leaveList(
     String? token,
   ) async {
@@ -1842,6 +1972,27 @@ class ProviderApi {
       List<LeaveListModel> tasks = [];
       data.map((e) {
         tasks.add(LeaveListModel.fromJson(e));
+      }).toList();
+      return tasks;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  Future<List<PermissionListModel>> permissionList(
+    String? token,
+  ) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    Response response = await dio.get(
+      "permission",
+    );
+
+    if (response.statusCode == 200) {
+      List data = response.data["data"];
+      List<PermissionListModel> tasks = [];
+      data.map((e) {
+        tasks.add(PermissionListModel.fromJson(e));
       }).toList();
       return tasks;
     } else {

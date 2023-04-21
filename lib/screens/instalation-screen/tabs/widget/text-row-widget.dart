@@ -36,7 +36,7 @@ class TextRowWidget extends StatelessWidget {
               style: GoogleFonts.ptSans(
                   fontSize: width < 700 ? width / 40 : width / 45,
                   fontWeight: FontWeight.w800,
-                  color: GlobalColors.black,
+                  color: GlobalColors.themeColor2,
                   letterSpacing: 0),
             ),
           ),
@@ -47,7 +47,7 @@ class TextRowWidget extends StatelessWidget {
               style: GoogleFonts.ptSans(
                   fontSize: width < 700 ? width / 40 : width / 45,
                   fontWeight: FontWeight.w600,
-                  color: GlobalColors.themeColor,
+                  color:value=="Approved"||value=="Casual"? GlobalColors.green:value=="Pending"?Color.fromRGBO(252,190,1,1):value=="Rejected"||value=="Sick"?Colors.red:value=="Earned"?Color.fromRGBO(176,120,197,1):GlobalColors.black,
                   letterSpacing: 0),
             ),
           ),

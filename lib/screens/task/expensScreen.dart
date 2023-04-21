@@ -161,8 +161,8 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                             height: height * 0.06,
                                             child: Center(
                                               child: Text(
-                                                getExpenses[i]["category_id"]==1?"${getExpenses[i]["amount"]}\n(${getExpenses[i]["expense_km"]}km)":
-                                                "${getExpenses[i]["amount"]}",
+                                                getExpenses[i]["category_id"]==1?double.parse(getExpenses[i]["amount"]).toInt().toString()+"\n(${double.parse(getExpenses[i]["expense_km"])}km)":
+                                                double.parse(getExpenses[i]["amount"]).toInt().toString(),
                                                 style: GoogleFonts.ptSans(
                                                     color: GlobalColors.themeColor2,
                                                     fontSize: width < 700
@@ -260,7 +260,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
           ),
           if (openForm)
             Card(
-              elevation: 10,
+              elevation: 1,
               margin: EdgeInsets.all(10),
               child: Container(
                 color: Colors.white,
@@ -296,7 +296,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                 alignment: Alignment.centerLeft,
                                 width: width * 0.25,
                                 child: Text(
-                                  "Category",
+                                  "Category*",
                                   style: GoogleFonts.ptSans(
                                       fontSize:
                                           width < 700 ? width / 30 : width / 48,
@@ -307,7 +307,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                               ),
                               Container(
                                 alignment: Alignment.centerLeft,
-                                width: width * 0.05,
+                                width: width * 0.06,
                                 child: Text(":"),
                               ),
                               InkWell(
@@ -316,22 +316,24 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                     chooseCat = true;
                                   });
                                 },
-                                child: Card(
-                                  child: Container(
-                                    alignment: Alignment.centerLeft,
-                                    width: width * 0.5,
-                                    height: height * 0.05,
-                                    child: Center(
-                                      child: Text(
-                                        "${cat}",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 30
-                                                : width / 48,
-                                            fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor,
-                                            letterSpacing: 0),
-                                      ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(color: GlobalColors.themeColor2)
+                                  ),
+                                  alignment: Alignment.centerLeft,
+                                  width: width * 0.5,
+                                  height: height * 0.05,
+                                  child: Center(
+                                    child: Text(
+                                      "${cat}",
+                                      style: GoogleFonts.ptSans(
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 48,
+                                          fontWeight: FontWeight.w400,
+                                          color: GlobalColors.themeColor,
+                                          letterSpacing: 0),
                                     ),
                                   ),
                                 ),
@@ -347,7 +349,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                   alignment: Alignment.centerLeft,
                                   width: width * 0.25,
                                   child: Text(
-                                    "Amount",
+                                    "Amount*",
                                     style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 30
@@ -368,6 +370,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                     width: width * 0.5,
                                     height: height * 0.05,
                                     child: TextFormField(
+                                    
                                       keyboardType: TextInputType.number,
                                       onChanged: (value) {
                                         setState(() {
@@ -390,7 +393,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                   alignment: Alignment.centerLeft,
                                   width: width * 0.25,
                                   child: Text(
-                                    "Distance",
+                                    "Distance*",
                                     style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 30
@@ -430,7 +433,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                             child: Row(
                               children: [
                                 Container(
-                                    width: width * 0.29,
+                                    width: width * 0.24,
                                     height: height * 0.05,
                                     alignment: Alignment.centerLeft,
                                     margin: EdgeInsets.only(left: width * 0.01),
@@ -445,8 +448,13 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                         letterSpacing: 0,
                                       ),
                                     )),
+                                    Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: width * 0.05,
+                                  child: Text(":"),
+                                ),
                                 Container(
-                                  width: width * 0.4,
+                                  width: width * 0.39,
                                   height: height * 0.05,
                                   margin: EdgeInsets.only(left: 5, right: 2),
                                   decoration: BoxDecoration(
@@ -454,7 +462,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                       border: Border.all(
                                           color: GlobalColors.themeColor2)),
                                   child: Container(
-                                    width: width * 0.2,
+                                    width: width * 0.19,
                                     padding:
                                         EdgeInsets.only(left: width * 0.07),
                                     alignment: Alignment.centerLeft,
@@ -575,6 +583,9 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                 ),
                                 ElevatedButton(
                                     onPressed: () {
+                                      if(distance.trim().isEmpty){
+print("rithi");
+                                      }
                                       Map<String, dynamic> data = {
                                         "category_id": cat == "Petrol" ? 1 : 2,
                                         "expense_km":
@@ -596,22 +607,15 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                           QuickAlert.show(
                                             context: context,
                                             type: QuickAlertType.info,
-                                            widget: Text(
-                                              "${value.data["error"]["message"]}",
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 30
-                                                      : width / 48,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      GlobalColors.themeColor2,
-                                                  letterSpacing: 0),
-                                            ),
+                                            title: "${value.data["error"]["message"]}" ,
+                                           onConfirmBtnTap: (){},
                                             autoCloseDuration:
                                                 Duration(seconds: 1),
                                           );
-                                        }
-                                        if (value.data["success"]) {
+
+                                          
+                                        }else{
+  if (value.data["success"]) {
                                           Api()
                                               .publickGetExpense(
                                                   ref.read(newToken)!,
@@ -641,6 +645,8 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                                       GlobalColors.themeColor2,
                                                   letterSpacing: 0),
                                             ),
+                                                                                       onConfirmBtnTap: (){},
+
                                             autoCloseDuration:
                                                 Duration(seconds: 1),
                                           );
@@ -659,6 +665,8 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                                       GlobalColors.themeColor2,
                                                   letterSpacing: 0),
                                             ),
+                                                                                       onConfirmBtnTap: (){},
+
                                             autoCloseDuration:
                                                 Duration(seconds: 2),
                                           );
@@ -668,6 +676,8 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                             distance = "";
                                           });
                                         }
+                                        }
+                                      
                                       });
                                     },
                                     child: Text("Save")),

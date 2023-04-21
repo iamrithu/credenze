@@ -77,7 +77,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               .update((state) => value.data["data"]["token"]);
 
           visible = true;
-          msg = "Loged In Successfully";
+          msg = "User login successfully";
           success = true;
           Timer(const Duration(seconds: 1), () {
             setState(() {

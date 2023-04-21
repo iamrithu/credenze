@@ -1,21 +1,46 @@
+import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:credenze/screens/attenence-screen/widgets/custom-attendence-scheduler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 
+import '../../../apis/api.dart';
 import '../../../const/global_colors.dart';
 
-class HolidayDetailsScreen extends StatefulWidget {
+class HolidayDetailsScreen extends ConsumerStatefulWidget {
   const HolidayDetailsScreen({Key? key}) : super(key: key);
 
   @override
   _HolidayDetailsScreenState createState() => _HolidayDetailsScreenState();
 }
 
-class _HolidayDetailsScreenState extends State<HolidayDetailsScreen> {
+class _HolidayDetailsScreenState extends ConsumerState<HolidayDetailsScreen> {
   DateTime newDate = DateTime.now();
+  List<dynamic> holidays = [];
+
+  getHoliday() {
+    print(DateFormat("MM").format(newDate));
+    print(DateFormat("yyyy").format(newDate));
+
+    Api()
+        .getHoliday(ref.read(newToken)!, DateFormat("yyyy").format(newDate),
+            DateFormat("MM").format(newDate))
+        .then((value) {
+      setState(() {
+        holidays = value.data["data"];
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getHoliday();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +85,15 @@ class _HolidayDetailsScreenState extends State<HolidayDetailsScreen> {
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2020),
                       lastDate: DateTime(2030),
-                    );
+                    ).then((value) {
+                      print(value.toString());
+                      if(value!=null){
+                           setState(() {
+                    newDate = value;
+                  });
+                   getHoliday();
+                      }
+                    });
 
                     if (month != null) {
                       setState(() {
@@ -82,31 +115,97 @@ class _HolidayDetailsScreenState extends State<HolidayDetailsScreen> {
           Container(
               width: width,
               height: width < 500 ? height * 0.633 : height * 0.66,
-              child: LayoutBuilder(builder: (context, constraints) {
-                return GridView.count(
-                  crossAxisCount: width < 500 ? 5 : 4,
-                  crossAxisSpacing: 2,
-                  mainAxisSpacing: 2,
+              child: RefreshIndicator(
+                onRefresh: () {
+                  setState(() {
+                    newDate = DateTime.now();
+                  });
+                  return Future.delayed(Duration(seconds: 2), () {
+                    return getHoliday();
+                  });
+                },
+                child: ListView(
                   children: [
-                    for (var i = 1;
-                        i <= DateTime(newDate.year, newDate.month + 1, 0).day;
-                        i++)
-                      if (DateFormat("EEEE").format(
-                              DateTime(newDate.year, newDate.month, i)) ==
-                          "Sunday")
-                        Card(
-                          elevation: 1,
-                          child: LayoutBuilder(builder: (context, constraints) {
-                            return CustomeAttendenceSchedulaer(
-                              day: i,
-                              newMonth: newDate,
-                              type: "holiday",
-                            );
-                          }),
+                    if(holidays.isEmpty)
+                    Center(
+                      child:  Text(
+                    "-- No holidays --",
+                    style: GoogleFonts.ptSans(
+                      color: GlobalColors.themeColor2,
+                        fontSize: width < 700 ? width / 28 : width / 45,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0),
+                  ),
+                    ),
+                    for (var i = 0; i < holidays.length; i++)
+                      Card(
+                        elevation: 1,
+                        child: Container(
+                          width: width,
+                          height: height * 0.07,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: width * 0.3,
+                                height: height * 0.06,
+                                alignment: Alignment.center,
+                                child: Wrap(children: [
+                                  Text(
+                                    "${DateFormat("dd-MM-yyyy").format(DateTime.parse(holidays[i]["date"]))}",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 28
+                                            : width / 45,
+                                        fontWeight: FontWeight.w400,
+                                        color: GlobalColors.themeColor,
+                                        letterSpacing: 0),
+                                  ),
+                                ]),
+                              ),
+                              Container(
+                                width: width * 0.3,
+                                height: height * 0.06,
+                                alignment: Alignment.center,
+                                child: Wrap(children: [
+                                  Text(
+                                    "${holidays[i]["occassion"]}",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 28
+                                            : width / 45,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0),
+                                  ),
+                                ]),
+                              ),
+                              Container(
+                                width: width * 0.3,
+                                height: height * 0.06,
+                                alignment: Alignment.center,
+                                child: Wrap(children: [
+                                  Text(
+                                    textAlign: TextAlign.center,
+                                    "",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 28
+                                            : width / 45,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0),
+                                  ),
+                                ]),
+                              )
+                            ],
+                          ),
                         ),
+                      )
                   ],
-                );
-              })),
+                ),
+              )),
         ],
       ),
     );

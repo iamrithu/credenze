@@ -60,7 +60,7 @@ class CustomAppBar extends ConsumerWidget {
                 ),
           systemOverlayStyle: SystemUiOverlayStyle(
               statusBarBrightness: Brightness.light,
-              statusBarColor: GlobalColors.white,
+              statusBarColor: GlobalColors.themeColor,
               systemStatusBarContrastEnforced: true),
           automaticallyImplyLeading: false,
           title: Container(
@@ -129,7 +129,7 @@ class CustomAppBar extends ConsumerWidget {
                                   )
                                 : page == 4 
                                 ? Text(
-                                    "Attendence Details",
+                                    "Attendance Details",
                                     style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 20
@@ -166,7 +166,16 @@ class CustomAppBar extends ConsumerWidget {
                                                 : width / 24,
                                             fontWeight: FontWeight.w800,
                                             letterSpacing: 0),
-                                      ):
+                                      ): page == 11
+                                    ?  Text(
+                                            "Overall Expenses",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: width < 700
+                                                    ? width / 20
+                                                    : width / 24,
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: 0),
+                                          ):
                                     Text(
                                             "Service Details",
                                             style: GoogleFonts.ptSans(
@@ -178,7 +187,8 @@ class CustomAppBar extends ConsumerWidget {
                                           ),
           ),
           actions: [
-            if (page != 8)
+            if (page != 11)
+              if (page != 9)
               user.when(
                   data: (_data) {
                     return InkWell(

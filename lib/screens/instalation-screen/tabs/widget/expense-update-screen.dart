@@ -85,7 +85,7 @@ class _ExpenseUpdateAddScreenState
     // TODO: implement initState
     super.initState();
 
-    print("bb" + widget.data.toString());
+    print("bb" + widget.data.attachment.toString());
 
     setState(() {
       _amount.text = widget.data.amount!;
@@ -561,7 +561,7 @@ class _ExpenseUpdateAddScreenState
                       width: width * 0.2,
                       padding: EdgeInsets.only(left: width * 0.07),
                       alignment: Alignment.centerLeft,
-                      child: newFile == null
+                      child: widget.data.attachment == null
                           ? Text(
                               "Choose File ",
                               style: GoogleFonts.ptSans(
@@ -572,7 +572,7 @@ class _ExpenseUpdateAddScreenState
                               ),
                             )
                           : Text(newFile == null
-                              ? "Choose File "
+                              ? "${widget.data.attachment}"
                               : "${newFile!.path.split('/').last}"),
                     ),
                   ),

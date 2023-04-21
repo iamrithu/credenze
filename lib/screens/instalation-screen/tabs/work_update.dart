@@ -87,53 +87,58 @@ class _WorkUpdateScreenState extends ConsumerState<WorkUpdateScreen> {
               child: ListView(
                 children: [
                   for (var i = 0; i < _data.length; i++)
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: Color.fromARGB(255, 249, 188, 189)),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: Container(
-                        width: widget.width,
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: widget.width! * 0.9,
-                                  child: Column(
-                                    children: [
-                                      TextRowWidget(
-                                        width: widget.width!,
-                                        lable: " Id",
-                                        value: "#${_data[i].id!}",
-                                      ),
-                                      TextRowWidget(
-                                        width: widget.width!,
-                                        lable: "Members",
-                                        value: "${_data[i].participantsName}",
-                                      ),
-                                      TextRowWidget(
-                                        width: widget.width!,
-                                        lable: "Task",
-                                        value:
-                                            "${_data[i].category!.name ?? "--"}",
-                                      ),
-                                      TextRowWidget(
-                                        width: widget.width!,
-                                        lable: "Work Updated Date",
-                                        value:
-                                            "${DateFormat("dd - MMMM - yyyy ").format(_data[i].workupdateDate!)}",
-                                      ),
-                                    ],
+                    InkWell(
+                      onTap: (){
+                        print(_data[i].id!);
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: Color.fromARGB(255, 249, 188, 189)),
+                            borderRadius: BorderRadius.circular(4)),
+                        child: Container(
+                          width: widget.width,
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: widget.width! * 0.9,
+                                    child: Column(
+                                      children: [
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: " Id",
+                                          value: "#${_data[i].id!}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Members",
+                                          value: "${_data[i].participantsName}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Task",
+                                          value:
+                                              "${_data[i].category!.name ?? "--"}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Work Updated Date",
+                                          value:
+                                              "${DateFormat("dd - MMMM - yyyy ").format(_data[i].workupdateDate!)}",
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Spacer(),
-                              ],
-                            ),
-                          ],
+                                  Spacer(),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

@@ -13,15 +13,16 @@ import '../../../apis/notification_api.dart';
 import '../../../const/global_colors.dart';
 import '../../instalation-screen/tabs/widget/text-row-widget.dart';
 import '../widgets/leave_apply_screen.dart';
+import '../widgets/permission_apply_screen.dart';
 
-class LeaveDetailsScreen extends ConsumerStatefulWidget {
-  const LeaveDetailsScreen({Key? key}) : super(key: key);
+class PermissionDetailsScreen extends ConsumerStatefulWidget {
+  const PermissionDetailsScreen({Key? key}) : super(key: key);
 
   @override
-  _LeaveDetailsScreenState createState() => _LeaveDetailsScreenState();
+  _PermissionDetailsScreenState createState() => _PermissionDetailsScreenState();
 }
 
-class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
+class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScreen> {
   DateTime newDate = DateTime.now();
   String status="";
 
@@ -29,7 +30,7 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-        final data = ref.watch(leaveListModelProvider);
+        final data = ref.watch(permissionListModelProvider);
 
 
 
@@ -39,7 +40,7 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
           showModalBottomSheet<void>(
             context: context,
             builder: (BuildContext context) {
-              return LeaveApplyScreen();
+              return PermissionApplyScreen();
             },
           );
         },
@@ -55,7 +56,7 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
               borderRadius: BorderRadius.circular(4)),
         ),
         label: Text(
-          "Add Leave",
+          "Add Permission",
           style: GoogleFonts.ptSans(
               color: GlobalColors.white,
               fontSize: width < 700 ? width / 35 : width / 45,
@@ -153,7 +154,7 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
               strokeWidth: 4.0,
               onRefresh: () async {
                 return Future<void>.delayed(const Duration(seconds: 2), () {
-                  return ref.refresh(leaveListModelProvider);
+                  return ref.refresh(permissionListModelProvider);
                 });
               },
               child: ListView(
@@ -190,40 +191,37 @@ if(_data.isEmpty) Center(child:Text(
                                     children: [
                                        TextRowWidget(
                                         width:width,
-                                        lable: "Leave Type",
-                                        value: _data[i].leaveTypeId==1?"Casual":_data[i].leaveTypeId==2?"Sick":"Earned",
+                                        lable: "Date",
+                                        value: "${DateFormat("dd-MM-yyyy").format(_data[i].date!)}",
                                       ),
                                        TextRowWidget(
                                         width:width,
-                                        lable: "Leave Duration ",
-                                        value: _data[i].duration + " ( ${_data[i].halfDayType==null?"Full Day":_data[i].halfDayType=="first_half"?"Forenoon":"Afternoon"} )",
+                                        lable: "From Time",
+                                        value: "${DateFormat("h:mm:ss a").format(_data[i].fromTime!)}",
                                       ),
-                                      TextRowWidget(
+                                       TextRowWidget(
                                         width:width,
-                                        lable: "Leave Date",
-                                        value: "${DateFormat("dd-MM-yyyy").format(_data[i].date)}",
+                                        lable: "To Time",
+                                        value: "${DateFormat("h:mm:ss a").format(_data[i].toTime!)}",
                                       ),
-                                        TextRowWidget(
+                                    
+                                         TextRowWidget(
                                         width:width,
                                         lable: "Reason",
                                         value: "${_data[i].reason}",
                                       ),
-                                      TextRowWidget(
+                                        TextRowWidget(
                                         width:width,
-                                        lable: "Leave Status",
-                                        value: _data[i].status[0].toUpperCase()+_data[i].status.substring(1),
+                                        lable: "Status",
+                                        value: _data[i].status![0].toUpperCase()+_data[i].status!.substring(1),
                                       ),
-                                       
-                                         if(_data[i].status=="rejected")
+                                      if(_data[i].status=="rejected")
                                      
                                      TextRowWidget(
                                         width:width,
                                         lable: "Rejected Reason",
                                         value: "${_data[i].rejectReason}",
                                       ),
-                                    
-                                     
-                                     
                                     
                                     ],
                                   ),

@@ -414,6 +414,7 @@ class _ServiceTaskDetailsSCreenState
                                             ),
                                           ],
                                         ),
+
                                         SizedBox(height: 4),
                                         _data.items![i].serialnos!.isEmpty
                                             ? Container(
@@ -442,6 +443,7 @@ class _ServiceTaskDetailsSCreenState
                                                     ),
                                                     Wrap(
                                                       children: [
+                                                     
                                                         for (var j = 0;
                                                             j <
                                                                 _data
@@ -449,6 +451,7 @@ class _ServiceTaskDetailsSCreenState
                                                                     .serialnos!
                                                                     .length;
                                                             j++)
+                                                          
                                                           Card(
                                                             shape: RoundedRectangleBorder(
                                                                 borderRadius:
@@ -464,7 +467,7 @@ class _ServiceTaskDetailsSCreenState
                                                                   const EdgeInsets
                                                                       .all(8.0),
                                                               child: Text(
-                                                                "${_data.items![i].serialnos![j].serialno}",
+                                                                "${_data.items![i].serialnos![j]["serial_no"]}",
                                                                 style: GoogleFonts.ptSans(
                                                                     color: GlobalColors
                                                                         .black,

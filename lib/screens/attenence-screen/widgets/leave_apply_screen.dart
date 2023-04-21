@@ -209,7 +209,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                     width: width * 0.3,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Leave Type",
+                      "Leave Type*",
                       style: GoogleFonts.ptSans(
                         color: GlobalColors.black,
                         fontSize: width < 700 ? width / 25 : width / 44,
@@ -235,7 +235,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                     width: width * 0.3,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Leave Duration",
+                      "Leave Duration*",
                       style: GoogleFonts.ptSans(
                         color: GlobalColors.black,
                         fontSize: width < 700 ? width / 25 : width / 44,
@@ -261,7 +261,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                     alignment: Alignment.centerLeft,
                     child: singleday
                         ? Text(
-                            "Selected Date",
+                            "Selected Date*",
                             style: GoogleFonts.ptSans(
                               color: GlobalColors.black,
                               fontSize: width < 700 ? width / 25 : width / 44,
@@ -270,7 +270,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                             ),
                           )
                         : Text(
-                            "Selected Date " + "(${_selectedDateList.length})",
+                            "Selected Date*" + "(${_selectedDateList.length})",
                             style: GoogleFonts.ptSans(
                               color: GlobalColors.black,
                               fontSize: width < 700 ? width / 25 : width / 44,

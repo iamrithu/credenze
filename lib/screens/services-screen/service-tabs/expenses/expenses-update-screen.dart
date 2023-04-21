@@ -562,7 +562,7 @@ class _ServiceExpenseUpdateScreenState
                       width: width * 0.2,
                       padding: EdgeInsets.only(left: width * 0.07),
                       alignment: Alignment.centerLeft,
-                      child: newFile == null
+                      child: widget.data.attachment == null
                           ? Text(
                               "Choose File ",
                               style: GoogleFonts.ptSans(
@@ -573,7 +573,7 @@ class _ServiceExpenseUpdateScreenState
                               ),
                             )
                           : Text(newFile == null
-                              ? "Choose File "
+                              ? "${widget.data.attachment}"
                               : "${newFile!.path.split('/').last}"),
                     ),
                   ),

@@ -15,6 +15,7 @@ import '../models/instalation-task-model.dart';
 import '../models/installation-employee-model.dart';
 import '../models/installation-work-updatedList-model.dart';
 import '../models/leaveListModel.dart';
+import '../models/permoissionListModel.dart';
 import '../models/service-detail-model.dart';
 import '../models/service-expense-model.dart';
 import '../models/service-file-model.dart';
@@ -206,6 +207,14 @@ final leaveListModelProvider =
   String? token = ref.watch(newToken);
 
   return ref.watch(provider).leaveList(
+        token,
+      );
+});
+final permissionListModelProvider =
+    FutureProvider<List<PermissionListModel>>((ref) {
+  String? token = ref.watch(newToken);
+
+  return ref.watch(provider).permissionList(
         token,
       );
 });
