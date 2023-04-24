@@ -69,7 +69,7 @@ class _AttendenceDetailsScreenState
     
       if (val == DateTime.parse(present[i]["attendance_date"]).day) {
         return Card(
-          elevation: 1,
+          elevation: val==toDay.day?10: 1,
           shape: RoundedRectangleBorder(
             side: BorderSide(color:  val==toDay.day?GlobalColors.green:GlobalColors.white),
             borderRadius: BorderRadius.circular(5)
@@ -233,142 +233,7 @@ class _AttendenceDetailsScreenState
                           i++)
                           if(i>toDay.day)
                         fillterAfterDates(i),
-                      // DateFormat("EEEE").format(DateTime(
-                      //             newDate.year, newDate.month, i)) ==
-                      //         "Sunday"
-                      //     ? Card(
-                      //         elevation: 1,
-                      //         child: LayoutBuilder(
-                      //             builder: (context, constraints) {
-                      //           return CustomeAttendenceSchedulaer(
-                      //             day: i,
-                      //             newMonth: newDate,
-                      //             type: "holiday",
-                      //           );
-                      //         }),
-                      //       )
-                      //     : Card(
-                      //         elevation: 1,
-                      //         child: LayoutBuilder(
-                      //             builder: (context, constraints) {
-                      //           return CustomeAttendenceSchedulaer(
-                      //             day: i,
-                      //             newMonth: newDate,
-                      //             type: "present",
-                      //           );
-                      //         }),
-                      //       ),
-                      // for (var i = 1;
-                      //     i <= DateTime(newDate.year, newDate.month + 1, 0).day;
-                      //     i++)
-                      //   if (i == toDay.day)
-                      //     Tooltip(
-                      //       message: "Today",
-                      //       child: Card(
-                      //         elevation: 1,
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(10),
-                      //             side: BorderSide(
-                      //                 color: Color.fromARGB(255, 8, 105, 42))),
-                      //         child: LayoutBuilder(
-                      //             builder: (context, constraints) {
-                      //           return CustomeAttendenceSchedulaer(
-                      //             day: i,
-                      //             newMonth: newDate,
-                      //             type: "attendence",
-                      //           );
-                      //         }),
-                      //       ),
-                      //     ),
-                      // for (var i = 1;
-                      //     i <= DateTime(newDate.year, newDate.month + 1, 0).day;
-                      //     i++)
-                      //   if (i > toDay.day)
-                      //     DateFormat("EEEE").format(DateTime(
-                      //                 newDate.year, newDate.month, i)) ==
-                      //             "Sunday"
-                      //         ? Card(
-                      //             elevation: 1,
-                      //             child: LayoutBuilder(
-                      //                 builder: (context, constraints) {
-                      //               return CustomeAttendenceSchedulaer(
-                      //                 day: i,
-                      //                 newMonth: newDate,
-                      //                 type: "holiday",
-                      //               );
-                      //             }),
-                      //           )
-                      //         : Card(
-                      //             elevation: 1,
-                      //             child: LayoutBuilder(
-                      //                 builder: (context, constraints) {
-                      //               return Column(
-                      //                 children: [
-                      //                   Row(
-                      //                     children: [
-                      //                       Container(
-                      //                         alignment: Alignment.center,
-                      //                         width: width * 0.2,
-                      //                         height: height * 0.035,
-                      //                         child: RichText(
-                      //                           text: TextSpan(
-                      //                             text: i.toString(),
-                      //                             style: GoogleFonts.ptSans(
-                      //                                 fontSize: width < 700
-                      //                                     ? width / 22
-                      //                                     : width / 40,
-                      //                                 fontWeight:
-                      //                                     FontWeight.w400,
-                      //                                 color: GlobalColors
-                      //                                     .themeColor,
-                      //                                 letterSpacing: 2),
-                      //                             children: [
-                      //                               TextSpan(
-                      //                                 text: "  " +
-                      //                                     DateFormat("EEE")
-                      //                                         .format(DateTime(
-                      //                                             newDate.year,
-                      //                                             newDate.month,
-                      //                                             i)),
-                      //                                 style: GoogleFonts.ptSans(
-                      //                                     fontSize: width < 700
-                      //                                         ? width / 32
-                      //                                         : width / 48,
-                      //                                     fontWeight:
-                      //                                         FontWeight.w400,
-                      //                                     color: GlobalColors
-                      //                                         .black,
-                      //                                     letterSpacing: 2),
-                      //                               ),
-                      //                             ],
-                      //                           ),
-                      //                         ),
-                      //                       ),
-                      //                       Expanded(
-                      //                         child: Card(
-                      //                           elevation: 1,
-                      //                           child: Container(
-                      //                               alignment: Alignment.center,
-                      //                               height: height * 0.035,
-                      //                               child: Center(
-                      //                                 child: Icon(
-                      //                                     Icons.cancel_rounded,
-                      //                                     color: Color.fromARGB(
-                      //                                         255,
-                      //                                         213,
-                      //                                         26,
-                      //                                         12)),
-                      //                               )),
-                      //                         ),
-                      //                       ),
-                      //                     ],
-                      //                   ),
-                      //                 ],
-                      //               );
-                      //             }),
-                      //           ),
-
-
+                    
                                 SizedBox(),
                                  SizedBox(),
                                   SizedBox(),

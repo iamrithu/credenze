@@ -71,7 +71,7 @@ class _CustomeAttendenceSchedulaerState
                   ),
                   Expanded(
                     child: Card(
-                      elevation: 1,
+                      elevation: 10,
                       child: Container(
                           alignment: Alignment.center,
                           height: height * 0.035,
