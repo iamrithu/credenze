@@ -34,6 +34,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String presentList = "0";
   String achivement = "0";
   String absents = "0";
+  bool isLocationEnable = true;
 
   List<Map<String, dynamic>> expenseList = [];
   String isChecked = "office";
@@ -58,6 +59,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String? _dayOut;
   bool _dayCompleted = false;
   late Duration _loggedInHr;
+
+  checkLocationActivity() async {
+    await Geolocator.isLocationServiceEnabled().then((value) {
+      setState(() {
+        isLocationEnable = value;
+      });
+    });
+  }
 
   getBonus() {
     Api().getBonus(ref.read(newToken)!).then((value) {
@@ -128,26 +137,28 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               _stopWatchTimer.setPresetSecondTime(diff.inSeconds % 60.abs());
               _stopWatchTimer.onStartTimer();
             } else {
-              _dayIn = DateFormat("hh:mm:ss").format(DateTime.parse(
-                      value.data["message"]["attendance"][i]["clock_in_time"])
-                  .toLocal());
-              _dayOut = DateFormat("hh:mm:ss").format(DateTime.parse(
-                      value.data["message"]["attendance"][i]["clock_out_time"])
-                  .toLocal());
-              _action = "DayIn";
-              DateTime dt2 = DateTime.parse(
-                      value.data["message"]["attendance"][i]["clock_in_time"])
-                  .toLocal();
-              DateTime dt1 = DateTime.parse(
-                      value.data["message"]["attendance"][i]["clock_out_time"])
-                  .toLocal();
-              Duration diff = dt1.difference(dt2);
-              _stopWatchTimer.clearPresetTime();
-              _stopWatchTimer.onResetTimer();
-              _stopWatchTimer.setPresetHoursTime(diff.inHours % 24.abs());
-              _stopWatchTimer.setPresetMinuteTime(diff.inMinutes % 60.abs());
-              _stopWatchTimer.setPresetSecondTime(diff.inSeconds % 60.abs());
-              _stopWatchTimer.onStopTimer();
+              _dayIn="--/--";
+              _dayOut="--/--";
+              // _dayIn = DateFormat("hh:mm:ss").format(DateTime.parse(
+              //         value.data["message"]["attendance"][i]["clock_in_time"])
+              //     .toLocal());
+              // _dayOut = DateFormat("hh:mm:ss").format(DateTime.parse(
+              //         value.data["message"]["attendance"][i]["clock_out_time"])
+              //     .toLocal());
+              // _action = "DayIn";
+              // DateTime dt2 = DateTime.parse(
+              //         value.data["message"]["attendance"][i]["clock_in_time"])
+              //     .toLocal();
+              // DateTime dt1 = DateTime.parse(
+              //         value.data["message"]["attendance"][i]["clock_out_time"])
+              //     .toLocal();
+              // Duration diff = dt1.difference(dt2);
+              // _stopWatchTimer.clearPresetTime();
+              // _stopWatchTimer.onResetTimer();
+              // _stopWatchTimer.setPresetHoursTime(diff.inHours % 24.abs());
+              // _stopWatchTimer.setPresetMinuteTime(diff.inMinutes % 60.abs());
+              // _stopWatchTimer.setPresetSecondTime(diff.inSeconds % 60.abs());
+              // _stopWatchTimer.onStopTimer();
             }
           });
         }
@@ -157,9 +168,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   void initState() {
-    // ignore: todo
-    // TODO: implement initState
     super.initState();
+    checkLocationActivity();
     attendenceDetails();
     getBonus();
     getPresentList();
@@ -180,24 +190,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getfinallocation(String val) {
-      print("rihti ${val}");
-      // setState(() {
-      //   isChecked = val;
-      // });
-    }
-
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
     dayIn() async {
+       setState(() {
+        isLoading = true;
+      });
       Position? pos = await MapsAndLocation().locationPermisson();
 
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
-      setState(() {
-        isLoading = true;
-      });
+     
       Api()
           .DayIn(token!, pos.toJson()["latitude"].toString(),
               pos.toJson()["longitude"].toString())
@@ -243,20 +247,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
 
     dayOut() async {
-        setState(() {
+      setState(() {
         isLoading = true;
       });
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
       Position? pos = await MapsAndLocation().locationPermisson();
-     
+
       Api().CheckCanSubmit(token: token).then((value) {
-       
         if (jsonDecode(value)["success"] == false) {
           setState(() {
             _action = "DayOut";
-           isLoading = false;
-
+            isLoading = false;
           });
 
           return QuickAlert.show(
@@ -289,7 +291,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             autoCloseDuration: null,
             onCancelBtnTap: () {
               setState(() {
-                 isLoading = true;
+                isLoading = true;
                 _action = "DayOut";
                 isLoading = false;
               });
@@ -299,7 +301,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               Navigator.pop(context);
 
               // Position? pos = await MapsAndLocation().locationPermisson();
-           
+
               Api()
                   .DayOut(token!, pos.toJson()["latitude"].toString(),
                       pos.toJson()["longitude"].toString())
@@ -309,11 +311,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   setState(() {
                     _action = "DayIn";
                     visible = true;
-                     isLoading = false;
+                    isLoading = false;
                     success = value.data["success"];
                     msg = value.data["data"];
                   });
                   attendenceDetails();
+                  setState(() {
+                    _dayIn="--/--";
+                    _dayOut="--/--";
+                  });
                   if (visible) {
                     setState(() {
                       visible = false;
@@ -355,19 +361,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             .then((value) async {
           if (value.data["success"]) {
             setState(() {
+                            _action = "DayIn";
+
               visible = true;
               success = value.data["success"];
               msg = value.data["data"];
-                    isLoading = false;
+              isLoading = false;
             });
             attendenceDetails();
+             setState(() {
+                    _dayIn="--/--";
+                    _dayOut="--/--";
+                  });
             if (visible) {
-              _action = "DayIn";
 
               Timer(const Duration(milliseconds: 1500), () {
                 setState(() {
-                               
-
                   visible = false;
                   success = false;
                 });
@@ -391,7 +400,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             });
             if (visible) {
               setState(() {
- 
                 _action = "DayOut";
                 visible = false;
                 success = false;
@@ -400,7 +408,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           }
         });
       });
-      
     }
 
     action(GlobalKey<SlideActionState> key) {
@@ -413,7 +420,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return Scaffold(
       body: SafeArea(
-        
         child: Stack(
           children: [
             Container(
@@ -535,36 +541,34 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 SizedBox(
                                   width: 12,
                                 ),
-                                 CardContainer(
+                                CardContainer(
                                   title: "Target Achieved",
-                                  value: achivement+"%",
+                                  value: achivement + "%",
                                 ),
-                                 SizedBox(
+                                SizedBox(
                                   width: 12,
                                 ),
                                 CardContainer(
-                                  title: "Earning value",
+                                  title: "Bonus Earned",
                                   value: bonus,
                                 ),
                                 SizedBox(
                                   width: 12,
                                 ),
                                 CardContainer(
-                                  title: "Presence",
+                                  title: "Present",
                                   value: presentList + "\ndays",
                                 ),
                                 SizedBox(
                                   width: 12,
                                 ),
                                 CardContainer(
-                                  title: "Absence",
+                                  title: "Absent",
                                   value: absents + "\ndays",
                                 ),
                                 SizedBox(
                                   width: 12,
                                 ),
-                              
-                               
                               ],
                             ),
                           ),
@@ -576,23 +580,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           elevation: 1,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
-                            
                           ),
                           child: Container(
                             decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(10),
-
-                              gradient:  LinearGradient(
-              colors: [
-                                Color.fromARGB(255, 247, 247, 247),
-
-                Color.fromARGB(255, 252, 227, 226),
-              ],
-              stops: [0, 1],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )
-                            ),
+                                borderRadius: BorderRadius.circular(10),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(255, 247, 247, 247),
+                                    Color.fromARGB(255, 252, 227, 226),
+                                  ],
+                                  stops: [0, 1],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                )),
                             width: width,
                             height: constraints.maxHeight * 0.15,
                             child: Column(
@@ -651,7 +651,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           ),
                                         ],
                                       ),
-                                      
                                     ),
                                     Expanded(
                                       child: Column(
@@ -750,34 +749,32 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ],
                         ),
+                        if(_action == "DayOut")
                         Card(
                           margin: EdgeInsets.symmetric(
                               horizontal: width * 0.025,
                               vertical: height * 0.02),
                           elevation: 10,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(width * 0.5),
-                              // side: BorderSide(
-                              //     color: GlobalColors.themeColor, width: 2),
-                                  ),
+                            borderRadius: BorderRadius.circular(width * 0.5),
+                            // side: BorderSide(
+                            //     color: GlobalColors.themeColor, width: 2),
+                          ),
                           child: Container(
                             width: width < 500 ? width * 0.35 : width * 0.3,
                             height: width < 500 ? width * 0.35 : width * 0.3,
-                           decoration: BoxDecoration(
-
-                                                          borderRadius: BorderRadius.circular(width*0.5),
-
-                              gradient:  LinearGradient(
-              colors: [
-                                Color.fromARGB(255, 247, 247, 247),
-
-                Color.fromARGB(255, 252, 227, 226),
-              ],
-              stops: [0, 1],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )
-                            ),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(width * 0.5),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(255, 247, 247, 247),
+                                    Color.fromARGB(255, 252, 227, 226),
+                                  ],
+                                  stops: [0, 1],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                )),
                             child: Center(
                                 child: StreamBuilder(
                               stream: _stopWatchTimer.rawTime,
@@ -855,43 +852,136 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             )),
                           ),
                         ),
-                        Builder(
-                          builder: (context) {
-                            final GlobalKey<SlideActionState> _key =
-                                GlobalKey();
-                            return Padding(
+                        if (!isLocationEnable)
+                          Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: width * 0.02,
                                   vertical: height * 0.02),
-                              child: SlideAction(
-                                animationDuration: Duration(milliseconds: 500),
-                                reversed: _action != "DayIn" ? true : false,
-                                sliderButtonYOffset: 0,
-                                height:
-                                    width < 700 ? height * 0.08 : height * 0.08,
-                                child: Text(
-                                  _action == "DayIn"
-                                      ? "Slide To Day In"
-                                      : "Slide To Day Out",
-                                  style: GoogleFonts.ptSans(
-                                      fontSize:
-                                          width < 700 ? width / 28 : width / 42,
-                                      fontWeight: FontWeight.w400,
-                                      color: GlobalColors.themeColor,
-                                      letterSpacing: 0),
+                              child: Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(100)),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100)),
+                                  width: width,
+                                  height: width < 700
+                                      ? height * 0.08
+                                      : height * 0.08,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: width * 0.4,
+                                        child: Text(
+                                          textAlign: TextAlign.center,
+                                          "Enable your location",
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: width < 700
+                                                  ? width / 32
+                                                  : width / 48,
+                                              fontWeight: FontWeight.w400,
+                                              color: GlobalColors.themeColor,
+                                              letterSpacing: 0),
+                                        ),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.centerRight,
+                                        width: width * 0.2,
+                                        
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(100)
+                                            )
+                                          ),
+                                          onPressed: () {
+                                            Geolocator.openLocationSettings();
+                                          },
+                                          child: Text(
+                                            "Enable",
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: width < 700
+                                                    ? width / 35
+                                                    : width / 42,
+                                                fontWeight: FontWeight.w600,
+                                                color: GlobalColors.white,
+                                                letterSpacing: 0),
+                                          ),
+                                        ),
+                                      ),
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(100)),
+                                        child: Container(
+                                          width: width * 0.1,
+                                          height: width * 0.1,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            color: GlobalColors.themeColor,
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.refresh,
+                                              color: GlobalColors.white,
+                                            ),
+                                            onPressed: () {
+                                              checkLocationActivity();
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                borderRadius: 100,
-                                outerColor: GlobalColors.white,
-                                innerColor: GlobalColors.themeColor,
-                                elevation: 1,
-                                key: _key,
-                                onSubmit: () {
-                                  action(_key);
-                                },
-                              ),
-                            );
-                          },
-                        ),
+                              )),
+                        if (isLocationEnable)
+                          Builder(
+                            builder: (context) {
+                              final GlobalKey<SlideActionState> _key =
+                                  GlobalKey();
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: width * 0.02,
+                                    vertical: height * 0.02),
+                                child: SlideAction(
+                                  animationDuration:
+                                      Duration(milliseconds: 500),
+                                  reversed: _action != "DayIn" ? true : false,
+                                  sliderButtonYOffset: 0,
+                                  height: width < 700
+                                      ? height * 0.08
+                                      : height * 0.08,
+                                  child: Text(
+                                    _action == "DayIn"
+                                        ? "Slide To Day In"
+                                        : "Slide To Day Out",
+                                    style: GoogleFonts.ptSans(
+                                        fontSize: width < 700
+                                            ? width / 28
+                                            : width / 42,
+                                        fontWeight: FontWeight.w400,
+                                        color: GlobalColors.themeColor,
+                                        letterSpacing: 0),
+                                  ),
+                                  borderRadius: 100,
+                                  outerColor: GlobalColors.white,
+                                  innerColor: GlobalColors.themeColor,
+                                  elevation: 1,
+                                  key: _key,
+                                  onSubmit: () {
+                                    action(_key);
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                         // Padding(
                         //   padding: const EdgeInsets.all(8.0),
                         //   child: Padding(

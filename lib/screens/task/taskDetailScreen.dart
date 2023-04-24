@@ -153,6 +153,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
 
   pauseTimer() {
     Api().pauseTimer(ref.read(newToken)!, activeTimerId).then((value) {
+
       if (value.data["success"]) {
         setState(() {
           isPaused = true;
@@ -241,6 +242,8 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
             height: height,
             child: Column(
               children: [
+                                   if(isCompleted)
+
                 Container(
                   width: width,
                   height: height * 0.08,
@@ -818,70 +821,79 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                            color: GlobalColors.themeColor)),
-                                    width: width * 0.6,
-                                    height: height * 0.06,
-                                    alignment: Alignment.center,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Wrap(
-                                          alignment: WrapAlignment.center,
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: (){
+                                          setState(() {
+                                        reassignMember = true;
+                                      });
+                                      },
+                                      child: Container(
+                                        height: height*0.07,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: GlobalColors.themeColor)),
+                                                                       
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            Text(
-                                              getUsersName
-                                                  .toString()
-                                                  .replaceAll('[', "")
-                                                  .replaceAll(']', "")
-                                                  .replaceAll('"', ""),
-                                              style: GoogleFonts.ptSans(
-                                                  color:
-                                                      GlobalColors.themeColor2,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
+                                            Wrap(
+                                              alignment: WrapAlignment.center,
+                                              children: [
+                                                Text(
+                                                  getUsersName
+                                                      .toString()
+                                                      .replaceAll('[', "")
+                                                      .replaceAll(']', "")
+                                                      .replaceAll('"', ""),
+                                                  style: GoogleFonts.ptSans(
+                                                      color:
+                                                          GlobalColors.themeColor2,
+                                                      fontSize: width < 700
+                                                          ? width / 35
+                                                          : width / 45,
+                                                      fontWeight: FontWeight.w500,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        reassignMember = true;
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: GlobalColors.themeColor,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      width: width * 0.3,
-                                      height: height * 0.06,
-                                      child: Center(
-                                        child: Text(
-                                          "Reassign",
-                                          style: GoogleFonts.ptSans(
-                                              color: GlobalColors.white,
-                                              fontSize: width < 700
-                                                  ? width / 35
-                                                  : width / 45,
-                                              fontWeight: FontWeight.w500,
-                                              letterSpacing: 0),
-                                        ),
                                       ),
                                     ),
                                   ),
+                                  // InkWell(
+                                  //   onTap: () {
+                                  //     setState(() {
+                                  //       reassignMember = true;
+                                  //     });
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //       color: GlobalColors.themeColor,
+                                  //       borderRadius: BorderRadius.circular(10),
+                                  //     ),
+                                  //     width: width * 0.3,
+                                  //     height: height * 0.06,
+                                  //     child: Center(
+                                  //       child: Text(
+                                  //         "Reassign",
+                                  //         style: GoogleFonts.ptSans(
+                                  //             color: GlobalColors.white,
+                                  //             fontSize: width < 700
+                                  //                 ? width / 35
+                                  //                 : width / 45,
+                                  //             fontWeight: FontWeight.w500,
+                                  //             letterSpacing: 0),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             Container(
@@ -907,7 +919,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                     unselectedLabelColor:
                                         GlobalColors.themeColor,
                                     tabs: [
-                                      Tab(text: "Command"),
+                                      Tab(text: "Comment"),
                                       // Tab(text: "Time Logs"),
                                       Tab(text: "Expense"),
                                     ],
@@ -1086,6 +1098,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                       setState(() {
                                         reassignMember = false;
                                       });
+                                       ref.read(pageIndex.notifier).update((state) => 3);
                                     });
                                   },
                                   child: Container(

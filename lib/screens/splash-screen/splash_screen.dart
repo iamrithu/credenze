@@ -16,10 +16,8 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   getDatas() async {
-    Timer(const Duration(seconds: 3), () {
-      Get.to(LoginScreen(),
-          transition: Transition.zoom, duration: Duration(milliseconds: 600));
-    });
+     Timer(const Duration(milliseconds:3000), () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));});
   }
 
   @override

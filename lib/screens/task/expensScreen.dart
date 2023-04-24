@@ -161,10 +161,22 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                             height: height * 0.06,
                                             child: Center(
                                               child: Text(
-                                                getExpenses[i]["category_id"]==1?double.parse(getExpenses[i]["amount"]).toInt().toString()+"\n(${double.parse(getExpenses[i]["expense_km"])}km)":
-                                                double.parse(getExpenses[i]["amount"]).toInt().toString(),
+                                                getExpenses[i]["category_id"] ==
+                                                        1
+                                                    ? double.parse(
+                                                                getExpenses[i]
+                                                                    ["amount"])
+                                                            .toInt()
+                                                            .toString() +
+                                                        "\n(${double.parse(getExpenses[i]["expense_km"])}km)"
+                                                    : double.parse(
+                                                            getExpenses[i]
+                                                                ["amount"])
+                                                        .toInt()
+                                                        .toString(),
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor2,
+                                                    color: GlobalColors
+                                                        .themeColor2,
                                                     fontSize: width < 700
                                                         ? width / 35
                                                         : width / 45,
@@ -173,64 +185,61 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                               ),
                                             ),
                                           ),
-                                           
                                         ],
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          Api()
-                                              .removeExpense(
-                                                  ref.watch(newToken)!,
-                                                  ref.watch(publicTaskId),
-                                                  getExpenses[i]["id"])
-                                              .then((value) {
-                                            if (value.data["success"]) {
-                                              Api()
-                                                  .publickGetExpense(
-                                                      ref.read(newToken)!,
-                                                      ref.read(publicTaskId))
-                                                  .then((value) {
-                                                setState(() {
-                                                  getExpenses = value;
-                                                });
-                                              });
-                                            } else {
-                                              QuickAlert.show(
-                                                context: context,
-                                                type: QuickAlertType.info,
-                                                onConfirmBtnTap:(){
-
-                                                },
-                                                widget: Text(
-                                                  "${value.data["message"]}",
-                                                  style: GoogleFonts.ptSans(
-                                                      fontSize: width < 700
-                                                          ? width / 30
-                                                          : width / 48,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: GlobalColors
-                                                          .themeColor2,
-                                                      letterSpacing: 0),
-                                                ),
-                                                autoCloseDuration:
-                                                    Duration(seconds: 1),
-                                              );
-                                            }
-                                          });
-                                        },
-                                        child: Container(
-                                          width: width * 0.1,
-                                          height: height * 0.06,
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.delete,
-                                              size: width / 30,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        ),
-                                      )
+                                      // InkWell(
+                                      //   onTap: () {
+                                      //     Api()
+                                      //         .removeExpense(
+                                      //             ref.watch(newToken)!,
+                                      //             ref.watch(publicTaskId),
+                                      //             getExpenses[i]["id"])
+                                      //         .then((value) {
+                                      //       if (value.data["success"]) {
+                                      //         Api()
+                                      //             .publickGetExpense(
+                                      //                 ref.read(newToken)!,
+                                      //                 ref.read(publicTaskId))
+                                      //             .then((value) {
+                                      //           setState(() {
+                                      //             getExpenses = value;
+                                      //           });
+                                      //         });
+                                      //       } else {
+                                      //         QuickAlert.show(
+                                      //           context: context,
+                                      //           type: QuickAlertType.info,
+                                      //           onConfirmBtnTap: () {},
+                                      //           widget: Text(
+                                      //             "${value.data["message"]}",
+                                      //             style: GoogleFonts.ptSans(
+                                      //                 fontSize: width < 700
+                                      //                     ? width / 30
+                                      //                     : width / 48,
+                                      //                 fontWeight:
+                                      //                     FontWeight.w400,
+                                      //                 color: GlobalColors
+                                      //                     .themeColor2,
+                                      //                 letterSpacing: 0),
+                                      //           ),
+                                      //           autoCloseDuration:
+                                      //               Duration(seconds: 1),
+                                      //         );
+                                      //       }
+                                      //     });
+                                      //   },
+                                      //   child: Container(
+                                      //     width: width * 0.1,
+                                      //     height: height * 0.06,
+                                      //     child: Center(
+                                      //       child: Icon(
+                                      //         Icons.delete,
+                                      //         size: width / 30,
+                                      //         color: Colors.red,
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 ),
@@ -318,9 +327,9 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(color: GlobalColors.themeColor2)
-                                  ),
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                          color: GlobalColors.themeColor2)),
                                   alignment: Alignment.centerLeft,
                                   width: width * 0.5,
                                   height: height * 0.05,
@@ -370,7 +379,6 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                     width: width * 0.5,
                                     height: height * 0.05,
                                     child: TextFormField(
-                                    
                                       keyboardType: TextInputType.number,
                                       onChanged: (value) {
                                         setState(() {
@@ -448,7 +456,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                         letterSpacing: 0,
                                       ),
                                     )),
-                                    Container(
+                                Container(
                                   alignment: Alignment.centerLeft,
                                   width: width * 0.05,
                                   child: Text(":"),
@@ -583,8 +591,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                 ),
                                 ElevatedButton(
                                     onPressed: () {
-                                      if(distance.trim().isEmpty){
-print("rithi");
+                                      if (distance.trim().isEmpty) {
                                       }
                                       Map<String, dynamic> data = {
                                         "category_id": cat == "Petrol" ? 1 : 2,
@@ -607,77 +614,73 @@ print("rithi");
                                           QuickAlert.show(
                                             context: context,
                                             type: QuickAlertType.info,
-                                            title: "${value.data["error"]["message"]}" ,
-                                           onConfirmBtnTap: (){},
-                                            autoCloseDuration:
-                                                Duration(seconds: 1),
-                                          );
-
-                                          
-                                        }else{
-  if (value.data["success"]) {
-                                          Api()
-                                              .publickGetExpense(
-                                                  ref.read(newToken)!,
-                                                  ref.read(publicTaskId))
-                                              .then((value) {
-                                            setState(() {
-                                              getExpenses = value;
-                                            });
-                                          });
-                                          setState(() {
-                                            openForm = false;
-                                            amt = "";
-                                            distance = "";
-                                          });
-
-                                          QuickAlert.show(
-                                            context: context,
-                                            type: QuickAlertType.info,
-                                            widget: Text(
-                                              "${value.data["message"]}",
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 30
-                                                      : width / 48,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      GlobalColors.themeColor2,
-                                                  letterSpacing: 0),
-                                            ),
-                                                                                       onConfirmBtnTap: (){},
-
+                                            title:
+                                                "${value.data["error"]["message"]}",
+                                            onConfirmBtnTap: () {},
                                             autoCloseDuration:
                                                 Duration(seconds: 1),
                                           );
                                         } else {
-                                          QuickAlert.show(
-                                            context: context,
-                                            type: QuickAlertType.info,
-                                            widget: Text(
-                                              "${value.data["message"]}",
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 30
-                                                      : width / 48,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      GlobalColors.themeColor2,
-                                                  letterSpacing: 0),
-                                            ),
-                                                                                       onConfirmBtnTap: (){},
+                                          if (value.data["success"]) {
+                                            Api()
+                                                .publickGetExpense(
+                                                    ref.read(newToken)!,
+                                                    ref.read(publicTaskId))
+                                                .then((value) {
+                                              setState(() {
+                                                getExpenses = value;
+                                              });
+                                            });
+                                            setState(() {
+                                              openForm = false;
+                                              amt = "";
+                                              distance = "";
+                                            });
 
-                                            autoCloseDuration:
-                                                Duration(seconds: 2),
-                                          );
-                                          setState(() {
-                                            openForm = false;
-                                            amt = "";
-                                            distance = "";
-                                          });
+                                            QuickAlert.show(
+                                              context: context,
+                                              type: QuickAlertType.info,
+                                              widget: Text(
+                                                "${value.data["message"]}",
+                                                style: GoogleFonts.ptSans(
+                                                    fontSize: width < 700
+                                                        ? width / 30
+                                                        : width / 48,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: GlobalColors
+                                                        .themeColor2,
+                                                    letterSpacing: 0),
+                                              ),
+                                              onConfirmBtnTap: () {},
+                                              autoCloseDuration:
+                                                  Duration(seconds: 1),
+                                            );
+                                          } else {
+                                            QuickAlert.show(
+                                              context: context,
+                                              type: QuickAlertType.info,
+                                              widget: Text(
+                                                "${value.data["message"]}",
+                                                style: GoogleFonts.ptSans(
+                                                    fontSize: width < 700
+                                                        ? width / 30
+                                                        : width / 48,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: GlobalColors
+                                                        .themeColor2,
+                                                    letterSpacing: 0),
+                                              ),
+                                              onConfirmBtnTap: () {},
+                                              autoCloseDuration:
+                                                  Duration(seconds: 2),
+                                            );
+                                            setState(() {
+                                              openForm = false;
+                                              amt = "";
+                                              distance = "";
+                                            });
+                                          }
                                         }
-                                        }
-                                      
                                       });
                                     },
                                     child: Text("Save")),

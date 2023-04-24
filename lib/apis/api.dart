@@ -1456,6 +1456,19 @@ class Api {
     }
   }
 
+Future getPresentDays(String token, String year, String month) async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+
+    try {
+      Response response = await dio.get(
+        "dashboard/presentattendance/${year}/${month}",
+      );
+      return response;
+    } on DioError catch (e) {
+      return e.response;
+    }
+  }
+
   Future getActiveTimer(String token, int taskId) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 

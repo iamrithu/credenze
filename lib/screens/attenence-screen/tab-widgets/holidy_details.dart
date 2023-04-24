@@ -22,9 +22,6 @@ class _HolidayDetailsScreenState extends ConsumerState<HolidayDetailsScreen> {
   List<dynamic> holidays = [];
 
   getHoliday() {
-    print(DateFormat("MM").format(newDate));
-    print(DateFormat("yyyy").format(newDate));
-
     Api()
         .getHoliday(ref.read(newToken)!, DateFormat("yyyy").format(newDate),
             DateFormat("MM").format(newDate))

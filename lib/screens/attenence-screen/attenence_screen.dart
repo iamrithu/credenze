@@ -116,11 +116,8 @@ class _AttendenceScreenState extends State<AttendenceScreen> {
             body: Container(
               child: TabBarView(
                 children: <Widget>[
-                  SfCalendar(
-                    view: CalendarView.month,
-                    monthViewSettings: MonthViewSettings(showAgenda: true),
-                  ),
-                  // AttendenceDetailsScreen(),
+                
+                  AttendenceDetailsScreen(),
                   HolidayDetailsScreen(),
                   LeaveDetailsScreen(),
                   PermissionDetailsScreen()

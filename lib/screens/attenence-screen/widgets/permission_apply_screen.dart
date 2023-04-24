@@ -44,10 +44,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
     Navigator.pop(context);
   }
 
- 
-
   addLeave() {
-   
     if (toDate.trim() == "--") {
       return QuickAlert.show(
           context: context,
@@ -62,9 +59,17 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
           title: "Choose \"From Time\"",
           autoCloseDuration: null);
     }
-    Api().addPermission(ref.watch(newToken)!, toDate, fromDate, DateFormat("dd-MM-yyyy").format(_selectedDate), reason, ref.watch(userId)).then((value) {
+    Api()
+        .addPermission(
+            ref.watch(newToken)!,
+            toDate,
+            fromDate,
+            DateFormat("dd-MM-yyyy").format(_selectedDate),
+            reason,
+            ref.watch(userId))
+        .then((value) {
       print(value.statusCode.toString());
-        if (value.statusCode == 401) {
+      if (value.statusCode == 401) {
         Navigator.pop(context);
 
         return QuickAlert.show(
@@ -81,7 +86,6 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
             title: "${value.data["message"]}",
             autoCloseDuration: Duration(seconds: 2));
         return ref.refresh(permissionListModelProvider);
-
       } else {
         return QuickAlert.show(
             context: context,
@@ -90,14 +94,12 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
             autoCloseDuration: Duration(seconds: 2));
       }
     });
-
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-   
   }
 
   @override
@@ -132,7 +134,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                 ],
               ),
             ),
-            SizedBox(height:10),
+            SizedBox(height: 10),
             Container(
               width: width,
               height: singleday ? height * 0.06 : height * 0.15,
@@ -233,8 +235,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                 ],
               ),
             ),
-                        SizedBox(height:10),
-
+            SizedBox(height: 10),
             Container(
               width: width,
               height: singleday ? height * 0.06 : height * 0.15,
@@ -263,8 +264,16 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                   GestureDetector(
                     onTap: () {
                       showTimePicker(
-                              context: context, initialTime: TimeOfDay.now())
-                          .then((value) {
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: false),
+                            child: child!,
+                          );
+                        },
+                      ).then((value) {
                         // print("${value!.hour>12?value.hour-12:value.hour}:${value.minute<10?"0${value.minute}":value.minute} ${value.hour>11?"PM":"AM"}");
                         if (value != null)
                           setState(() {
@@ -288,8 +297,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                 ],
               ),
             ),
-                        SizedBox(height:10),
-
+            SizedBox(height: 10),
             Container(
               width: width,
               height: singleday ? height * 0.06 : height * 0.15,
@@ -318,8 +326,16 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                   GestureDetector(
                     onTap: () {
                       showTimePicker(
-                              context: context, initialTime: TimeOfDay.now())
-                          .then((value) {
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: false),
+                            child: child!,
+                          );
+                        },
+                      ).then((value) {
                         if (value != null)
                           setState(() {
                             toDate =
@@ -342,8 +358,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                 ],
               ),
             ),
-                        SizedBox(height:10),
-
+            SizedBox(height: 10),
             Container(
               width: width,
               child: Row(
@@ -385,8 +400,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                 ],
               ),
             ),
-                        SizedBox(height:10),
-
+            SizedBox(height: 10),
             Container(
               width: width,
               height: height * 0.07,

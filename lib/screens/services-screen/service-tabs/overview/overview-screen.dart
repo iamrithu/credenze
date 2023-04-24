@@ -37,6 +37,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
   double long = 0.0;
   bool detailVisible = false;
   bool loading = false;
+  bool isLocationEnable=true;
   int? totalAmount = 0;
   String? clockInlat = "";
   String? clockInlong = "";
@@ -60,6 +61,14 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
   late File? newImage = null;
+
+  checkLocationActivity() async {
+    await Geolocator.isLocationServiceEnabled().then((value) {
+      setState(() {
+        isLocationEnable = value;
+      });
+    });
+  }
 
   getclockInAddress(lat, long) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
@@ -456,6 +465,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
   @override
   void initState() {
     getInstallationAttendence();
+    checkLocationActivity();
 
     super.initState();
   }
@@ -551,7 +561,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                   child: ElevatedButton(
                                     style:
                                         ElevatedButton.styleFrom(elevation: 10),
-                                    onPressed: serviceComplete
+                                    onPressed:isLocationEnable==false? null:serviceComplete
                                         ? null
                                         : ref.watch(ServiceClockIn) == true
                                             ? () {

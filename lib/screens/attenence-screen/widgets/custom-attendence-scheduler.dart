@@ -9,11 +9,13 @@ class CustomeAttendenceSchedulaer extends StatefulWidget {
   final int day;
   final DateTime newMonth;
   final String type;
+  final Map<String,dynamic>?data;
+
   const CustomeAttendenceSchedulaer(
       {super.key,
       required this.day,
       required this.newMonth,
-      required this.type});
+      required this.type, required this.data});
 
   @override
   State<CustomeAttendenceSchedulaer> createState() =>
@@ -36,60 +38,201 @@ class _CustomeAttendenceSchedulaerState
           alignment: Alignment.center,
           child: Column(
             children: [
-              Container(
-                alignment: Alignment.center,
-                width: width,
-                height: height * 0.035,
-                child: RichText(
-                  text: TextSpan(
-                      text: widget.day.toString(),
-                      style: GoogleFonts.ptSans(
-                          fontSize: width < 700 ? width / 22 : width / 40,
-                          fontWeight: FontWeight.w400,
-                          color: GlobalColors.themeColor,
-                          letterSpacing: 2),
-                      children: [
-                        TextSpan(
-                          text: "  " +
-                              DateFormat("EEE").format(DateTime(
-                                  widget.newMonth.year,
-                                  widget.newMonth.month,
-                                  widget.day)),
-                          style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 32 : width / 48,
-                              fontWeight: FontWeight.w400,
-                              color: GlobalColors.black,
-                              letterSpacing: 2),
-                        ),
-                      ]),
-                ),
-              ),
-              Card(
-                elevation: 1,
-                child: Container(
+              Row(
+                children: [
+                  Container(
                     alignment: Alignment.center,
-                    width: width,
+                    width: width * 0.2,
                     height: height * 0.035,
-                    child: Center(
-                      child: widget.type == "attendence"
-                          ? Icon(
-                              Icons.star,
-                              color: Color.fromARGB(255, 238, 191, 72),
-                            )
-                          : widget.type == "holiday"
-                              ? Icon(
-                                  FontAwesomeIcons.tree,
-                                  color: Color.fromARGB(255, 5, 91, 28),
-                                )
-                              : Icon(
-                                  Icons.run_circle_outlined,
-                                  color: Color.fromARGB(255, 14, 106, 227),
-                                ),
-                    )),
+                    child: RichText(
+                      text: TextSpan(
+                          text: widget.day.toString(),
+                          style: GoogleFonts.ptSans(
+                              fontSize: width < 700 ? width / 22 : width / 40,
+                              fontWeight: FontWeight.w400,
+                              color: GlobalColors.themeColor,
+                              letterSpacing: 2),
+                          children: [
+                            TextSpan(
+                              text: "  " +
+                                  DateFormat("EEE").format(DateTime(
+                                      widget.newMonth.year,
+                                      widget.newMonth.month,
+                                      widget.day)),
+                              style: GoogleFonts.ptSans(
+                                  fontSize:
+                                      width < 700 ? width / 32 : width / 48,
+                                  fontWeight: FontWeight.w400,
+                                  color: GlobalColors.black,
+                                  letterSpacing: 2),
+                            ),
+                          ]),
+                    ),
+                  ),
+                  Expanded(
+                    child: Card(
+                      elevation: 1,
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: height * 0.035,
+                          child: Center(
+                            child: widget.type == "present"
+                                ? Icon(
+                                    Icons.check,
+                                    color: Color.fromARGB(255, 238, 191, 72),
+                                  )
+                                : widget.type == "holiday"
+                                    ? Icon(
+                                        FontAwesomeIcons.tree,
+                                        color: Color.fromARGB(255, 5, 91, 28),
+                                      )
+                                    :widget.type == "leave"? Icon(
+                                        Icons.run_circle_outlined,
+                                        color:
+                                            Color.fromARGB(255, 14, 106, 227),
+                                      ):Icon(
+                                        Icons.cancel,
+                                        color:
+                                            GlobalColors.themeColor2,
+                                      ),
+                          )),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
+        if( widget.type == "holiday")
+        Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+                        "Holiday",
+                        style: GoogleFonts.ptSans(
+                            fontSize: width < 700 ? width / 30 : width / 48,
+                            fontWeight: FontWeight.w400,
+                            color: GlobalColors.themeColor,
+                            letterSpacing: 1),
+                      ),
+          ),
+        ),
+          if( widget.type == "leave")
+        Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+                        "leave",
+                        style: GoogleFonts.ptSans(
+                            fontSize: width < 700 ? width / 30 : width / 48,
+                            fontWeight: FontWeight.w400,
+                            color: GlobalColors.themeColor2,
+                            letterSpacing: 1),
+                      ),
+          ),
+        ),
+         if( widget.type == "coming")
+        Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+                        "--",
+                        style: GoogleFonts.ptSans(
+                            fontSize: width < 700 ? width / 30 : width / 48,
+                            fontWeight: FontWeight.w400,
+                            color: GlobalColors.themeColor,
+                            letterSpacing: 1),
+                      ),
+          ),
+        ),
+         if( widget.type == "present")
+        Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Card(
+                    elevation: 10,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                                       "Clock In Time",
+                                        style: GoogleFonts.ptSans(
+                                            fontSize: width < 700 ? width / 40: width / 48,
+                                            fontWeight: FontWeight.w400,
+                                            color: GlobalColors.themeColor2,
+                                            letterSpacing: 1),
+                                      ),
+                          ],
+                        ),
+                                   Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                                     children: [
+                                       Text(
+                                        "${widget.data!["clock_in_time"].toString().substring(10)}",
+                                        style: GoogleFonts.ptSans(
+                                            fontSize: width < 700 ? width / 38 : width / 48,
+                                            fontWeight: FontWeight.w600,
+                                            color: GlobalColors.black,
+                                            letterSpacing: 1),
+                                  ),
+                                     ],
+                                   ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Card(
+                    elevation: 10,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                                       "Clock Out Time",
+                                        style: GoogleFonts.ptSans(
+                                            fontSize: width < 700 ? width / 40: width / 48,
+                                            fontWeight: FontWeight.w400,
+                                            color: GlobalColors.themeColor2,
+                                            letterSpacing: 1),
+                                      ),
+                          ],
+                        ),
+                                   Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                                     children: [
+                                       Text(
+                                        "${widget.data!["clock_out_time"].toString().substring(10)}",
+                                        style: GoogleFonts.ptSans(
+                                            fontSize: width < 700 ? width / 38 : width / 48,
+                                            fontWeight: FontWeight.w600,
+                                            color: GlobalColors.black,
+                                            letterSpacing: 1),
+                                  ),
+                                     ],
+                                   ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
       ],
     );
   }

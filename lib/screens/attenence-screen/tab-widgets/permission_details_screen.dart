@@ -24,6 +24,7 @@ class PermissionDetailsScreen extends ConsumerStatefulWidget {
 
 class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScreen> {
   DateTime newDate = DateTime.now();
+  bool allData=true;
   String status="";
 
   @override
@@ -32,7 +33,23 @@ class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScree
     final width = MediaQuery.of(context).size.width;
         final data = ref.watch(permissionListModelProvider);
 
+ getDetails( filteredData) {
+      List<int> data = [];
 
+      for (var i = 0; i < filteredData.length; i++) {
+        if (DateFormat("MM").format(newDate) ==
+            DateFormat("MM").format(filteredData[i].date)) {
+          data.add(filteredData[i].id);
+        }
+      }
+
+      return data.isEmpty ? Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Data not found"),
+        ],
+      ) : Text("");
+    }
 
     return Scaffold(
       floatingActionButton: ElevatedButton.icon(
@@ -66,82 +83,68 @@ class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScree
       ),
       body: Column(
         children: [
-          // Container(
-          //   padding: EdgeInsets.symmetric(horizontal: width * 0.03),
-          //   width: width,
-          //   height: width < 500 ? height * 0.05 : height * 0.1,
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: [
-          //       RichText(
-          //         text: TextSpan(
-          //             text: DateFormat("MMMM").format(newDate),
-          //             style: GoogleFonts.ptSans(
-          //                 fontSize: width < 700 ? width / 16 : width / 22,
-          //                 fontWeight: FontWeight.w400,
-          //                 color: GlobalColors.themeColor2,
-          //                 letterSpacing: 2),
-          //             children: [
-          //               TextSpan(
-          //                 text: " - " + newDate.year.toString(),
-          //                 style: GoogleFonts.ptSans(
-          //                   fontSize: width < 700 ? width / 22 : width / 45,
-          //                   fontWeight: FontWeight.w400,
-          //                   color: GlobalColors.black,
-          //                   letterSpacing: 2,
-          //                 ),
-          //               ),
-          //             ]),
-          //       ),
-          //       GestureDetector(
-          //         onTap: ()  {
-          //           showModalBottomSheet<void>(
-          //               context: context,
-          //               builder: (BuildContext context) {
-          //                 return Container(
-          //                   width: width,
-          //                   height: height * 0.4,
-          //                   decoration: BoxDecoration(
-          //                       border: Border(
-          //                           top: BorderSide(
-          //                               color: GlobalColors.themeColor,
-          //                               width: 3))),
-          //                   child: SfDateRangePicker(
-          //                     view: DateRangePickerView.month,
-          //                     toggleDaySelection: true,
-          //                     navigationDirection:
-          //                         DateRangePickerNavigationDirection.vertical,
-          //                     selectionShape:
-          //                         DateRangePickerSelectionShape.rectangle,
-          //                     selectionMode: 
-          //                         DateRangePickerSelectionMode.single,
-                                 
-          //                     monthViewSettings:
-          //                         DateRangePickerMonthViewSettings(
-          //                             firstDayOfWeek: 7),
-          //                     // onSelectionChanged: onSelectedDates,
-          //                     showActionButtons: true,
-
-          //                     onSubmit: (value) => Navigator.pop(context)
-          //                      ,
-          //                     onCancel: () => Navigator.pop(context),
-          //                   ),
-          //                 );
-          //               },
-          //             );
-          //         },
-          //         child: Text(
-          //           "Pick Date",
-          //           style: GoogleFonts.ptSans(
-          //               fontSize: width < 700 ? width / 28 : width / 45,
-          //               fontWeight: FontWeight.w400,
-          //               letterSpacing: 0),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.03),
+            width: width,
+            height: width < 500 ? height * 0.05 : height * 0.1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                RichText(
+                  text: TextSpan(
+                      text: DateFormat("MMMM").format(newDate),
+                      style: GoogleFonts.ptSans(
+                          fontSize: width < 700 ? width / 16 : width / 22,
+                          fontWeight: FontWeight.w400,
+                          color: GlobalColors.themeColor2,
+                          letterSpacing: 2),
+                      children: [
+                        TextSpan(
+                          text: " - " + newDate.year.toString(),
+                          style: GoogleFonts.ptSans(
+                            fontSize: width < 700 ? width / 22 : width / 45,
+                            fontWeight: FontWeight.w400,
+                            color: GlobalColors.black,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ]),
+                ),
+                    if (!allData)
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          newDate=DateTime.now();
+                          allData = true;
+                        });
+                      },
+                      child: Text("refresh")),
+                GestureDetector(
+                  onTap: () {
+                    showMonthYearPicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime(2100))
+                        .then((value) {
+                      setState(() {
+                        newDate = value!;
+                        allData = false;
+                      });
+                    });
+                  },
+                  child: Text(
+                    "Pick Date",
+                    style: GoogleFonts.ptSans(
+                        fontSize: width < 700 ? width / 28 : width / 45,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Container(
               width: width,
               height: width < 500 ? height * 0.633 : height * 0.66,
@@ -170,7 +173,75 @@ if(_data.isEmpty) Center(child:Text(
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 0),
                             ), ),
+                            getDetails(_data),
+                            if(allData)
                   for (var i = 0; i < _data.length; i++)
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: GlobalColors.themeColor2),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: Container(
+                        width: width,
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width:width * 0.9,
+                                  child: Column(
+                                    children: [
+                                       TextRowWidget(
+                                        width:width,
+                                        lable: "Date",
+                                        value: "${DateFormat("dd-MM-yyyy").format(_data[i].date!)}",
+                                      ),
+                                       TextRowWidget(
+                                        width:width,
+                                        lable: "From Time",
+                                        value: "${DateFormat("h:mm:ss a").format(_data[i].fromTime!)}",
+                                      ),
+                                       TextRowWidget(
+                                        width:width,
+                                        lable: "To Time",
+                                        value: "${DateFormat("h:mm:ss a").format(_data[i].toTime!)}",
+                                      ),
+                                    
+                                         TextRowWidget(
+                                        width:width,
+                                        lable: "Reason",
+                                        value: "${_data[i].reason}",
+                                      ),
+                                        TextRowWidget(
+                                        width:width,
+                                        lable: "Status",
+                                        value: _data[i].status![0].toUpperCase()+_data[i].status!.substring(1),
+                                      ),
+                                      if(_data[i].status=="rejected")
+                                     
+                                     TextRowWidget(
+                                        width:width,
+                                        lable: "Rejected Reason",
+                                        value: "${_data[i].rejectReason}",
+                                      ),
+                                    
+                                    ],
+                                  ),
+                                ),
+                                Spacer(),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                      if(!allData)
+                  for (var i = 0; i < _data.length; i++)
+                   if (DateFormat("MM").format(newDate) ==
+                                    DateFormat("MM").format(_data[i].date!))
                     Card(
                       shape: RoundedRectangleBorder(
                           side: BorderSide(

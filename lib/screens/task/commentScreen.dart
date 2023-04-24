@@ -61,7 +61,7 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                           if (getComents.isEmpty)
                             Center(
                               child: Text(
-                                "Command not found!",
+                                "Comment not Found!",
                                 style: GoogleFonts.ptSans(
                                     color: GlobalColors.themeColor,
                                     fontSize:
@@ -129,36 +129,36 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                                           ],
                                         ),
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          Api()
-                                              .removeComand(
-                                                  ref.watch(newToken)!,
-                                                  ref.watch(publicTaskId),
-                                                  getComents[i]["id"])
-                                              .then((value) {
-                                            Api()
-                                                .getComand(ref.read(newToken)!,
-                                                    ref.read(publicTaskId))
-                                                .then((value) {
-                                              setState(() {
-                                                getComents = value;
-                                              });
-                                            });
-                                          });
-                                        },
-                                        child: Container(
-                                          width: width * 0.1,
-                                          height: height * 0.06,
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.delete,
-                                              size: width / 30,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        ),
-                                      )
+                                      // InkWell(
+                                      //   onTap: () {
+                                      //     Api()
+                                      //         .removeComand(
+                                      //             ref.watch(newToken)!,
+                                      //             ref.watch(publicTaskId),
+                                      //             getComents[i]["id"])
+                                      //         .then((value) {
+                                      //       Api()
+                                      //           .getComand(ref.read(newToken)!,
+                                      //               ref.read(publicTaskId))
+                                      //           .then((value) {
+                                      //         setState(() {
+                                      //           getComents = value;
+                                      //         });
+                                      //       });
+                                      //     });
+                                      //   },
+                                      //   child: Container(
+                                      //     width: width * 0.1,
+                                      //     height: height * 0.06,
+                                      //     child: Center(
+                                      //       child: Icon(
+                                      //         Icons.delete,
+                                      //         size: width / 30,
+                                      //         color: Colors.red,
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 ),
@@ -208,7 +208,7 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Add Command",
+                              "Add Comment",
                               style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor,
                                   fontSize:
