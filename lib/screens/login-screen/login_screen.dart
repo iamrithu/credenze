@@ -67,7 +67,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     Api()
         .authendication(_emailController.text, _passwordController.text)
         .then((value) {
-          print(value.toString());
       if (value.statusCode == 200) {
         return setState(() {
           setToken(value.data["data"]["token"]);
@@ -86,11 +85,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             });
           });
           Timer(const Duration(milliseconds: 1400), () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
-
-            // Get.to(HomeScreen(),
-            //     transition: Transition.fade,
-            //     duration: Duration(milliseconds: 300));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => HomeScreen()));
           });
           if (isChecked) {
             setLoggedInDetails(_emailController.text, _passwordController.text);

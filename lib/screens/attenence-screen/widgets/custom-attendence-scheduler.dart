@@ -9,13 +9,14 @@ class CustomeAttendenceSchedulaer extends StatefulWidget {
   final int day;
   final DateTime newMonth;
   final String type;
-  final Map<String,dynamic>?data;
+  final Map<String, dynamic>? data;
 
   const CustomeAttendenceSchedulaer(
       {super.key,
       required this.day,
       required this.newMonth,
-      required this.type, required this.data});
+      required this.type,
+      required this.data});
 
   @override
   State<CustomeAttendenceSchedulaer> createState() =>
@@ -86,15 +87,16 @@ class _CustomeAttendenceSchedulaerState
                                         FontAwesomeIcons.tree,
                                         color: Color.fromARGB(255, 5, 91, 28),
                                       )
-                                    :widget.type == "leave"? Icon(
-                                        Icons.run_circle_outlined,
-                                        color:
-                                            Color.fromARGB(255, 14, 106, 227),
-                                      ):Icon(
-                                        Icons.cancel,
-                                        color:
-                                            GlobalColors.themeColor2,
-                                      ),
+                                    : widget.type == "leave"
+                                        ? Icon(
+                                            Icons.run_circle_outlined,
+                                            color: Color.fromARGB(
+                                                255, 14, 106, 227),
+                                          )
+                                        : Icon(
+                                            Icons.cancel,
+                                            color: GlobalColors.themeColor2,
+                                          ),
                           )),
                     ),
                   ),
@@ -103,136 +105,140 @@ class _CustomeAttendenceSchedulaerState
             ],
           ),
         ),
-        if( widget.type == "holiday")
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-                        "Holiday",
-                        style: GoogleFonts.ptSans(
-                            fontSize: width < 700 ? width / 30 : width / 48,
-                            fontWeight: FontWeight.w400,
-                            color: GlobalColors.themeColor,
-                            letterSpacing: 1),
-                      ),
-          ),
-        ),
-          if( widget.type == "leave")
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-                        "leave",
-                        style: GoogleFonts.ptSans(
-                            fontSize: width < 700 ? width / 30 : width / 48,
-                            fontWeight: FontWeight.w400,
-                            color: GlobalColors.themeColor2,
-                            letterSpacing: 1),
-                      ),
-          ),
-        ),
-         if( widget.type == "coming")
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-                        "--",
-                        style: GoogleFonts.ptSans(
-                            fontSize: width < 700 ? width / 30 : width / 48,
-                            fontWeight: FontWeight.w400,
-                            color: GlobalColors.themeColor,
-                            letterSpacing: 1),
-                      ),
-          ),
-        ),
-         if( widget.type == "present")
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Card(
-                    elevation: 10,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                                       "Clock In Time",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700 ? width / 40: width / 48,
-                                            fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor2,
-                                            letterSpacing: 1),
-                                      ),
-                          ],
-                        ),
-                                   Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                                     children: [
-                                       Text(
-                                        "${widget.data!["clock_in_time"].toString().substring(10)}",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700 ? width / 38 : width / 48,
-                                            fontWeight: FontWeight.w600,
-                                            color: GlobalColors.black,
-                                            letterSpacing: 1),
-                                  ),
-                                     ],
-                                   ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Card(
-                    elevation: 10,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                                       "Clock Out Time",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700 ? width / 40: width / 48,
-                                            fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor2,
-                                            letterSpacing: 1),
-                                      ),
-                          ],
-                        ),
-                                   Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                                     children: [
-                                       Text(
-                                        "${widget.data!["clock_out_time"].toString().substring(10)}",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700 ? width / 38 : width / 48,
-                                            fontWeight: FontWeight.w600,
-                                            color: GlobalColors.black,
-                                            letterSpacing: 1),
-                                  ),
-                                     ],
-                                   ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+        if (widget.type == "holiday")
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                "Holiday",
+                style: GoogleFonts.ptSans(
+                    fontSize: width < 700 ? width / 30 : width / 48,
+                    fontWeight: FontWeight.w400,
+                    color: GlobalColors.themeColor,
+                    letterSpacing: 1),
+              ),
             ),
           ),
-        )
+        if (widget.type == "leave")
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                "leave",
+                style: GoogleFonts.ptSans(
+                    fontSize: width < 700 ? width / 30 : width / 48,
+                    fontWeight: FontWeight.w400,
+                    color: GlobalColors.themeColor2,
+                    letterSpacing: 1),
+              ),
+            ),
+          ),
+        if (widget.type == "coming")
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                "--",
+                style: GoogleFonts.ptSans(
+                    fontSize: width < 700 ? width / 30 : width / 48,
+                    fontWeight: FontWeight.w400,
+                    color: GlobalColors.themeColor,
+                    letterSpacing: 1),
+              ),
+            ),
+          ),
+        if (widget.type == "present")
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Card(
+                      elevation: 10,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Day In Time",
+                                style: GoogleFonts.ptSans(
+                                    fontSize:
+                                        width < 700 ? width / 40 : width / 48,
+                                    fontWeight: FontWeight.w400,
+                                    color: GlobalColors.themeColor2,
+                                    letterSpacing: 1),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${widget.data!["clock_in_time"].toString().substring(10)}",
+                                style: GoogleFonts.ptSans(
+                                    fontSize:
+                                        width < 700 ? width / 38 : width / 48,
+                                    fontWeight: FontWeight.w600,
+                                    color: GlobalColors.black,
+                                    letterSpacing: 1),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Card(
+                      elevation: 10,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Day Out Time",
+                                style: GoogleFonts.ptSans(
+                                    fontSize:
+                                        width < 700 ? width / 40 : width / 48,
+                                    fontWeight: FontWeight.w400,
+                                    color: GlobalColors.themeColor2,
+                                    letterSpacing: 1),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${widget.data!["clock_out_time"].toString().substring(10)}",
+                                style: GoogleFonts.ptSans(
+                                    fontSize:
+                                        width < 700 ? width / 38 : width / 48,
+                                    fontWeight: FontWeight.w600,
+                                    color: GlobalColors.black,
+                                    letterSpacing: 1),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
       ],
     );
   }

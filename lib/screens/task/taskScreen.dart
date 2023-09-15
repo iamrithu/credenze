@@ -34,29 +34,30 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
     final width = MediaQuery.of(context).size.width;
     return Container(
       child: RefreshIndicator(
-        onRefresh: (){
-      return    Future.delayed(Duration(seconds: 2),(){
-          Api().publicTask(ref.read(newToken)!).then((value) {
-      setState(() {
-        taksList = value.toList();
-      });
-    });
-      });
+        onRefresh: () {
+          return Future.delayed(Duration(seconds: 2), () {
+            Api().publicTask(ref.read(newToken)!).then((value) {
+              setState(() {
+                taksList = value.toList();
+              });
+            });
+          });
         },
         child: ListView(
           children: [
             if (taksList.isEmpty)
               Container(
                 width: width,
-                height: height ,
-                child: Center(child: Text(
-                      "No Information Available",
-                      style: GoogleFonts.ptSans(
-                          color: GlobalColors.black,
-                          fontSize: width < 700 ? width / 35 : width / 45,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0),
-                    )),
+                height: height,
+                child: Center(
+                    child: Text(
+                  "No Information Available",
+                  style: GoogleFonts.ptSans(
+                      color: GlobalColors.black,
+                      fontSize: width < 700 ? width / 35 : width / 45,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0),
+                )),
               ),
             if (taksList.isNotEmpty)
               for (var i = 0; i < taksList.length; i++)
@@ -65,48 +66,77 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
                   child: Stack(
                     children: [
                       Card(
-                         elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
                         child: Container(
                           decoration: BoxDecoration(
-                                                      color: GlobalColors.themeColor,
-
-                            borderRadius: BorderRadius.circular(5)
-                            
-                          ),
+                              color: GlobalColors.themeColor,
+                              borderRadius: BorderRadius.circular(5)),
                           width: width,
-                          height: height*0.2,
-                                      
-                                      
-                                      
+                          height: height * 0.25,
                         ),
                       ),
-                      
-
                       Row(
-                         mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           InkWell(
                             onTap: () {
-                              ref.read(pageIndex.notifier).update((state) => 10);
+                              ref
+                                  .read(pageIndex.notifier)
+                                  .update((state) => 10);
                               ref
                                   .read(publicTaskId.notifier)
                                   .update((state) => taksList[i]["id"]);
                             },
                             child: Card(
                               elevation: 1,
-                            
                               child: Container(
                                 padding: EdgeInsets.all(width * 0.03),
                                 width: width * 0.945,
-                                height: height * 0.2,
+                                height: height * 0.25,
                                 child: Row(
                                   children: [
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
                                       children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: width * 0.3,
+                                              child: Text(
+                                                "Task Title",
+                                                style: GoogleFonts.ptSans(
+                                                    color: GlobalColors.black,
+                                                    fontSize: width < 700
+                                                        ? width / 35
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w500,
+                                                    letterSpacing: 0),
+                                              ),
+                                            ),
+                                            Text(":"),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            Container(
+                                              width: width * 0.45,
+                                              child: Text(
+                                                "${taksList[i]["task_title"] ?? "--"}",
+                                                style: GoogleFonts.ptSans(
+                                                    color:
+                                                        GlobalColors.themeColor,
+                                                    fontSize: width < 700
+                                                        ? width / 35
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w500,
+                                                    letterSpacing: 0),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                         Row(
                                           children: [
                                             Container(
@@ -131,7 +161,8 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
                                               child: Text(
                                                 "${taksList[i]["branch"]["location"] ?? "--"}",
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor,
+                                                    color:
+                                                        GlobalColors.themeColor,
                                                     fontSize: width < 700
                                                         ? width / 35
                                                         : width / 45,
@@ -165,12 +196,58 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
                                               child: Text(
                                                 "${taksList[i]["category"]["category_name"] ?? "--"}",
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor,
+                                                    color:
+                                                        GlobalColors.themeColor,
                                                     fontSize: width < 700
                                                         ? width / 35
                                                         : width / 45,
                                                     fontWeight: FontWeight.w500,
                                                     letterSpacing: 0),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: width * 0.3,
+                                              child: Text(
+                                                "Assigned Member",
+                                                style: GoogleFonts.ptSans(
+                                                    color: GlobalColors.black,
+                                                    fontSize: width < 700
+                                                        ? width / 35
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w500,
+                                                    letterSpacing: 0),
+                                              ),
+                                            ),
+                                            Text(":"),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            Container(
+                                              width: width * 0.45,
+                                              child: Wrap(
+                                                children: [
+                                                  Text(
+                                                    taksList[i]
+                                                            ["assigned_names"]
+                                                        .toString()
+                                                        .replaceAll("[", "")
+                                                        .replaceAll("]", "")
+                                                        .replaceAll('"', ""),
+                                                    style: GoogleFonts.ptSans(
+                                                        color: GlobalColors
+                                                            .themeColor,
+                                                        fontSize: width < 700
+                                                            ? width / 40
+                                                            : width / 45,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        letterSpacing: 0),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],
@@ -199,7 +276,8 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
                                               child: Text(
                                                 "${DateFormat("dd-MM-yyyy").format(DateTime.parse(taksList[i]["start_date"]))}",
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor,
+                                                    color:
+                                                        GlobalColors.themeColor,
                                                     fontSize: width < 700
                                                         ? width / 35
                                                         : width / 45,
@@ -233,7 +311,8 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
                                               child: Text(
                                                 "${DateFormat("dd-MM-yyyy").format(DateTime.parse(taksList[i]["due_date"]))}",
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor,
+                                                    color:
+                                                        GlobalColors.themeColor,
                                                     fontSize: width < 700
                                                         ? width / 35
                                                         : width / 45,
@@ -265,9 +344,18 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
                                             Container(
                                               width: width * 0.45,
                                               child: Text(
-                                                "${taksList[i]["status"] ?? "--"}",
+                                                taksList[i]["status"]
+                                                        .toString()[0]
+                                                        .toUpperCase() +
+                                                    taksList[i]["status"]
+                                                        .toString()
+                                                        .substring(1),
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor,
+                                                    color: taksList[i]
+                                                                ["status"] ==
+                                                            "completed"
+                                                        ? Colors.green
+                                                        : Colors.red,
                                                     fontSize: width < 700
                                                         ? width / 35
                                                         : width / 45,
@@ -299,9 +387,22 @@ class _MainTaskScreenState extends ConsumerState<MainTaskScreen> {
                                             Container(
                                               width: width * 0.45,
                                               child: Text(
-                                                "${taksList[i]["priority"] ?? "--"}",
+                                                taksList[i]["priority"]
+                                                        .toString()[0]
+                                                        .toUpperCase() +
+                                                    taksList[i]["priority"]
+                                                        .toString()
+                                                        .substring(1),
                                                 style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.themeColor,
+                                                    color: taksList[i]
+                                                                ["priority"] ==
+                                                            "low"
+                                                        ? Colors.green
+                                                        : taksList[i][
+                                                                    "priority"] ==
+                                                                "medium"
+                                                            ? Colors.amber
+                                                            : Colors.red,
                                                     fontSize: width < 700
                                                         ? width / 35
                                                         : width / 45,

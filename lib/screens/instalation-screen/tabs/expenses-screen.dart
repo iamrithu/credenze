@@ -61,7 +61,6 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                       bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: Container(
                     width: widget.width,
-                    height: widget.height,
                     child: ExpenseAddScreen(onclick: refresh),
                   ),
                 );
@@ -113,8 +112,8 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                           child: Container(
                             width: widget.width,
                             height: _data[i].categoryId == 1
-                                ? widget.height! * 0.35
-                                : widget.height! * 0.25,
+                                ? widget.height! * 0.5
+                                : widget.height! * 0.3,
                           ),
                         ),
                         Row(
@@ -140,8 +139,8 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                   child: Container(
                                     width: widget.width! * 0.97,
                                     height: _data[i].categoryId == 1
-                                        ? widget.height! * 0.35
-                                        : widget.height! * 0.25,
+                                        ? widget.height! * 0.5
+                                        : widget.height! * 0.3,
                                     padding: EdgeInsets.only(
                                         left: widget.width! * 0.03),
                                     child: Column(
@@ -157,6 +156,11 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                         ),
                                         TextRowWidget(
                                           width: widget.width!,
+                                          lable: "Employee",
+                                          value: "${_data[i].employee!.name}",
+                                        ),
+                                        TextRowWidget(
+                                          width: widget.width!,
                                           lable: "Expense Date",
                                           value: DateFormat("dd-MM-yyyy")
                                               .format(_data[i].expensesDate!),
@@ -164,7 +168,16 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                         TextRowWidget(
                                           width: widget.width!,
                                           lable: "Category",
-                                          value: _data[i].category!.name,
+                                          value: _data[i]
+                                                  .category!
+                                                  .name
+                                                  .toString()[0]
+                                                  .toUpperCase() +
+                                              _data[i]
+                                                  .category!
+                                                  .name
+                                                  .toString()
+                                                  .substring(1),
                                         ),
                                         if (_data[i].categoryId == 1)
                                           TextRowWidget(
@@ -192,7 +205,11 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                                         TextRowWidget(
                                           width: widget.width!,
                                           lable: "Status",
-                                          value: "${_data[i].status!}",
+                                          value: _data[i]
+                                                  .status!
+                                                  .toString()[0]
+                                                  .toUpperCase() +
+                                              _data[i].status!.substring(1),
                                         ),
                                       ],
                                     ),
@@ -202,115 +219,248 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                         ),
                         Visibility(
                           visible: _data[i].id == selectedId,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                          child: Column(
                             children: [
-                              InkWell(
-                                onTap: (() {
-                                  setState(() {
-                                    selectedId = null;
-                                  });
-                                }),
-                                child: Card(
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  color: Color.fromARGB(208, 205, 203, 203),
-                                  child: Container(
-                                    width: widget.width! * 0.97,
-                                    height: _data[i].categoryId == 1
-                                        ? widget.height! * 0.35
-                                        : widget.height! * 0.25,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              setState(() {
-                                                selectedId = null;
-                                              });
-                                            });
-                                          },
-                                          child: Card(
-                                            shadowColor: GlobalColors.black,
-                                            elevation: 10,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(100)),
-                                            child: Container(
-                                              padding: EdgeInsets.all(4),
-                                              child: Icon(
-                                                Icons.cancel_sharp,
-                                                color: GlobalColors.themeColor2,
-                                                size: widget.width! < 700
-                                                    ? widget.width! / 18
+                              if (DateFormat("dd-MM-yyyy")
+                                      .format(_data[i].expensesDate!) !=
+                                  DateFormat("dd-MM-yyyy")
+                                      .format(DateTime.now()))
+                                if (ref.watch(userId) == _data[i].userId)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Card(
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: GlobalColors.themeColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          padding: EdgeInsets.all(20),
+                                          child: Text(
+                                            "You can update today's record only ",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.ptSans(
+                                                color: GlobalColors.white,
+                                                fontSize: widget.width! < 700
+                                                    ? widget.width! / 34
                                                     : widget.width! / 45,
-                                              ),
-                                            ),
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: widget.width! * 0.06,
+                                      )
+                                    ],
+                                  ),
+                              if (DateFormat("dd-MM-yyyy")
+                                      .format(_data[i].expensesDate!) !=
+                                  DateFormat("dd-MM-yyyy")
+                                      .format(DateTime.now()))
+                                if (ref.watch(userId) != _data[i].userId)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Card(
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: GlobalColors.themeColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          padding: EdgeInsets.all(20),
+                                          child: Text(
+                                            "You can not update this record  ",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.ptSans(
+                                                color: GlobalColors.white,
+                                                fontSize: widget.width! < 700
+                                                    ? widget.width! / 34
+                                                    : widget.width! / 45,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0),
+                                          ),
                                         ),
-                                        InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedId = null;
-                                            });
-                                            showModalBottomSheet<void>(
-                                              isScrollControlled: true,
-                                              context: context,
-                                              builder: (context) {
-                                                return Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          MediaQuery.of(context)
-                                                              .viewInsets
-                                                              .bottom),
-                                                  child: Container(
-                                                    width: widget.width!,
-                                                    height: widget.height!,
-                                                    child:
-                                                        ExpenseUpdateAddScreen(
-                                                          data: _data[i],
-                                                      onclick: refresh,
-                                                      // data: _data[i],
+                                      )
+                                    ],
+                                  ),
+                              if (DateFormat("dd-MM-yyyy")
+                                      .format(_data[i].expensesDate!) ==
+                                  DateFormat("dd-MM-yyyy")
+                                      .format(DateTime.now()))
+                                if (ref.watch(userId) == _data[i].userId)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      InkWell(
+                                        onTap: (() {
+                                          setState(() {
+                                            selectedId = null;
+                                          });
+                                        }),
+                                        child: Card(
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          color: Color.fromARGB(
+                                              208, 205, 203, 203),
+                                          child: Container(
+                                            width: widget.width! * 0.97,
+                                            height: _data[i].categoryId == 1
+                                                ? widget.height! * 0.5
+                                                : widget.height! * 0.3,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      setState(() {
+                                                        selectedId = null;
+                                                      });
+                                                    });
+                                                  },
+                                                  child: Card(
+                                                    shadowColor:
+                                                        GlobalColors.black,
+                                                    elevation: 10,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100)),
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.all(4),
+                                                      child: Icon(
+                                                        Icons.cancel_sharp,
+                                                        color: GlobalColors
+                                                            .themeColor2,
+                                                        size: widget.width! <
+                                                                700
+                                                            ? widget.width! / 18
+                                                            : widget.width! /
+                                                                45,
+                                                      ),
                                                     ),
                                                   ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: Card(
-                                            elevation: 10,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(100)),
-                                            child: Container(
-                                              padding: EdgeInsets.all(4),
-                                              child: Icon(
-                                                FontAwesomeIcons.penToSquare,
-                                                color: GlobalColors.themeColor,
-                                                size: widget.width! < 700
-                                                    ? widget.width! / 20
-                                                    : widget.width! / 45,
-                                              ),
+                                                ),
+                                                SizedBox(
+                                                  width: widget.width! * 0.06,
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedId = null;
+                                                    });
+                                                    showModalBottomSheet<void>(
+                                                      isScrollControlled: true,
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return Padding(
+                                                          padding: EdgeInsets.only(
+                                                              bottom: MediaQuery
+                                                                      .of(context)
+                                                                  .viewInsets
+                                                                  .bottom),
+                                                          child: Container(
+                                                            child:
+                                                                ExpenseUpdateAddScreen(
+                                                              data: _data[i],
+                                                              onclick: refresh,
+                                                              // data: _data[i],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Card(
+                                                    elevation: 10,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100)),
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.all(4),
+                                                      child: Icon(
+                                                        FontAwesomeIcons
+                                                            .penToSquare,
+                                                        color: GlobalColors
+                                                            .themeColor,
+                                                        size: widget.width! <
+                                                                700
+                                                            ? widget.width! / 20
+                                                            : widget.width! /
+                                                                45,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: widget.width! * 0.06,
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: widget.width! * 0.06,
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ),
+                              if (DateFormat("dd-MM-yyyy")
+                                      .format(_data[i].expensesDate!) ==
+                                  DateFormat("dd-MM-yyyy")
+                                      .format(DateTime.now()))
+                                if (ref.watch(userId) != _data[i].userId)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Card(
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: GlobalColors.themeColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          padding: EdgeInsets.all(20),
+                                          child: Text(
+                                            "You can not update this record  ",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.ptSans(
+                                                color: GlobalColors.white,
+                                                fontSize: widget.width! < 700
+                                                    ? widget.width! / 34
+                                                    : widget.width! / 45,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                             ],
                           ),
                         ),
@@ -340,7 +490,7 @@ class _ExpenseScreenState extends ConsumerState<ExpenseScreen> {
                         children: [
                           Center(
                             child: Text(
-                              "Not Available ",
+                              "No Information Available",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor2,

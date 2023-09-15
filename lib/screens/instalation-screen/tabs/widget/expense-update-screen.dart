@@ -88,7 +88,8 @@ class _ExpenseUpdateAddScreenState
     print("bb" + widget.data.attachment.toString());
 
     setState(() {
-      _amount.text = widget.data.amount!;
+      _amount.text =
+          widget.data.category!.name == "Petrol" ? "0" : widget.data.amount!;
       _selectedDate = widget.data.expensesDate!;
       fromPlace = widget.data.fromPlace ?? "";
       toPlace = widget.data.toPlace ?? "";
@@ -97,9 +98,10 @@ class _ExpenseUpdateAddScreenState
       _distance.text =
           widget.data.distance == null ? "" : widget.data.distance.toString();
       newFile = null;
+      _note.text = widget.data.notes ?? "";
     });
 
-  getCategory();
+    getCategory();
   }
 
   @override
@@ -115,6 +117,111 @@ class _ExpenseUpdateAddScreenState
                 top: BorderSide(color: GlobalColors.themeColor, width: 3))),
         child: Column(
           children: [
+            SizedBox(
+              height: height * 0.05,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Container(
+                width: width,
+                padding: EdgeInsets.all(10),
+                color: GlobalColors.themeColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Update Expense",
+                      style: GoogleFonts.ptSans(
+                          fontSize: width < 700 ? width / 40 : width / 45,
+                          fontWeight: FontWeight.w800,
+                          color: Color.fromARGB(255, 255, 250, 250),
+                          letterSpacing: 0),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Container(
+            //   width: width,
+            //   height: height * 0.06,
+            //   margin: EdgeInsets.symmetric(vertical: height * 0.01),
+            //   child: Row(
+            //     children: [
+            //       Container(
+            //           width: width * 0.308,
+            //           height: height * 0.05,
+            //           alignment: Alignment.centerLeft,
+            //           child: Text(
+            //             "Date *",
+            //             style: GoogleFonts.ptSans(
+            //               color: GlobalColors.black,
+            //               fontSize: width < 700 ? width / 35 : width / 44,
+            //               fontWeight: FontWeight.w400,
+            //               letterSpacing: 0,
+            //             ),
+            //           )),
+            //       Container(
+            //           width: width * 0.49,
+            //           height: height * 0.05,
+            //           margin: EdgeInsets.only(left: 5, right: 2),
+            //           padding: EdgeInsets.only(left: width * 0.07),
+            //           alignment: Alignment.centerLeft,
+            //           decoration: BoxDecoration(
+            //               borderRadius: BorderRadius.circular(4),
+            //               border: Border.all(color: GlobalColors.themeColor2)),
+            //           child: RichText(
+            //             text: TextSpan(
+            //                 text: _selectedDate.day.toString(),
+            //                 style: GoogleFonts.ptSans(
+            //                     fontSize: width < 700 ? width / 22 : width / 40,
+            //                     fontWeight: FontWeight.w400,
+            //                     color: GlobalColors.themeColor,
+            //                     letterSpacing: 2),
+            //                 children: [
+            //                   TextSpan(
+            //                     text: DateFormat("-MM-yyyy")
+            //                         .format(_selectedDate),
+            //                     style: GoogleFonts.ptSans(
+            //                       fontSize:
+            //                           width < 700 ? width / 28 : width / 49,
+            //                       fontWeight: FontWeight.w400,
+            //                       color: GlobalColors.black,
+            //                       letterSpacing: 2,
+            //                     ),
+            //                   ),
+            //                 ]),
+            //           )),
+            //       GestureDetector(
+            //         onTap: () {
+            //           showDatePicker(
+            //             context: context,
+            //             currentDate: DateTime.now(),
+            //             initialDate: _selectedDate,
+            //             firstDate: DateTime(2021),
+            //             lastDate: DateTime(2100),
+            //           ).then((value) {
+            //             getLocation(value!);
+            //             setState(() {
+            //               _selectedDate = value;
+            //             });
+            //           });
+            //         },
+            //         child: Container(
+            //             width: width * 0.15,
+            //             height: height * 0.05,
+            //             margin: EdgeInsets.symmetric(vertical: 2),
+            //             alignment: Alignment.center,
+            //             decoration: BoxDecoration(
+            //                 border: Border.all(color: GlobalColors.themeColor2),
+            //                 borderRadius: BorderRadius.circular(4)),
+            //             child: Center(
+            //               child: Icon(FontAwesomeIcons.calendarCheck,
+            //                   color: GlobalColors.themeColor),
+            //             )),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Container(
               width: width,
               height: height * 0.06,
@@ -126,7 +233,7 @@ class _ExpenseUpdateAddScreenState
                       height: height * 0.05,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Date",
+                        "Category *",
                         style: GoogleFonts.ptSans(
                           color: GlobalColors.black,
                           fontSize: width < 700 ? width / 35 : width / 44,
@@ -135,79 +242,11 @@ class _ExpenseUpdateAddScreenState
                         ),
                       )),
                   Container(
-                      width: width * 0.49,
-                      height: height * 0.05,
-                      margin: EdgeInsets.only(left: 5, right: 2),
-                      padding: EdgeInsets.only(left: width * 0.07),
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: GlobalColors.themeColor2)),
-                      child: RichText(
-                        text: TextSpan(
-                            text: _selectedDate.day.toString(),
-                            style: GoogleFonts.ptSans(
-                                fontSize: width < 700 ? width / 22 : width / 40,
-                                fontWeight: FontWeight.w400,
-                                color: GlobalColors.themeColor,
-                                letterSpacing: 2),
-                            children: [
-                              TextSpan(
-                                text: DateFormat("-MM-yyyy")
-                                    .format(_selectedDate),
-                                style: GoogleFonts.ptSans(
-                                  fontSize:
-                                      width < 700 ? width / 28 : width / 49,
-                                  fontWeight: FontWeight.w400,
-                                  color: GlobalColors.black,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ]),
-                      )),
-                  GestureDetector(
-                    onTap: () {
-                      showDatePicker(
-                        context: context,
-                        currentDate: DateTime.now(),
-                        initialDate: _selectedDate,
-                        firstDate: DateTime(2021),
-                        lastDate: DateTime(2100),
-                      ).then((value) {
-                        getLocation(value!);
-                        setState(() {
-                          _selectedDate = value;
-                        });
-                      });
-                    },
-                    child: Container(
-                        width: width * 0.15,
-                        height: height * 0.05,
-                        margin: EdgeInsets.symmetric(vertical: 2),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: GlobalColors.themeColor2),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: Center(
-                          child: Icon(FontAwesomeIcons.calendarCheck,
-                              color: GlobalColors.themeColor),
-                        )),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: width,
-              height: height * 0.06,
-              margin: EdgeInsets.symmetric(vertical: height * 0.01),
-              child: Row(
-                children: [
-                  Container(
-                      width: width * 0.308,
+                      width: width * 0.05,
                       height: height * 0.05,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Category",
+                        ":",
                         style: GoogleFonts.ptSans(
                           color: GlobalColors.black,
                           fontSize: width < 700 ? width / 35 : width / 44,
@@ -300,7 +339,20 @@ class _ExpenseUpdateAddScreenState
                       start: "*",
                     ),
                     Container(
-                      width: width * 0.65,
+                        width: width * 0.05,
+                        height: height * 0.05,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          ":",
+                          style: GoogleFonts.ptSans(
+                            color: GlobalColors.black,
+                            fontSize: width < 700 ? width / 35 : width / 44,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0,
+                          ),
+                        )),
+                    Container(
+                      width: width * 0.6,
                       alignment: AlignmentDirectional.center,
                       padding: EdgeInsets.only(left: width * 0.08),
                       decoration: BoxDecoration(
@@ -341,7 +393,20 @@ class _ExpenseUpdateAddScreenState
                         height: height * 0.05,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "From",
+                          "From *",
+                          style: GoogleFonts.ptSans(
+                            color: GlobalColors.black,
+                            fontSize: width < 700 ? width / 35 : width / 44,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0,
+                          ),
+                        )),
+                    Container(
+                        width: width * 0.05,
+                        height: height * 0.05,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          ":",
                           style: GoogleFonts.ptSans(
                             color: GlobalColors.black,
                             fontSize: width < 700 ? width / 35 : width / 44,
@@ -459,7 +524,20 @@ class _ExpenseUpdateAddScreenState
                         height: height * 0.05,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "To",
+                          "To *",
+                          style: GoogleFonts.ptSans(
+                            color: GlobalColors.black,
+                            fontSize: width < 700 ? width / 35 : width / 44,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0,
+                          ),
+                        )),
+                    Container(
+                        width: width * 0.05,
+                        height: height * 0.05,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          ":",
                           style: GoogleFonts.ptSans(
                             color: GlobalColors.black,
                             fontSize: width < 700 ? width / 35 : width / 44,
@@ -502,7 +580,20 @@ class _ExpenseUpdateAddScreenState
                       start: "*",
                     ),
                     Container(
-                      width: width * 0.65,
+                        width: width * 0.06,
+                        height: height * 0.05,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          ":",
+                          style: GoogleFonts.ptSans(
+                            color: GlobalColors.black,
+                            fontSize: width < 700 ? width / 35 : width / 44,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0,
+                          ),
+                        )),
+                    Container(
+                      width: width * 0.6,
                       alignment: AlignmentDirectional.center,
                       padding: EdgeInsets.only(left: width * 0.08),
                       decoration: BoxDecoration(
@@ -518,7 +609,7 @@ class _ExpenseUpdateAddScreenState
                             fontWeight: FontWeight.w400,
                             letterSpacing: 0),
                         decoration: InputDecoration(
-                          hintText: "Eg:12",
+                          hintText: "",
                           hintStyle: GoogleFonts.ptSans(
                               color: GlobalColors.themeColor2,
                               fontSize: width < 700 ? width / 35 : width / 45,
@@ -551,7 +642,20 @@ class _ExpenseUpdateAddScreenState
                         ),
                       )),
                   Container(
-                    width: width * 0.493,
+                      width: width * 0.05,
+                      height: height * 0.05,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ":",
+                        style: GoogleFonts.ptSans(
+                          color: GlobalColors.black,
+                          fontSize: width < 700 ? width / 35 : width / 44,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0,
+                        ),
+                      )),
+                  Container(
+                    width: width * 0.443,
                     height: height * 0.05,
                     margin: EdgeInsets.only(left: 5, right: 2),
                     decoration: BoxDecoration(
@@ -563,7 +667,7 @@ class _ExpenseUpdateAddScreenState
                       alignment: Alignment.centerLeft,
                       child: widget.data.attachment == null
                           ? Text(
-                              "Choose File ",
+                              "",
                               style: GoogleFonts.ptSans(
                                 color: GlobalColors.themeColor2,
                                 fontSize: width < 700 ? width / 35 : width / 44,
@@ -606,6 +710,60 @@ class _ExpenseUpdateAddScreenState
             SizedBox(
               height: 6,
             ),
+            Container(
+              width: width,
+              margin: EdgeInsets.only(bottom: height * 0.01),
+              child: Row(
+                children: [
+                  LeadCustomlabel(
+                    label: "Notes",
+                    start: "",
+                  ),
+                  Container(
+                      width: width * 0.06,
+                      height: height * 0.05,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ":",
+                        style: GoogleFonts.ptSans(
+                          color: GlobalColors.black,
+                          fontSize: width < 700 ? width / 35 : width / 44,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0,
+                        ),
+                      )),
+                  Container(
+                    width: width * 0.6,
+                    alignment: AlignmentDirectional.center,
+                    padding: EdgeInsets.only(left: width * 0.07),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: GlobalColors.themeColor2),
+                    ),
+                    child: TextFormField(
+                      minLines: 4,
+                      maxLines: 10,
+                      keyboardType: TextInputType.number,
+                      controller: _note,
+                      style: GoogleFonts.ptSans(
+                          color: GlobalColors.themeColor2,
+                          fontSize: width < 700 ? width / 30 : width / 45,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0),
+                      decoration: InputDecoration(
+                        hintText: "",
+                        hintStyle: GoogleFonts.ptSans(
+                            color: GlobalColors.themeColor2,
+                            fontSize: width < 700 ? width / 35 : width / 45,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
             // Container(
             //   width: width,
             //   height: height * 0.057,
@@ -626,7 +784,7 @@ class _ExpenseUpdateAddScreenState
             Divider(),
             Expanded(
                 child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
@@ -697,7 +855,8 @@ class _ExpenseUpdateAddScreenState
                           "to_place": categoryId == 1 ? toPlace : "",
                           "distance": categoryId == 1 ? _distance.text : "",
                           "amount": categoryId == 1 ? "" : _amount.text,
-                          "status": "pending"
+                          "status": "pending",
+                          "notes": _note.text
                         };
 
                         Api()
@@ -708,7 +867,7 @@ class _ExpenseUpdateAddScreenState
                                 token: ref.watch(newToken),
                                 id: ref.watch(overViewId))
                             .then((value) {
-                           if (value.data["success"]) {
+                          if (value.data["success"]) {
                             widget.onclick();
                             Navigator.pop(context);
                             QuickAlert.show(

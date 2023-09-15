@@ -58,7 +58,7 @@ class InstallationModel {
   int? customerState;
   DateTime? startDate;
   dynamic completionDate;
-  int? installationStatus;
+  String? installationStatus;
   dynamic addedBy;
   dynamic lastUpdatedBy;
   dynamic siteIncharge;

@@ -102,7 +102,7 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
 
     return Container(
       width: width,
-      height: height * 0.9,
+      height: height * 0.8,
       decoration:
           BoxDecoration(border: Border.all(color: GlobalColors.themeColor2)),
       child: Column(
@@ -122,9 +122,7 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
             ),
             height: 40,
           ),
-          Container(
-            width: width,
-            height: height * 0.75,
+          Expanded(
             child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: ListView(
@@ -407,7 +405,6 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                         ref.watch(ServiceId),
                                                         workTaskId)
                                                     .then((value) {
-                                                  print("$value");
                                                   setState(() {
                                                     product = value;
                                                   });
@@ -529,91 +526,130 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                     ),
                   ),
                   if (is_removable_task == 1)
-                    Container(
-                      margin: EdgeInsets.only(bottom: 3),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  color: Color.fromARGB(255, 200, 196, 196),
-                                  width: 0.5))),
-                      constraints: BoxConstraints(
-                          minWidth: width, minHeight: height * 0.05),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              flex: 3,
-                              child: Container(
-                                child: Text(
-                                  "Removeable Count",
-                                  style: GoogleFonts.ptSans(
-                                      color: GlobalColors.black,
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 45,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0),
+                    Column(
+                      children: [
+                        Divider(
+                          thickness: 2,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 3),
+                          constraints: BoxConstraints(
+                              minWidth: width, minHeight: height * 0.05),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    child: Text(
+                                      "Removeable Count",
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.black,
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0),
+                                    ),
+                                  )),
+                              Card(
+                                elevation: 10,
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Center(
+                                    child: Text(
+                                      "${product["removable_pending"]}",
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.black,
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0),
+                                    ),
+                                  ),
                                 ),
-                              )),
-                          Expanded(
-                              child: Container(
-                            child: Text(
-                              "${product["removable_pending"]}",
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.black,
-                                  fontSize:
-                                      width < 700 ? width / 30 : width / 45,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0),
-                            ),
-                          )),
-                          Expanded(
-                              flex: 2,
-                              child: Container(
-                                child: Text(
-                                  "Used Count",
-                                  style: GoogleFonts.ptSans(
-                                      color: GlobalColors.black,
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 45,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0),
+                              ),
+                              Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    child: Center(
+                                      child: Text(
+                                        "Used Count",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.black,
+                                            fontSize: width < 700
+                                                ? width / 30
+                                                : width / 45,
+                                            fontWeight: FontWeight.w400,
+                                            letterSpacing: 0),
+                                      ),
+                                    ),
+                                  )),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: TextField(
+                                      controller: _controller,
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.black,
+                                          fontSize: width < 500
+                                              ? width / 35
+                                              : width / 35),
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.all(15),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4))),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          removal_qty = int.parse(value);
+                                        });
+                                      }),
                                 ),
-                              )),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: TextField(
-                                  controller: _controller,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.all(15),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4))),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      removal_qty = int.parse(value);
-                                    });
-                                  }),
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
+                  if (productList.isNotEmpty)
+                    Column(
+                      children: [
+                        Divider(
+                          thickness: 2,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(left: 1),
+                              child: Card(
+                                elevation: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Products",
+                                    style: GoogleFonts.ptSans(
+                                        color: GlobalColors.themeColor,
+                                        fontSize: width < 500
+                                            ? width / 30
+                                            : width / 45),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   for (var i = 0; i < productList.length; i++)
                     Card(
-                      elevation: 5,
+                      elevation: 1,
                       child: Column(
                         children: [
-                          if (productList.isNotEmpty)
-                            Text(
-                              "Products",
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.black,
-                                  fontSize:
-                                      width < 500 ? width / 25 : width / 35),
-                            ),
                           Card(
-                            elevation: 3,
+                            elevation: 1,
                             child: Container(
                               child: Column(
                                 children: [
@@ -631,11 +667,23 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                 .contains(productList[i]),
                                             onChanged: (bool? value) {
                                               if (value!) {
+                                                var data = productList[i];
                                                 setState(() {
-                                                  selectedCheckbox
-                                                      .add(productList[i]);
+                                                  selectedCheckbox.add(data);
                                                 });
                                               } else {
+                                                var data = selectedCheckbox
+                                                    .firstWhere(
+                                                        (element) =>
+                                                            element[
+                                                                "item_id"] ==
+                                                            productList[i]
+                                                                ["item_id"],
+                                                        orElse: () {
+                                                  return null;
+                                                });
+                                                data["used_quantity"] = "";
+
                                                 setState(() {
                                                   selectedCheckbox
                                                       .remove(productList[i]);
@@ -689,7 +737,7 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                     ],
                                   ),
                                   if (selectedCheckbox.contains(productList[i]))
-                                    if (productList[i]["serialnos"] != null)
+                                    if (productList[i]["serial_no"] != null)
                                       Row(
                                         children: [
                                           Expanded(
@@ -697,6 +745,48 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                             child: Center(
                                               child: Text(
                                                 "S No:",
+                                                style: GoogleFonts.ptSans(
+                                                    color: GlobalColors
+                                                        .themeColor2,
+                                                    fontSize: width < 500
+                                                        ? width / 35
+                                                        : width / 35),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 6,
+                                            child: Wrap(
+                                              children: [
+                                                Visibility(
+                                                  visible: serialVisible,
+                                                  child: Card(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10.0),
+                                                      child: Text(
+                                                        productList[i]
+                                                                ["serial_no"]
+                                                            .toString(),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  if (selectedCheckbox.contains(productList[i]))
+                                    if (productList[i]["serialnos"] != null)
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: Center(
+                                              child: Text(
+                                                "S.NO:",
                                                 style: GoogleFonts.ptSans(
                                                     color: GlobalColors
                                                         .themeColor2,
@@ -732,6 +822,7 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                           });
                                                         });
                                                       }
+
                                                       var data = serialnosList
                                                           .firstWhere(
                                                               (element) =>
@@ -842,7 +933,7 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            flex: 4,
+                                            flex: 2,
                                             child: Text(""),
                                           ),
                                           Expanded(
@@ -860,12 +951,12 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                           Expanded(
                                             flex: 1,
                                             child: productList[i]
-                                                        ["serialnos"] !=
+                                                        ["serial_no"] !=
                                                     null
                                                 ? Container(
                                                     constraints: BoxConstraints(
                                                         minHeight: 50,
-                                                        minWidth: 50),
+                                                        minWidth: 100),
                                                     decoration: BoxDecoration(
                                                         borderRadius:
                                                             BorderRadius
@@ -875,44 +966,88 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                                 .themeColor,
                                                             width: 2)),
                                                     child: Center(
-                                                        child: Text(
-                                                            getUsedserialNo(
+                                                        child: Text(productList[
+                                                                    i][
+                                                                "pending_quantity"]
+                                                            .toString())),
+                                                  )
+                                                : productList[i]["serialnos"] !=
+                                                        null
+                                                    ? Container(
+                                                        constraints:
+                                                            BoxConstraints(
+                                                                minHeight: 50,
+                                                                minWidth: 100),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        4),
+                                                            border: Border.all(
+                                                                color: GlobalColors
+                                                                    .themeColor,
+                                                                width: 2)),
+                                                        child: Center(
+                                                            child: Text(getUsedserialNo(
                                                                     productList[
                                                                             i][
                                                                         "item_id"])
                                                                 .toString())),
-                                                  )
-                                                : TextField(
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    decoration: InputDecoration(
-                                                        contentPadding:
-                                                            const EdgeInsets
-                                                                .all(15),
-                                                        border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        4))),
-                                                    onChanged: (value) {
-                                                      var data = selectedCheckbox
-                                                          .firstWhere(
-                                                              (element) =>
-                                                                  element[
-                                                                      "item_id"] ==
-                                                                  productList[i]
-                                                                      [
-                                                                      "item_id"],
-                                                              orElse: () {
-                                                        return null;
-                                                      });
-                                                      data["used_quantity"] =
-                                                          value;
+                                                      )
+                                                    : TextFormField(
+                                                        initialValue: selectedCheckbox
+                                                            .firstWhere(
+                                                                (element) =>
+                                                                    element[
+                                                                        "item_id"] ==
+                                                                    productList[
+                                                                            i][
+                                                                        "item_id"],
+                                                                orElse: () {
+                                                          return null;
+                                                        })["used_quantity"],
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                fontSize: width <
+                                                                        500
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        35),
+                                                        decoration: InputDecoration(
+                                                            contentPadding:
+                                                                const EdgeInsets
+                                                                    .all(15),
+                                                            border: OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            4))),
+                                                        onChanged: (value) {
+                                                          var data = selectedCheckbox
+                                                              .firstWhere(
+                                                                  (element) =>
+                                                                      element[
+                                                                          "item_id"] ==
+                                                                      productList[
+                                                                              i]
+                                                                          [
+                                                                          "item_id"],
+                                                                  orElse: () {
+                                                            return null;
+                                                          });
+                                                          data["used_quantity"] =
+                                                              value;
 
-                                                      // print(data.toString());
-                                                      // do something
-                                                    },
-                                                  ),
+                                                          // print(data.toString());
+                                                          // do something
+                                                        },
+                                                      ),
                                           )
                                         ],
                                       ),
@@ -925,17 +1060,39 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                       ),
                     ),
                   if (OtherProductList.isNotEmpty)
+                    Column(
+                      children: [
+                        Divider(
+                          thickness: 2,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(left: 1),
+                              child: Card(
+                                elevation: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Other Products",
+                                    style: GoogleFonts.ptSans(
+                                        color: GlobalColors.themeColor,
+                                        fontSize: width < 500
+                                            ? width / 30
+                                            : width / 45),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  if (OtherProductList.isNotEmpty)
                     Card(
                       elevation: 10,
                       child: Column(
                         children: [
-                          Text(
-                            "Other Products",
-                            style: GoogleFonts.ptSans(
-                                color: GlobalColors.black,
-                                fontSize:
-                                    width < 500 ? width / 25 : width / 35),
-                          ),
                           for (var i = 0; i < OtherProductList.length; i++)
                             Card(
                               elevation: 3,
@@ -961,6 +1118,18 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                         OtherProductList[i]);
                                                   });
                                                 } else {
+                                                  var data = selectedCheckbox
+                                                      .firstWhere(
+                                                          (element) =>
+                                                              element[
+                                                                  "item_id"] ==
+                                                              OtherProductList[
+                                                                  i]["item_id"],
+                                                          orElse: () {
+                                                    return null;
+                                                  });
+                                                  data["used_quantity"] = "";
+
                                                   setState(() {
                                                     selectedCheckbox.remove(
                                                         OtherProductList[i]);
@@ -1013,6 +1182,50 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                         ),
                                       ],
                                     ),
+                                    if (selectedCheckbox
+                                        .contains(OtherProductList[i]))
+                                      if (OtherProductList[i]["serial_no"] !=
+                                          null)
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Center(
+                                                child: Text(
+                                                  "S No:",
+                                                  style: GoogleFonts.ptSans(
+                                                      color: GlobalColors
+                                                          .themeColor2,
+                                                      fontSize: width < 500
+                                                          ? width / 35
+                                                          : width / 35),
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 6,
+                                              child: Wrap(
+                                                children: [
+                                                  Visibility(
+                                                    visible: serialVisible,
+                                                    child: Card(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10.0),
+                                                        child: Text(
+                                                          OtherProductList[i]
+                                                                  ["serial_no"]
+                                                              .toString(),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                     if (selectedCheckbox
                                         .contains(OtherProductList[i]))
                                       if (OtherProductList[i]["serialnos"] !=
@@ -1187,7 +1400,7 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                         child: Row(
                                           children: [
                                             Expanded(
-                                              flex: 4,
+                                              flex: 2,
                                               child: Text(""),
                                             ),
                                             Expanded(
@@ -1211,7 +1424,7 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                       constraints:
                                                           BoxConstraints(
                                                               minHeight: 50,
-                                                              minWidth: 50),
+                                                              minWidth: 100),
                                                       decoration: BoxDecoration(
                                                           borderRadius:
                                                               BorderRadius
@@ -1227,9 +1440,26 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                                       "item_id"])
                                                               .toString())),
                                                     )
-                                                  : TextField(
+                                                  : TextFormField(
+                                                      initialValue: selectedCheckbox
+                                                          .firstWhere(
+                                                              (element) =>
+                                                                  element[
+                                                                      "item_id"] ==
+                                                                  OtherProductList[
+                                                                          i][
+                                                                      "item_id"],
+                                                              orElse: () {
+                                                        return null;
+                                                      })["used_quantity"],
                                                       keyboardType:
                                                           TextInputType.number,
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .black,
+                                                          fontSize: width < 500
+                                                              ? width / 35
+                                                              : width / 35),
                                                       decoration: InputDecoration(
                                                           contentPadding:
                                                               const EdgeInsets
@@ -1255,7 +1485,6 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                                                         data["used_quantity"] =
                                                             value;
 
-                                                        print(data.toString());
                                                         // do something
                                                       },
                                                     ),
@@ -1306,6 +1535,8 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                           child: Container(
                             alignment: Alignment.center,
                             child: TextField(
+                                minLines: 2,
+                                maxLines: 4,
                                 decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     border: OutlineInputBorder(
@@ -1375,7 +1606,32 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
 
                           return null;
                         } else {
-                          if (selectedCheckbox[i]["used_quantity"] == "") {
+                          if (selectedCheckbox[i]["used_quantity"] == "" ||
+                              selectedCheckbox[i]["used_quantity"] == "0") {
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title:
+                                    "Please enter Valid Quantity for ${selectedCheckbox[i]["item_name"]}",
+                                autoCloseDuration: null);
+
+                            return null;
+                          }
+                        }
+                      } else {
+                        if (selectedCheckbox[i]["serial_no"] == null) {
+                          if (selectedCheckbox[i]["serialnos"].length < 1) {
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title:
+                                    " ${selectedCheckbox[i]["item_name"]} does not have any items.",
+                                autoCloseDuration: null);
+
+                            return null;
+                          }
+                          if (selectedCheckbox[i]["used_serialNos"].length <
+                              1) {
                             QuickAlert.show(
                                 context: context,
                                 type: QuickAlertType.error,
@@ -1385,27 +1641,6 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
 
                             return null;
                           }
-                        }
-                      } else {
-                        if (selectedCheckbox[i]["serialnos"].length < 1) {
-                          QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.error,
-                              title:
-                                  " ${selectedCheckbox[i]["item_name"]} does not have any items.",
-                              autoCloseDuration: null);
-
-                          return null;
-                        }
-                        if (selectedCheckbox[i]["used_serialNos"].length < 1) {
-                          QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.error,
-                              title:
-                                  "Enter quantity of ${selectedCheckbox[i]["item_name"]}",
-                              autoCloseDuration: null);
-
-                          return null;
                         }
                       }
                     }
@@ -1434,20 +1669,15 @@ class _ServiceAddWorkUpdateState extends ConsumerState<ServiceAddWorkUpdate> {
                             removal_qty,
                             selectedCheckbox)
                         .then((value) {
-
                       if (value.data["success"]) {
-                         
                         widget.onclick();
-                      
-                         Navigator.pop(context);
-                         QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.success,
-                              title: "${value.data["message"]}",
-                             
-                              autoCloseDuration: Duration(seconds: 2));
 
-                         
+                        Navigator.pop(context);
+                        QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.success,
+                            title: "${value.data["message"]}",
+                            autoCloseDuration: Duration(seconds: 2));
                       } else {
                         if (value.statusCode.toString() == "422" ||
                             value.statusCode.toString() == "500") {

@@ -7,7 +7,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,14 +47,17 @@ class _FileScreenState extends ConsumerState<FileScreen> {
           String? token = await prefs.getString('token');
           final id = ref.watch(overViewId);
 
-          FilePickerResult? result =
-              await FilePicker.platform.pickFiles(allowMultiple: true);
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
+            type: FileType.any,
+          );
 
           if (result != null) {
             setState(() {
               loading = true;
             });
-            File file = File(result.files.single.path!);
+            List<File> file = result.paths.map((path) => File(path!)).toList();
+            ;
 
             Api().AddFile(token: token!, id: id, file: file).then((value) {
               Map<String, dynamic> data = jsonDecode(value);
@@ -164,7 +166,7 @@ class _FileScreenState extends ConsumerState<FileScreen> {
                                                   ? Image.network(
                                                       "${_data[i].fileUrl!}",
                                                       width:
-                                                          widget.width! * 0.12,
+                                                          widget.width! * 0.07,
                                                     )
                                                   : _data[i].icon ==
                                                           "fa-file-pdf"
@@ -223,7 +225,7 @@ class _FileScreenState extends ConsumerState<FileScreen> {
                                                         .themeColor2,
                                                     fontSize: widget.width! <
                                                             700
-                                                        ? widget.width! / 34
+                                                        ? widget.width! / 40
                                                         : widget.width! / 45,
                                                     fontWeight: FontWeight.w600,
                                                     letterSpacing: 0),

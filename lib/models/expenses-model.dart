@@ -4,50 +4,53 @@
 
 import 'dart:convert';
 
-ExpensesModel expensesModelFromJson(String str) => ExpensesModel.fromJson(json.decode(str));
+ExpensesModel expensesModelFromJson(String str) =>
+    ExpensesModel.fromJson(json.decode(str));
 
 String expensesModelToJson(ExpensesModel data) => json.encode(data.toJson());
 
 class ExpensesModel {
-    ExpensesModel({
-        required this.id,
-        required this.installationId,
-        required this.userId,
-        required this.expensesDate,
-        required this.categoryId,
-        required this.fromPlace,
-        required this.toPlace,
-        required this.distance,
-        required this.amount,
-        this.attachment,
-        this.notes,
-        required this.status,
-        required this.addedBy,
-        required this.lastUpdatedBy,
-        this.createdBy,
-        this.updatedBy,
-        required this.category,
-    });
+  ExpensesModel({
+    required this.id,
+    required this.installationId,
+    required this.userId,
+    required this.expensesDate,
+    required this.categoryId,
+    required this.fromPlace,
+    required this.toPlace,
+    required this.distance,
+    required this.amount,
+    this.attachment,
+    this.notes,
+    required this.status,
+    required this.addedBy,
+    required this.lastUpdatedBy,
+    this.createdBy,
+    this.updatedBy,
+    required this.category,
+    required this.employee,
+  });
 
-    int? id;
-    int? installationId;
-    int? userId;
-    DateTime? expensesDate;
-    int? categoryId;
-    String? fromPlace;
-    String? toPlace;
-    String? distance;
-    String? amount;
-    dynamic attachment;
-    dynamic notes;
-    String? status;
-    int? addedBy;
-    int? lastUpdatedBy;
-    dynamic createdBy;
-    dynamic updatedBy;
-    Category? category;
+  int? id;
+  int? installationId;
+  int? userId;
+  DateTime? expensesDate;
+  int? categoryId;
+  String? fromPlace;
+  String? toPlace;
+  String? distance;
+  String? amount;
+  dynamic attachment;
+  dynamic notes;
+  String? status;
+  int? addedBy;
+  int? lastUpdatedBy;
+  dynamic createdBy;
+  dynamic updatedBy;
+  Category? category;
+  Employee? employee;
 
-    factory ExpensesModel.fromJson(Map<String, dynamic> json) => ExpensesModel(
+  factory ExpensesModel.fromJson(Map<String, dynamic> json) => ExpensesModel(
         id: json["id"],
         installationId: json["installation_id"],
         userId: json["user_id"],
@@ -65,9 +68,10 @@ class ExpensesModel {
         createdBy: json["created_by"],
         updatedBy: json["updated_by"],
         category: Category.fromJson(json["category"]),
-    );
+        employee: Employee.fromJson(json["employee"]),
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id!,
         "installation_id": installationId!,
         "user_id": userId!,
@@ -85,26 +89,42 @@ class ExpensesModel {
         "created_by": createdBy!,
         "updated_by": updatedBy!,
         "category": category!.toJson(),
-    };
+        "employee": employee!.toJson()
+      };
 }
 
 class Category {
-    Category({
-        required this.id,
-        required this.name,
-    });
+  Category({
+    required this.id,
+    required this.name,
+  });
 
-    int? id;
-    String? name;
+  int? id;
+  String? name;
 
-    factory Category.fromJson(Map<String, dynamic> json) => Category(
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
         id: json["id"],
         name: json["name"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id!,
         "name": name!,
-    };
+      };
 }
 
+class Employee {
+  Employee({
+    required this.name,
+  });
+
+  String? name;
+
+  factory Employee.fromJson(Map<String, dynamic> json) => Employee(
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": name!,
+      };
+}

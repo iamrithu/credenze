@@ -1,5 +1,4 @@
 import 'package:credenze/const/global_colors.dart';
-import 'package:credenze/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,11 +37,12 @@ class CustomAppBar extends ConsumerWidget {
                             : page == 6
                                 ? 5
                                 : page == 7
-                                    ? 2:page == 8?
-                                    7
-                                    : page == 10
-                                        ? 3
-                                        : 0);
+                                    ? 2
+                                    : page == 8
+                                        ? 7
+                                        : page == 10
+                                            ? 3
+                                            : 0);
                   },
                   color: GlobalColors.white,
                   icon: Icon(
@@ -117,7 +117,7 @@ class CustomAppBar extends ConsumerWidget {
                             // fontWeight: FontWeight.w800,
                             // letterSpacing: 0),
                             // )
-                            : page == 5 ||page==6
+                            : page == 5 || page == 6
                                 ? Text(
                                     "Installation Details",
                                     style: GoogleFonts.ptSans(
@@ -127,17 +127,17 @@ class CustomAppBar extends ConsumerWidget {
                                         fontWeight: FontWeight.w800,
                                         letterSpacing: 0),
                                   )
-                                : page == 4 
-                                ? Text(
-                                    "Attendance Details",
-                                    style: GoogleFonts.ptSans(
-                                        fontSize: width < 700
-                                            ? width / 20
-                                            : width / 24,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0),
-                                  )
-                                : page ==8
+                                : page == 4
+                                    ? Text(
+                                        "Attendance Details",
+                                        style: GoogleFonts.ptSans(
+                                            fontSize: width < 700
+                                                ? width / 20
+                                                : width / 24,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0),
+                                      )
+                                    : page == 8
                                         ? Text(
                                             "Service Details",
                                             style: GoogleFonts.ptSans(
@@ -148,77 +148,91 @@ class CustomAppBar extends ConsumerWidget {
                                                 letterSpacing: 0),
                                           )
                                         : page == 9
-                                        ? Text(
-                                            "Profile",
-                                            style: GoogleFonts.ptSans(
-                                                fontSize: width < 700
-                                                    ? width / 20
-                                                    : width / 24,
-                                                fontWeight: FontWeight.w800,
-                                                letterSpacing: 0),
-                                          )
-                                        : page == 10
-                                    ? Text(
-                                        "Task Details",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 20
-                                                : width / 24,
-                                            fontWeight: FontWeight.w800,
-                                            letterSpacing: 0),
-                                      ): page == 11
-                                    ?  Text(
-                                            "Overall Expenses",
-                                            style: GoogleFonts.ptSans(
-                                                fontSize: width < 700
-                                                    ? width / 20
-                                                    : width / 24,
-                                                fontWeight: FontWeight.w800,
-                                                letterSpacing: 0),
-                                          ):
-                                    Text(
-                                            "Service Details",
-                                            style: GoogleFonts.ptSans(
-                                                fontSize: width < 700
-                                                    ? width / 20
-                                                    : width / 24,
-                                                fontWeight: FontWeight.w800,
-                                                letterSpacing: 0),
-                                          ),
+                                            ? Text(
+                                                "Profile",
+                                                style: GoogleFonts.ptSans(
+                                                    fontSize: width < 700
+                                                        ? width / 20
+                                                        : width / 24,
+                                                    fontWeight: FontWeight.w800,
+                                                    letterSpacing: 0),
+                                              )
+                                            : page == 10
+                                                ? Text(
+                                                    "Task Details",
+                                                    style: GoogleFonts.ptSans(
+                                                        fontSize: width < 700
+                                                            ? width / 20
+                                                            : width / 24,
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                        letterSpacing: 0),
+                                                  )
+                                                : page == 11
+                                                    ? Text(
+                                                        "Overall Expenses",
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 20
+                                                                    : width /
+                                                                        24,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800,
+                                                                letterSpacing:
+                                                                    0),
+                                                      )
+                                                    : Text(
+                                                        "Service Details",
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                                fontSize: width <
+                                                                        700
+                                                                    ? width / 20
+                                                                    : width /
+                                                                        24,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800,
+                                                                letterSpacing:
+                                                                    0),
+                                                      ),
           ),
           actions: [
             if (page != 11)
               if (page != 9)
-              user.when(
-                  data: (_data) {
-                    return InkWell(
-                      onTap: () {
-                        ref.read(pageIndex.notifier).update((state) => 9);
-                      },
-                      child: Container(
-                        margin: EdgeInsets.all(3),
-                        width: 50,
-                        child: CircleAvatar(
-                          radius: 56,
-                          backgroundColor: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.all(2), // Border radius
-                            child: ClipOval(
-                              child: Image.network(
-                                _data.imageUrl.toString(),
+                user.when(
+                    data: (_data) {
+                      return InkWell(
+                        onTap: () {
+                          ref.read(pageIndex.notifier).update((state) => 9);
+                        },
+                        child: Container(
+                          margin: EdgeInsets.all(3),
+                          width: 50,
+                          child: CircleAvatar(
+                            radius: 56,
+                            backgroundColor: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2), // Border radius
+                              child: ClipOval(
+                                child: Image.network(
+                                  _data.imageUrl.toString(),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                  error: (e, s) => Center(
-                        child: Text("${e}"),
-                      ),
-                  loading: () => Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      ))
+                      );
+                    },
+                    error: (e, s) => Center(
+                          child: Text("${e} 33"),
+                        ),
+                    loading: () => Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ))
           ],
         ),
       ),

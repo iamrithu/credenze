@@ -48,9 +48,15 @@ class _CustomDropDownButtonState extends State<CustomDropDownButton> {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(
-              value,
+              value[0].toUpperCase() + value.substring(1).replaceAll("_", " "),
               style: GoogleFonts.ptSans(
-                color: GlobalColors.themeColor2,
+                color: value.toLowerCase() == "casual"
+                    ? Colors.green
+                    : value.toLowerCase() == "earned"
+                        ? Colors.purple
+                        : value.toLowerCase() == "sick"
+                            ? Colors.red
+                            : Colors.grey,
                 fontSize: width < 700 ? width / 35 : width / 43,
                 fontWeight: FontWeight.w400,
                 letterSpacing: 0,

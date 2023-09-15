@@ -52,8 +52,12 @@ class _ServiceWorkUpdateScreenState
             isScrollControlled: true,
             context: context,
             builder: (context) {
-              return ServiceAddWorkUpdate(
-                onclick: onRefresh,
+              return Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: ServiceAddWorkUpdate(
+                  onclick: onRefresh,
+                ),
               );
             },
           );
@@ -91,31 +95,34 @@ class _ServiceWorkUpdateScreenState
               },
               child: ListView(
                 children: [
-                  if(_data.isEmpty)
-                  Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                                        "-- Data not found --",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: widget.width! < 700
-                                                ? widget.width! / 40
-                                                : widget.width! / 45,
-                                            fontWeight: FontWeight.w800,
-                                            color: Color.fromARGB(255, 50, 49, 49),
-                                            letterSpacing: 0),
-                                      ),
-                ],
-              ),
+                  if (_data.isEmpty)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "-- Data not found --",
+                          style: GoogleFonts.ptSans(
+                              fontSize: widget.width! < 700
+                                  ? widget.width! / 40
+                                  : widget.width! / 45,
+                              fontWeight: FontWeight.w800,
+                              color: Color.fromARGB(255, 50, 49, 49),
+                              letterSpacing: 0),
+                        ),
+                      ],
+                    ),
                   for (var i = 0; i < _data.length; i++)
                     InkWell(
-                      onTap: (){
-                         showModalBottomSheet(
-                          isScrollControlled:true,
+                      onTap: () {
+                        showModalBottomSheet(
+                            isScrollControlled: true,
                             context: context,
                             builder: (context) {
-                              return ServiceWorkUpdateDetailsScreen (height:widget.height,width: widget.width,id:_data[i].id!);
+                              return ServiceWorkUpdateDetailsScreen(
+                                  height: widget.height,
+                                  width: widget.width,
+                                  id: _data[i].id!);
                             });
                       },
                       child: Card(
@@ -193,7 +200,7 @@ class _ServiceWorkUpdateScreenState
                         children: [
                           Center(
                             child: Text(
-                              "Not Available $err",
+                              "No Information Available",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.ptSans(
                                   color: GlobalColors.themeColor2,

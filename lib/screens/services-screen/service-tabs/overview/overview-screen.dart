@@ -10,7 +10,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../../../../apis/api.dart';
@@ -37,7 +36,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
   double long = 0.0;
   bool detailVisible = false;
   bool loading = false;
-  bool isLocationEnable=true;
+  bool isLocationEnable = true;
   int? totalAmount = 0;
   String? clockInlat = "";
   String? clockInlong = "";
@@ -90,18 +89,22 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
   getInstallationAttendence() async {
     final token = ref.read(newToken);
     final id = ref.read(ServiceId);
-
+    ref.refresh(ServiceClockIn);
     Api().ServiceAttendence(token, id).then((value) {
-      if (value.data["success"] == false) {
+      List data = [value.data["data"][value.data["data"].length - 1]];
+
+      if (value.data["data"].isEmpty) {
         setState(() {
           clockIn = null;
           clockOut = null;
         });
-        ref.read(ServiceClockIn.notifier).update((state) => true);
       } else {
-        ref.read(ServiceClockIn.notifier).update((state) => true);
+        ref.read(InstallationClockIn.notifier).update((state) => true);
 
-        var newdata = value.data["data"];
+        var newdata = data
+            .firstWhere(((element) => element["user_id"] == ref.watch(userId)));
+
+        // var newdata = value.data["data"];
 
         if (newdata["clock_in"] == null) {
           ref.read(ServiceClockIn.notifier).update((state) => true);
@@ -130,6 +133,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
           _stopWatchTimer.onStopTimer();
 
           _stopWatchTimer.clearPresetTime();
+          _stopWatchTimer.onResetTimer();
           _stopWatchTimer.setPresetHoursTime(diff.inHours % 24.abs());
           _stopWatchTimer.setPresetMinuteTime(diff.inMinutes % 60.abs());
           _stopWatchTimer.setPresetSecondTime(diff.inSeconds % 60.abs());
@@ -373,8 +377,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                         latitude: value.latitude.toString(),
                         longitude: value.longitude.toString())
                     .then((value) {
-
-                      print(value.toString());
+                  print(value.toString());
                   Map<String, dynamic> data = jsonDecode(value);
                   if (data["success"]) {
                     getInstallationAttendence();
@@ -493,14 +496,14 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                   child: Column(
                     children: [
                       if (DateFormat("dd-MM-yyyy").format(DateTime.now()) ==
-                          ref.watch(selectedDate))
+                          ref.watch(servicedDate))
                         Container(
                           constraints: BoxConstraints(
                             minHeight: widget.height! * 0.1,
                             minWidth: widget.width!,
                           ),
                           child: Card(
-                            elevation: 10,
+                            elevation: 1,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4)),
                             child: Column(
@@ -513,7 +516,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Card(
-                                      elevation: 10,
+                                      elevation: 1,
                                       color: Color.fromARGB(255, 251, 242, 243),
                                       margin: EdgeInsets.only(
                                           left: widget.width! * 0.03),
@@ -538,7 +541,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.all(4.0),
+                                      padding: const EdgeInsets.all(14.0),
                                       child: Center(
                                         child: Text(
                                           "${ref.watch(selectedDate)}",
@@ -558,41 +561,62 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                 Container(
                                   margin: EdgeInsets.symmetric(horizontal: 12),
                                   width: widget.width,
-                                  child: ElevatedButton(
-                                    style:
-                                        ElevatedButton.styleFrom(elevation: 10),
-                                    onPressed:isLocationEnable==false? null:serviceComplete
-                                        ? null
-                                        : ref.watch(ServiceClockIn) == true
-                                            ? () {
-                                                installationClockIn(id);
-                                              }
-                                            : () {
-                                                installationClockOut(id);
-                                              },
-                                    child: Text(
-                                      serviceComplete
-                                          ? "Service Completed "
-                                          : ref.watch(ServiceClockIn) == true
-                                              ? "Clock In"
-                                              : "Clock Out",
-                                      textAlign: TextAlign.start,
-                                      style: GoogleFonts.ptSans(
-                                          fontSize: widget.width! < 700
-                                              ? widget.width! / 24
-                                              : widget.width! / 42,
-                                          fontWeight: FontWeight.w400,
-                                          color: GlobalColors.white,
-                                          letterSpacing: 0),
-                                    ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            elevation: 10,
+                                            backgroundColor: Colors.green),
+                                        onPressed: isLocationEnable == false
+                                            ? null
+                                            : ref.watch(ServiceClockIn) == true
+                                                ? () {
+                                                    installationClockIn(id);
+                                                  }
+                                                : null,
+                                        child: Text(
+                                          "Clock In",
+                                          textAlign: TextAlign.start,
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: widget.width! < 700
+                                                  ? widget.width! / 24
+                                                  : widget.width! / 42,
+                                              fontWeight: FontWeight.w400,
+                                              color: GlobalColors.white,
+                                              letterSpacing: 0),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            elevation: 10,
+                                            backgroundColor:
+                                                GlobalColors.themeColor),
+                                        onPressed: isLocationEnable == false
+                                            ? null
+                                            : ref.watch(ServiceClockIn) == true
+                                                ? null
+                                                : () {
+                                                    installationClockOut(id);
+                                                  },
+                                        child: Text(
+                                          "Clock Out",
+                                          textAlign: TextAlign.start,
+                                          style: GoogleFonts.ptSans(
+                                              fontSize: widget.width! < 700
+                                                  ? widget.width! / 24
+                                                  : widget.width! / 42,
+                                              fontWeight: FontWeight.w400,
+                                              color: GlobalColors.white,
+                                              letterSpacing: 0),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
                                 Visibility(
-                                  visible: serviceComplete
-                                      ? true
-                                      : ref.watch(ServiceClockIn) == true
-                                          ? false
-                                          : true,
+                                  visible: ref.watch(ServiceClockIn) == false,
                                   child: Container(
                                     child: Row(
                                       mainAxisAlignment:
@@ -863,6 +887,42 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                     ),
                                   ),
                                 ),
+                                if (clockOut != null)
+                                  Visibility(
+                                    visible: ref.watch(InstallationClockIn),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            "Last Clock out at  :  ",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: widget.width! < 700
+                                                    ? widget.width! / 40
+                                                    : widget.width! / 42,
+                                                fontWeight: FontWeight.w600,
+                                                color: GlobalColors.themeColor2,
+                                                letterSpacing: 0),
+                                          ),
+                                          Text(
+                                            "$clockOut",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: widget.width! < 700
+                                                    ? widget.width! / 40
+                                                    : widget.width! / 42,
+                                                fontWeight: FontWeight.w600,
+                                                color: GlobalColors.themeColor,
+                                                letterSpacing: 0),
+                                          ),
+                                          SizedBox(
+                                            width: 6,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
@@ -872,7 +932,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                             BoxConstraints(minHeight: widget.height! * 0.35),
                         width: widget.width,
                         child: Card(
-                            elevation: 10,
+                            elevation: 1,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4)),
                             child: Row(
@@ -927,8 +987,8 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                       ),
                                       // TextRowWidget(
                                       //   width: widget.width!,
-                                      //   lable: "Installation Name",
-                                      //   value: "${_data.installationName}",
+                                      //   lable: "Service Name",
+                                      //   value: "${_data.s}",
                                       // ),
                                       Padding(
                                         padding:
@@ -967,12 +1027,26 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                               "${DateFormat("dd - MMMM - yyyy ").format(_data.startDate!)}",
                                         ),
                                       ),
-                                      // TextRowWidget(
-                                      //   width: widget.width!,
-                                      //   lable: "Installation Summary",
-                                      //   value:
-                                      //       "${_data.installationSummary == null ? "--" : _data.installationSummary.replaceAll("<p>", "").replaceAll("</p>", "")}",
-                                      // ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Service Status",
+                                          value:
+                                              "${_data.serviceStatus ?? "--"}",
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: TextRowWidget(
+                                          width: widget.width!,
+                                          lable: "Service Summary",
+                                          value:
+                                              "${_data.serviceSummary ?? "--"}",
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -1022,7 +1096,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                   child: CircularProgressIndicator.adaptive(),
                                 )
                               : Card(
-                                  elevation: 10,
+                                  elevation: 1,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(4)),
                                   child: Column(
@@ -1429,7 +1503,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                               return cat.when(
                                   data: ((_data) {
                                     return Card(
-                                      elevation: 10,
+                                      elevation: 1,
                                       child: Container(
                                         constraints: BoxConstraints(
                                             minWidth: widget.width!,
@@ -1444,7 +1518,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                             Row(
                                               children: [
                                                 Card(
-                                                  elevation: 10,
+                                                  elevation: 1,
                                                   color: Color.fromARGB(
                                                       255, 251, 242, 243),
                                                   shape: RoundedRectangleBorder(
@@ -1483,232 +1557,315 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
                                             SizedBox(
                                               height: 5,
                                             ),
-                                            Container(
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 5),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Container(
-                                                    width: widget.width! * 0.2,
-                                                    padding: EdgeInsets.all(5),
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: GlobalColors
-                                                                .themeColor2)),
-                                                    child: Text(
-                                                      "S.NO",
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      style: GoogleFonts.ptSans(
-                                                          fontSize: widget
-                                                                      .width! <
-                                                                  700
-                                                              ? widget.width! /
-                                                                  35
-                                                              : widget.width! /
-                                                                  42,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: GlobalColors
-                                                              .themeColor2,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      padding:
-                                                          EdgeInsets.all(5),
-                                                      alignment:
-                                                          Alignment.center,
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              color: GlobalColors
-                                                                  .themeColor2)),
-                                                      child: Center(
-                                                        child: Text(
-                                                          "Category",
-                                                          textAlign:
-                                                              TextAlign.start,
-                                                          style: GoogleFonts.ptSans(
-                                                              fontSize: widget
-                                                                          .width! <
-                                                                      700
-                                                                  ? widget.width! /
-                                                                      35
-                                                                  : widget.width! /
-                                                                      42,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: GlobalColors
-                                                                  .themeColor2,
-                                                              letterSpacing: 0),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: widget.width! * 0.2,
-                                                    padding: EdgeInsets.all(5),
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: GlobalColors
-                                                                .themeColor2)),
-                                                    child: Text(
-                                                      "Amount",
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      style: GoogleFonts.ptSans(
-                                                          fontSize: widget
-                                                                      .width! <
-                                                                  700
-                                                              ? widget.width! /
-                                                                  35
-                                                              : widget.width! /
-                                                                  42,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: GlobalColors
-                                                              .themeColor2,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                                            // Container(
+                                            //   margin: EdgeInsets.symmetric(
+                                            //       vertical: 5),
+                                            //   child: Row(
+                                            //     mainAxisAlignment:
+                                            //         MainAxisAlignment
+                                            //             .spaceEvenly,
+                                            //     children: [
+                                            //       Container(
+                                            //         width: widget.width! * 0.2,
+                                            //         padding: EdgeInsets.all(5),
+                                            //         alignment: Alignment.center,
+                                            //         decoration: BoxDecoration(
+                                            //             border: Border.all(
+                                            //                 color: GlobalColors
+                                            //                     .themeColor2)),
+                                            //         child: Text(
+                                            //           "S.NO",
+                                            //           textAlign:
+                                            //               TextAlign.start,
+                                            //           style: GoogleFonts.ptSans(
+                                            //               fontSize: widget
+                                            //                           .width! <
+                                            //                       700
+                                            //                   ? widget.width! /
+                                            //                       35
+                                            //                   : widget.width! /
+                                            //                       42,
+                                            //               fontWeight:
+                                            //                   FontWeight.w400,
+                                            //               color: GlobalColors
+                                            //                   .themeColor2,
+                                            //               letterSpacing: 0),
+                                            //         ),
+                                            //       ),
+                                            //       Expanded(
+                                            //         child: Container(
+                                            //           padding:
+                                            //               EdgeInsets.all(5),
+                                            //           alignment:
+                                            //               Alignment.center,
+                                            //           decoration: BoxDecoration(
+                                            //               border: Border.all(
+                                            //                   color: GlobalColors
+                                            //                       .themeColor2)),
+                                            //           child: Center(
+                                            //             child: Text(
+                                            //               "Category",
+                                            //               textAlign:
+                                            //                   TextAlign.start,
+                                            //               style: GoogleFonts.ptSans(
+                                            //                   fontSize: widget
+                                            //                               .width! <
+                                            //                           700
+                                            //                       ? widget.width! /
+                                            //                           35
+                                            //                       : widget.width! /
+                                            //                           42,
+                                            //                   fontWeight:
+                                            //                       FontWeight
+                                            //                           .w400,
+                                            //                   color: GlobalColors
+                                            //                       .themeColor2,
+                                            //                   letterSpacing: 0),
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //       ),
+                                            //       Container(
+                                            //         width: widget.width! * 0.2,
+                                            //         padding: EdgeInsets.all(5),
+                                            //         alignment: Alignment.center,
+                                            //         decoration: BoxDecoration(
+                                            //             border: Border.all(
+                                            //                 color: GlobalColors
+                                            //                     .themeColor2)),
+                                            //         child: Text(
+                                            //           "Amount",
+                                            //           textAlign:
+                                            //               TextAlign.start,
+                                            //           style: GoogleFonts.ptSans(
+                                            //               fontSize: widget
+                                            //                           .width! <
+                                            //                       700
+                                            //                   ? widget.width! /
+                                            //                       35
+                                            //                   : widget.width! /
+                                            //                       42,
+                                            //               fontWeight:
+                                            //                   FontWeight.w400,
+                                            //               color: GlobalColors
+                                            //                   .themeColor2,
+                                            //               letterSpacing: 0),
+                                            //         ),
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
                                             if (_data.length < 1)
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Center(
-                                                      child: Text(
-                                                    "---EMPTY---",
-                                                    style: GoogleFonts.ptSans(
-                                                        fontSize: widget
-                                                                    .width! <
-                                                                700
-                                                            ? widget.width! / 35
-                                                            : widget.width! /
-                                                                42,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: GlobalColors
-                                                            .themeColor2,
-                                                        letterSpacing: 0),
-                                                  ))
-                                                ],
-                                              ),
+                                              if (_data.length < 1)
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Center(
+                                                        child: Text(
+                                                      "Not Available",
+                                                      style: GoogleFonts.ptSans(
+                                                          fontSize: widget
+                                                                      .width! <
+                                                                  700
+                                                              ? widget.width! /
+                                                                  35
+                                                              : widget.width! /
+                                                                  42,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: GlobalColors
+                                                              .themeColor2,
+                                                          letterSpacing: 0),
+                                                    ))
+                                                  ],
+                                                ),
                                             for (var i = 0;
                                                 i < _data.length;
                                                 i++)
-                                              Container(
-                                                width: widget.width,
-                                                margin: EdgeInsets.symmetric(
-                                                    vertical: 5),
-                                                child: Card(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: [
-                                                        Container(
-                                                          alignment:
-                                                              Alignment.center,
+                                              Stack(
+                                                children: [
+                                                  Card(
+                                                      color: GlobalColors
+                                                          .themeColor,
+                                                      child: Container(
+                                                        margin: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 5),
+                                                        width: widget.width,
+                                                        height: widget.height! *
+                                                            0.15,
+                                                      )),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Card(
+                                                        child: Container(
                                                           width: widget.width! *
-                                                              0.2,
-                                                          child: Text(
-                                                            "${i + 1}",
-                                                            textAlign:
-                                                                TextAlign.start,
-                                                            style: GoogleFonts.ptSans(
-                                                                fontSize: widget
-                                                                            .width! <
-                                                                        700
-                                                                    ? widget.width! /
-                                                                        35
-                                                                    : widget.width! /
-                                                                        42,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                color:
-                                                                    GlobalColors
-                                                                        .black,
-                                                                letterSpacing:
-                                                                    0),
+                                                              0.885,
+                                                          height:
+                                                              widget.height! *
+                                                                  0.15,
+                                                          margin: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 5),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceEvenly,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            6.0),
+                                                                child:
+                                                                    TextRowWidget(
+                                                                  width: widget
+                                                                      .width!,
+                                                                  lable:
+                                                                      "Category",
+                                                                  value: _data[
+                                                                              0]
+                                                                          .category!
+                                                                          .name
+                                                                          .toString()[
+                                                                              0]
+                                                                          .toUpperCase() +
+                                                                      _data[0]
+                                                                          .category!
+                                                                          .name
+                                                                          .toString()
+                                                                          .substring(
+                                                                              1),
+                                                                ),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            6.0),
+                                                                child:
+                                                                    TextRowWidget(
+                                                                  width: widget
+                                                                      .width!,
+                                                                  lable:
+                                                                      "Employee",
+                                                                  value: _data[
+                                                                          i]
+                                                                      .employee!
+                                                                      .name,
+                                                                ),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            6.0),
+                                                                child:
+                                                                    TextRowWidget(
+                                                                  width: widget
+                                                                      .width!,
+                                                                  lable:
+                                                                      "Amount",
+                                                                  value: _data[
+                                                                          i]
+                                                                      .amount
+                                                                      .toString(),
+                                                                ),
+                                                              ),
+                                                              // Container(
+                                                              //   alignment:
+                                                              //       Alignment
+                                                              //           .center,
+                                                              //   width: widget
+                                                              //           .width! *
+                                                              //       0.2,
+                                                              //   child: Text(
+                                                              //     "${i + 1}",
+                                                              //     textAlign:
+                                                              //         TextAlign
+                                                              //             .start,
+                                                              //     style: GoogleFonts.ptSans(
+                                                              //         fontSize: widget.width! < 700
+                                                              //             ? widget.width! /
+                                                              //                 35
+                                                              //             : widget.width! /
+                                                              //                 42,
+                                                              //         fontWeight:
+                                                              //             FontWeight
+                                                              //                 .w400,
+                                                              //         color: GlobalColors
+                                                              //             .black,
+                                                              //         letterSpacing:
+                                                              //             0),
+                                                              //   ),
+                                                              // ),
+                                                              // Expanded(
+                                                              //   child: Center(
+                                                              //     child: Text(
+                                                              //       _data[i]
+                                                              //           .category!
+                                                              //           .name!,
+                                                              //       textAlign:
+                                                              //           TextAlign
+                                                              //               .start,
+                                                              //       style: GoogleFonts.ptSans(
+                                                              //           fontSize: widget.width! < 700
+                                                              //               ? widget.width! /
+                                                              //                   35
+                                                              //               : widget.width! /
+                                                              //                   42,
+                                                              //           fontWeight:
+                                                              //               FontWeight
+                                                              //                   .w400,
+                                                              //           color: GlobalColors
+                                                              //               .black,
+                                                              //           letterSpacing:
+                                                              //               0),
+                                                              //     ),
+                                                              //   ),
+                                                              // ),
+                                                              // Container(
+                                                              //   width: widget
+                                                              //           .width! *
+                                                              //       0.2,
+                                                              //   alignment:
+                                                              //       Alignment
+                                                              //           .center,
+                                                              //   child: Text(
+                                                              //     "${_data[i].amount} Rs",
+                                                              //     textAlign:
+                                                              //         TextAlign
+                                                              //             .start,
+                                                              //     style: GoogleFonts.ptSans(
+                                                              //         fontSize: widget.width! < 700
+                                                              //             ? widget.width! /
+                                                              //                 35
+                                                              //             : widget.width! /
+                                                              //                 42,
+                                                              //         fontWeight:
+                                                              //             FontWeight
+                                                              //                 .w400,
+                                                              //         color: GlobalColors
+                                                              //             .black,
+                                                              //         letterSpacing:
+                                                              //             0),
+                                                              //   ),
+                                                              // ),
+                                                            ],
                                                           ),
                                                         ),
-                                                        Expanded(
-                                                          child: Center(
-                                                            child: Text(
-                                                              _data[i]
-                                                                  .category!
-                                                                  .name!,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              style: GoogleFonts.ptSans(
-                                                                  fontSize: widget
-                                                                              .width! <
-                                                                          700
-                                                                      ? widget.width! /
-                                                                          35
-                                                                      : widget.width! /
-                                                                          42,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color:
-                                                                      GlobalColors
-                                                                          .black,
-                                                                  letterSpacing:
-                                                                      0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          width: widget.width! *
-                                                              0.2,
-                                                          alignment:
-                                                              Alignment.center,
-                                                          child: Text(
-                                                            "${_data[i].amount} Rs",
-                                                            textAlign:
-                                                                TextAlign.start,
-                                                            style: GoogleFonts.ptSans(
-                                                                fontSize: widget
-                                                                            .width! <
-                                                                        700
-                                                                    ? widget.width! /
-                                                                        35
-                                                                    : widget.width! /
-                                                                        42,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                color:
-                                                                    GlobalColors
-                                                                        .black,
-                                                                letterSpacing:
-                                                                    0),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
+                                                ],
                                               ),
                                             Divider(),
                                           ],
@@ -1728,7 +1885,7 @@ class _ServiceOverviewScreenState extends ConsumerState<ServiceOverviewScreen> {
             ),
           );
         },
-        error: (err, s) => Center(child: Text("No Datas Available")),
+        error: (err, s) => Center(child: Text("No Datas Available ${err}")),
         loading: () => const Center(
               child: CircularProgressIndicator.adaptive(),
             ));

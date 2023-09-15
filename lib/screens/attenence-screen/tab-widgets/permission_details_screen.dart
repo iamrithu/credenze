@@ -19,21 +19,23 @@ class PermissionDetailsScreen extends ConsumerStatefulWidget {
   const PermissionDetailsScreen({Key? key}) : super(key: key);
 
   @override
-  _PermissionDetailsScreenState createState() => _PermissionDetailsScreenState();
+  _PermissionDetailsScreenState createState() =>
+      _PermissionDetailsScreenState();
 }
 
-class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScreen> {
+class _PermissionDetailsScreenState
+    extends ConsumerState<PermissionDetailsScreen> {
   DateTime newDate = DateTime.now();
-  bool allData=true;
-  String status="";
+  bool allData = true;
+  String status = "";
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-        final data = ref.watch(permissionListModelProvider);
+    final data = ref.watch(permissionListModelProvider);
 
- getDetails( filteredData) {
+    getDetails(filteredData) {
       List<int> data = [];
 
       for (var i = 0; i < filteredData.length; i++) {
@@ -43,21 +45,38 @@ class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScree
         }
       }
 
-      return data.isEmpty ? Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Data not found"),
-        ],
-      ) : Text("");
+      return data.isEmpty
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Text(
+                    "Not Available",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ptSans(
+                        color: GlobalColors.themeColor2,
+                        fontSize: width < 700 ? width / 34 : width / 45,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0),
+                  ),
+                ),
+              ],
+            )
+          : Text("");
     }
 
     return Scaffold(
       floatingActionButton: ElevatedButton.icon(
         onPressed: () {
           showModalBottomSheet<void>(
+            isScrollControlled: true,
             context: context,
             builder: (BuildContext context) {
-              return PermissionApplyScreen();
+              return Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: PermissionApplyScreen(),
+              );
             },
           );
         },
@@ -68,9 +87,7 @@ class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScree
         style: ElevatedButton.styleFrom(
           backgroundColor: GlobalColors.themeColor,
           elevation: 20,
-          shape: RoundedRectangleBorder(
-             
-              borderRadius: BorderRadius.circular(4)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         ),
         label: Text(
           "Add Permission",
@@ -91,37 +108,38 @@ class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScree
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                RichText(
-                  text: TextSpan(
-                      text: DateFormat("MMMM").format(newDate),
-                      style: GoogleFonts.ptSans(
-                          fontSize: width < 700 ? width / 16 : width / 22,
-                          fontWeight: FontWeight.w400,
-                          color: GlobalColors.themeColor2,
-                          letterSpacing: 2),
-                      children: [
-                        TextSpan(
-                          text: " - " + newDate.year.toString(),
-                          style: GoogleFonts.ptSans(
-                            fontSize: width < 700 ? width / 22 : width / 45,
+                if (!allData)
+                  RichText(
+                    text: TextSpan(
+                        text: DateFormat("MMMM").format(newDate),
+                        style: GoogleFonts.ptSans(
+                            fontSize: width < 700 ? width / 16 : width / 22,
                             fontWeight: FontWeight.w400,
-                            color: GlobalColors.black,
-                            letterSpacing: 2,
+                            color: GlobalColors.themeColor2,
+                            letterSpacing: 2),
+                        children: [
+                          TextSpan(
+                            text: " - " + newDate.year.toString(),
+                            style: GoogleFonts.ptSans(
+                              fontSize: width < 700 ? width / 22 : width / 45,
+                              fontWeight: FontWeight.w400,
+                              color: GlobalColors.black,
+                              letterSpacing: 2,
+                            ),
                           ),
-                        ),
-                      ]),
-                ),
-                    if (!allData)
+                        ]),
+                  ),
+                if (!allData)
                   ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          newDate=DateTime.now();
+                          newDate = DateTime.now();
                           allData = true;
                         });
                       },
-                      child: Text("refresh")),
-                GestureDetector(
-                  onTap: () {
+                      child: Icon(Icons.refresh)),
+                ElevatedButton(
+                  onPressed: () {
                     showMonthYearPicker(
                             context: context,
                             initialDate: DateTime.now(),
@@ -134,14 +152,30 @@ class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScree
                       });
                     });
                   },
-                  child: Text(
-                    "Pick Date",
-                    style: GoogleFonts.ptSans(
-                        fontSize: width < 700 ? width / 28 : width / 45,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0),
-                  ),
+                  child: Icon(Icons.calendar_month),
                 ),
+                // GestureDetector(
+                //   onTap: () {
+                //     showMonthYearPicker(
+                //             context: context,
+                //             initialDate: DateTime.now(),
+                //             firstDate: DateTime(2020),
+                //             lastDate: DateTime(2100))
+                //         .then((value) {
+                //       setState(() {
+                //         newDate = value!;
+                //         allData = false;
+                //       });
+                //     });
+                //   },
+                //   child: Text(
+                //     "Pick Date",
+                //     style: GoogleFonts.ptSans(
+                //         fontSize: width < 700 ? width / 28 : width / 45,
+                //         fontWeight: FontWeight.w400,
+                //         letterSpacing: 0),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -150,204 +184,228 @@ class _PermissionDetailsScreenState extends ConsumerState<PermissionDetailsScree
               height: width < 500 ? height * 0.633 : height * 0.66,
               child: LayoutBuilder(builder: (context, constraints) {
                 return data.when(
-          data: (_data) {
-            return RefreshIndicator(
-              color: Colors.white,
-              backgroundColor: GlobalColors.themeColor,
-              strokeWidth: 4.0,
-              onRefresh: () async {
-                return Future<void>.delayed(const Duration(seconds: 2), () {
-                  return ref.refresh(permissionListModelProvider);
-                });
-              },
-              child: ListView(
-                children: [
-if(_data.isEmpty) Center(child:Text(
-                              "Not Available",
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.themeColor2,
-                                  fontSize: width < 700
-                                      ? width/ 34
-                                      :width / 45,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0),
-                            ), ),
-                            getDetails(_data),
-                            if(allData)
-                  for (var i = 0; i < _data.length; i++)
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: GlobalColors.themeColor2),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: Container(
-                        width: width,
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
+                    data: (_data) {
+                      return RefreshIndicator(
+                        color: Colors.white,
+                        backgroundColor: GlobalColors.themeColor,
+                        strokeWidth: 4.0,
+                        onRefresh: () async {
+                          return Future<void>.delayed(
+                              const Duration(seconds: 2), () {
+                            return ref.refresh(permissionListModelProvider);
+                          });
+                        },
+                        child: ListView(
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width:width * 0.9,
-                                  child: Column(
-                                    children: [
-                                       TextRowWidget(
-                                        width:width,
-                                        lable: "Date",
-                                        value: "${DateFormat("dd-MM-yyyy").format(_data[i].date!)}",
-                                      ),
-                                       TextRowWidget(
-                                        width:width,
-                                        lable: "From Time",
-                                        value: "${DateFormat("h:mm:ss a").format(_data[i].fromTime!)}",
-                                      ),
-                                       TextRowWidget(
-                                        width:width,
-                                        lable: "To Time",
-                                        value: "${DateFormat("h:mm:ss a").format(_data[i].toTime!)}",
-                                      ),
-                                    
-                                         TextRowWidget(
-                                        width:width,
-                                        lable: "Reason",
-                                        value: "${_data[i].reason}",
-                                      ),
-                                        TextRowWidget(
-                                        width:width,
-                                        lable: "Status",
-                                        value: _data[i].status![0].toUpperCase()+_data[i].status!.substring(1),
-                                      ),
-                                      if(_data[i].status=="rejected")
-                                     
-                                     TextRowWidget(
-                                        width:width,
-                                        lable: "Rejected Reason",
-                                        value: "${_data[i].rejectReason}",
-                                      ),
-                                    
-                                    ],
+                            if (_data.isEmpty)
+                              Center(
+                                child: Text(
+                                  "Not Available",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.ptSans(
+                                      color: GlobalColors.themeColor2,
+                                      fontSize:
+                                          width < 700 ? width / 34 : width / 45,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0),
+                                ),
+                              ),
+                            if (!allData) getDetails(_data),
+                            if (allData)
+                              for (var i = 0; i < _data.length; i++)
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: GlobalColors.themeColor2),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: Container(
+                                    width: width,
+                                    padding: const EdgeInsets.all(10),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: width * 0.9,
+                                              child: Column(
+                                                children: [
+                                                  TextRowWidget(
+                                                    width: width,
+                                                    lable: "Date",
+                                                    value:
+                                                        "${DateFormat("dd-MM-yyyy").format(_data[i].date!)}",
+                                                  ),
+                                                  TextRowWidget(
+                                                    width: width,
+                                                    lable: "From Time",
+                                                    value:
+                                                        "${DateFormat("h:mm:ss a").format(_data[i].fromTime!)}",
+                                                  ),
+                                                  TextRowWidget(
+                                                    width: width,
+                                                    lable: "To Time",
+                                                    value:
+                                                        "${DateFormat("h:mm:ss a").format(_data[i].toTime!)}",
+                                                  ),
+                                                  TextRowWidget(
+                                                    width: width,
+                                                    lable: "Reason",
+                                                    value: "${_data[i].reason}",
+                                                  ),
+                                                  TextRowWidget(
+                                                    width: width,
+                                                    lable: "Status",
+                                                    value: _data[i]
+                                                            .status![0]
+                                                            .toUpperCase() +
+                                                        _data[i]
+                                                            .status!
+                                                            .substring(1),
+                                                  ),
+                                                  if (_data[i].status ==
+                                                      "rejected")
+                                                    TextRowWidget(
+                                                      width: width,
+                                                      lable: "Rejected Reason",
+                                                      value:
+                                                          "${_data[i].rejectReason}",
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                            Spacer(),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                Spacer(),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                      if(!allData)
-                  for (var i = 0; i < _data.length; i++)
-                   if (DateFormat("MM").format(newDate) ==
+                            if (!allData)
+                              for (var i = 0; i < _data.length; i++)
+                                if (DateFormat("MM").format(newDate) ==
                                     DateFormat("MM").format(_data[i].date!))
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: GlobalColors.themeColor2),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: Container(
-                        width: width,
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width:width * 0.9,
-                                  child: Column(
-                                    children: [
-                                       TextRowWidget(
-                                        width:width,
-                                        lable: "Date",
-                                        value: "${DateFormat("dd-MM-yyyy").format(_data[i].date!)}",
+                                  Card(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: GlobalColors.themeColor2),
+                                        borderRadius: BorderRadius.circular(4)),
+                                    child: Container(
+                                      width: width,
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: width * 0.9,
+                                                child: Column(
+                                                  children: [
+                                                    TextRowWidget(
+                                                      width: width,
+                                                      lable: "Date",
+                                                      value:
+                                                          "${DateFormat("dd-MM-yyyy").format(_data[i].date!)}",
+                                                    ),
+                                                    TextRowWidget(
+                                                      width: width,
+                                                      lable: "From Time",
+                                                      value:
+                                                          "${DateFormat("h:mm:ss a").format(_data[i].fromTime!)}",
+                                                    ),
+                                                    TextRowWidget(
+                                                      width: width,
+                                                      lable: "To Time",
+                                                      value:
+                                                          "${DateFormat("h:mm:ss a").format(_data[i].toTime!)}",
+                                                    ),
+                                                    TextRowWidget(
+                                                      width: width,
+                                                      lable: "Reason",
+                                                      value:
+                                                          "${_data[i].reason}",
+                                                    ),
+                                                    TextRowWidget(
+                                                      width: width,
+                                                      lable: "Status",
+                                                      value: _data[i]
+                                                              .status![0]
+                                                              .toUpperCase() +
+                                                          _data[i]
+                                                              .status!
+                                                              .substring(1),
+                                                    ),
+                                                    if (_data[i].status ==
+                                                        "rejected")
+                                                      TextRowWidget(
+                                                        width: width,
+                                                        lable:
+                                                            "Rejected Reason",
+                                                        value:
+                                                            "${_data[i].rejectReason}",
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Spacer(),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                       TextRowWidget(
-                                        width:width,
-                                        lable: "From Time",
-                                        value: "${DateFormat("h:mm:ss a").format(_data[i].fromTime!)}",
-                                      ),
-                                       TextRowWidget(
-                                        width:width,
-                                        lable: "To Time",
-                                        value: "${DateFormat("h:mm:ss a").format(_data[i].toTime!)}",
-                                      ),
-                                    
-                                         TextRowWidget(
-                                        width:width,
-                                        lable: "Reason",
-                                        value: "${_data[i].reason}",
-                                      ),
-                                        TextRowWidget(
-                                        width:width,
-                                        lable: "Status",
-                                        value: _data[i].status![0].toUpperCase()+_data[i].status!.substring(1),
-                                      ),
-                                      if(_data[i].status=="rejected")
-                                     
-                                     TextRowWidget(
-                                        width:width,
-                                        lable: "Rejected Reason",
-                                        value: "${_data[i].rejectReason}",
-                                      ),
-                                    
-                                    ],
+                                    ),
                                   ),
-                                ),
-                                Spacer(),
-                              ],
-                            ),
                           ],
                         ),
-                      ),
-                    ),
-                ],
-              ),
-            );
-          },
-          error: (err, s) => RefreshIndicator(
-                color: Colors.white,
-                backgroundColor: GlobalColors.themeColor,
-                strokeWidth: 4.0,
-                onRefresh: () async {
-                  return Future<void>.delayed(const Duration(seconds: 2), () {
-                    return ref.refresh(expenseProvider);
-                  });
-                },
-                child: ListView(
-                  children: [
-                    Container(
-                      width: width,
-                      height: height,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: Text(
-                              "Not Available $err",
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.themeColor2,
-                                  fontSize: width < 700
-                                      ? width/ 34
-                                      :width / 45,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0),
-                            ),
+                      );
+                    },
+                    error: (err, s) => RefreshIndicator(
+                          color: Colors.white,
+                          backgroundColor: GlobalColors.themeColor,
+                          strokeWidth: 4.0,
+                          onRefresh: () async {
+                            return Future<void>.delayed(
+                                const Duration(seconds: 2), () {
+                              return ref.refresh(expenseProvider);
+                            });
+                          },
+                          child: ListView(
+                            children: [
+                              Container(
+                                width: width,
+                                height: height,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        "No Information Available",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.themeColor2,
+                                            fontSize: width < 700
+                                                ? width / 34
+                                                : width / 45,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          loading: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
-              ));
+                        ),
+                    loading: () => const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ));
               })),
         ],
       ),

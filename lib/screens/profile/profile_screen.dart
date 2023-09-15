@@ -31,7 +31,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return user.when(
         data: (_data) {
-          print(_data.toString());
           return Container(
             width: width,
             height: width < 700 ? height * 0.8 : height * 0.86,
@@ -42,12 +41,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   await prefs.setString('Email', "");
                   await prefs.setString('Password', "");
                   await prefs.setString('token', "");
-                  Navigator.push(context, MaterialPageRoute(
+                  Navigator.pushReplacement(context, MaterialPageRoute(
                     builder: ((context) {
                       return const LoginScreen();
                     }),
                   ));
-                  ref.read(pageIndex.notifier).update((state) => 0);
+                  // ref.read(pageIndex.notifier).update((state) => 0);
                   ref
                       .read(InstallationClockIn.notifier)
                       .update((state) => true);
@@ -182,18 +181,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                         ),
                         CustomInformationScreen(
-                            label: "Email", text: _data.email!),
+                            label: "Email", text: _data.email ?? "--"),
                         CustomInformationScreen(
-                            label: "Mobile", text: _data.mobile!),
+                            label: "Mobile", text: _data.mobile ?? "--"),
                         CustomInformationScreen(
-                            label: "Phone", text: _data.mobile!),
+                            label: "Phone", text: _data.mobile ?? "--"),
                         CustomInformationScreen(
-                            label: "Gender", text: _data.gender!),
+                            label: "Gender", text: _data.gender ?? "--"),
                         CustomInformationScreen(
                             label: "State",
                             text: _data.employeeDetail == null
                                 ? "--"
-                                : _data.employeeDetail!.permanentAddState!),
+                                : _data
+                                    .employeeDetail!.presentstate["state_name"]
+                                    .toString()),
                         CustomInformationScreen(
                             label: "City",
                             text: _data.employeeDetail == null
@@ -224,22 +225,37 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 ),
                               ),
                               Container(
+                                width: width * 0.05,
+                                child: Text(
+                                  ":",
+                                  style: TextStyle(
+                                    color: GlobalColors.themeColor,
+                                  ),
+                                ),
+                              ),
+                              Container(
                                 margin: EdgeInsets.only(
                                   left: 10,
                                 ),
                                 padding: EdgeInsets.only(right: 5),
-                                width: width * 0.6,
-                                child: Text(
-                                  _data.employeeDetail == null
-                                      ? "--"
-                                      : _data.employeeDetail!.permanentAddress!,
-                                  softWrap: true,
-                                  style: GoogleFonts.ptSans(
-                                      fontSize:
-                                          width < 700 ? width / 35 : width / 45,
-                                      fontWeight: FontWeight.w400,
-                                      color: GlobalColors.black,
-                                      letterSpacing: 0),
+                                width: width * 0.5,
+                                child: Wrap(
+                                  children: [
+                                    Text(
+                                      _data.employeeDetail == null
+                                          ? "--"
+                                          : _data.employeeDetail!
+                                              .permanentAddress!,
+                                      softWrap: true,
+                                      style: GoogleFonts.ptSans(
+                                          fontSize: width < 700
+                                              ? width / 40
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          color: GlobalColors.black,
+                                          letterSpacing: 0),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],

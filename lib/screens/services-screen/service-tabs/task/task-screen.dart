@@ -123,93 +123,105 @@ class _ServiceTaskScreenState extends ConsumerState<ServiceTaskScreen> {
                                                       ? "${DateFormat("dd - MMMM - yyyy ").format(DateTime.parse(_data[i].endDate!))}"
                                                       : "${DateFormat("dd - MMMM - yyyy ").format(_data[i].endDate!)}",
                                             ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  width: widget.width! * 0.3,
-                                                  child: Text(
-                                                    "Status",
-                                                    style: GoogleFonts.ptSans(
-                                                        fontSize: widget
-                                                                    .width! <
-                                                                700
-                                                            ? widget.width! / 38
-                                                            : widget.width! /
-                                                                45,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color:
-                                                            GlobalColors.black,
-                                                        letterSpacing: 0),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: widget.width! * 0.02,
-                                                  child: Text(
-                                                    ":",
-                                                    style: GoogleFonts.ptSans(
-                                                        fontSize: widget
-                                                                    .width! <
-                                                                700
-                                                            ? widget.width! / 38
-                                                            : widget.width! /
-                                                                45,
-                                                        fontWeight:
-                                                            FontWeight.w800,
-                                                        color:
-                                                            GlobalColors.black,
-                                                        letterSpacing: 0),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: widget.width! * 0.4,
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        width: widget.width! *
-                                                            0.02,
-                                                        height: widget.width! *
-                                                            0.02,
-                                                        decoration: BoxDecoration(
-                                                            color: _data[i]
-                                                                        .taskStatus ==
-                                                                    "pending"
-                                                                ? Colors.orange
-                                                                : GlobalColors
-                                                                    .green,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        1000)),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Text(
-                                                        "${_data[i].taskStatus}",
-                                                        style: GoogleFonts.ptSans(
-                                                            fontSize: widget
-                                                                        .width! <
-                                                                    700
-                                                                ? widget.width! /
-                                                                    38
-                                                                : widget.width! /
-                                                                    45,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: GlobalColors
-                                                                .black,
-                                                            letterSpacing: 0),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
+                                            TextRowWidget(
+                                              width: widget.width!,
+                                              lable: "Status",
+                                              value: _data[i]
+                                                      .taskStatus!
+                                                      .toString()[0]
+                                                      .toUpperCase() +
+                                                  _data[i]
+                                                      .taskStatus!
+                                                      .substring(1),
                                             ),
+                                            // Row(
+                                            //   mainAxisAlignment:
+                                            //       MainAxisAlignment.spaceEvenly,
+                                            //   crossAxisAlignment:
+                                            //       CrossAxisAlignment.center,
+                                            //   children: [
+                                            //     Container(
+                                            //       width: widget.width! * 0.25,
+                                            //       child: Text(
+                                            //         "Status",
+                                            //         style: GoogleFonts.ptSans(
+                                            //             fontSize: widget
+                                            //                         .width! <
+                                            //                     700
+                                            //                 ? widget.width! / 40
+                                            //                 : widget.width! /
+                                            //                     45,
+                                            //             fontWeight:
+                                            //                 FontWeight.w600,
+                                            //             color: Color.fromARGB(
+                                            //                 255, 50, 49, 49),
+                                            //             letterSpacing: 0),
+                                            //       ),
+                                            //     ),
+                                            //     Container(
+                                            //       width: widget.width! * 0.02,
+                                            //       child: Text(
+                                            //         ":",
+                                            //         style: GoogleFonts.ptSans(
+                                            //             fontSize: widget
+                                            //                         .width! <
+                                            //                     700
+                                            //                 ? widget.width! / 38
+                                            //                 : widget.width! /
+                                            //                     45,
+                                            //             fontWeight:
+                                            //                 FontWeight.w800,
+                                            //             color:
+                                            //                 GlobalColors.black,
+                                            //             letterSpacing: 0),
+                                            //       ),
+                                            //     ),
+
+                                            //     Container(
+                                            //       width: widget.width! * 0.45,
+                                            //       child: Row(
+                                            //         children: [
+                                            //           Container(
+                                            //             width: widget.width! *
+                                            //                 0.02,
+                                            //             height: widget.width! *
+                                            //                 0.02,
+                                            //             decoration: BoxDecoration(
+                                            //                 color: _data[i]
+                                            //                             .taskStatus ==
+                                            //                         "pending"
+                                            //                     ? Colors.orange
+                                            //                     : GlobalColors
+                                            //                         .green,
+                                            //                 borderRadius:
+                                            //                     BorderRadius
+                                            //                         .circular(
+                                            //                             1000)),
+                                            //           ),
+                                            //           SizedBox(
+                                            //             width: 10,
+                                            //           ),
+                                            //           Text(
+                                            //             "${_data[i].taskStatus}",
+                                            //             style: GoogleFonts.ptSans(
+                                            //                 fontSize: widget
+                                            //                             .width! <
+                                            //                         700
+                                            //                     ? widget.width! /
+                                            //                         38
+                                            //                     : widget.width! /
+                                            //                         45,
+                                            //                 fontWeight:
+                                            //                     FontWeight.w400,
+                                            //                 color: GlobalColors
+                                            //                     .black,
+                                            //                 letterSpacing: 0),
+                                            //           ),
+                                            //         ],
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // ),
                                           ],
                                         ),
                                       ),

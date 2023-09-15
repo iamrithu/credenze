@@ -34,6 +34,9 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
   String toDate = "--";
 
   String fromDate = "--";
+  late TimeOfDay fromTime;
+  late TimeOfDay toTime;
+
   List<DateTime> _selectedDateList = [];
 
   onSelectedDates(context, value) {
@@ -45,6 +48,13 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
   }
 
   addLeave() {
+    if (fromDate.trim() == "--") {
+      return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Choose \"From Time\"",
+          autoCloseDuration: null);
+    }
     if (toDate.trim() == "--") {
       return QuickAlert.show(
           context: context,
@@ -52,12 +62,24 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
           title: "Choose \"To Time\"",
           autoCloseDuration: null);
     }
-    if (fromDate.trim() == "--") {
+
+    if (reason.trim() == "") {
       return QuickAlert.show(
           context: context,
           type: QuickAlertType.error,
-          title: "Choose \"From Time\"",
+          title: "Enter reason",
           autoCloseDuration: null);
+    }
+
+    final start = DateTime(2018, 6, 23, fromTime.hour, 00);
+    final end = DateTime(2018, 6, 23, toTime.hour, 00);
+
+    if (!end.isAfter(start)) {
+      return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.info,
+          title: "Please Enter Proper Time",
+          autoCloseDuration: Duration(seconds: 2));
     }
     Api()
         .addPermission(
@@ -108,7 +130,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
     final width = MediaQuery.of(context).size.width;
     return Container(
         width: width,
-        height: height,
+        height: height * 0.9,
         padding: EdgeInsets.only(right: 4, left: 8),
         decoration: BoxDecoration(
             border: Border(
@@ -277,6 +299,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                         // print("${value!.hour>12?value.hour-12:value.hour}:${value.minute<10?"0${value.minute}":value.minute} ${value.hour>11?"PM":"AM"}");
                         if (value != null)
                           setState(() {
+                            fromTime = value;
                             fromDate =
                                 "${value.hour == 0 ? "12" : value.hour > 12 ? value.hour - 12 : value.hour}:${value.minute < 10 ? "0${value.minute}" : value.minute} ${value.hour > 11 ? "PM" : "AM"}";
                           });
@@ -338,6 +361,7 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                       ).then((value) {
                         if (value != null)
                           setState(() {
+                            toTime = value;
                             toDate =
                                 "${value.hour == 0 ? "12" : value.hour > 12 ? value.hour - 12 : value.hour}:${value.minute < 10 ? "0${value.minute}" : value.minute} ${value.hour > 11 ? "PM" : "AM"}";
                           });
@@ -379,23 +403,26 @@ class _PermissionApplyScreenState extends ConsumerState<PermissionApplyScreen> {
                   ),
                   Container(
                       width: width * 0.66,
-                      height: height * 0.06,
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                           border: Border.all(color: GlobalColors.themeColor2),
                           borderRadius: BorderRadius.circular(4)),
                       alignment: Alignment.centerLeft,
                       child: TextFormField(
+                        style: GoogleFonts.ptSans(
+                            color: GlobalColors.black,
+                            fontSize: width < 500 ? width / 35 : width / 35),
                         onChanged: (value) {
                           setState(() {
                             reason = value;
                           });
                         },
+                        minLines: 2,
+                        maxLines: 4,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Enter your reason.. ",
+                          hintText: "",
                         ),
-                        maxLines: 10,
                       )),
                 ],
               ),

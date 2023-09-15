@@ -33,9 +33,22 @@ class _CustomInformationScreenState extends State<CustomInformationScreen> {
           Container(
             margin: EdgeInsets.symmetric(vertical: height * 0.008),
             padding: EdgeInsets.only(left: width * 0.055),
-            width: width * 0.35,
+            width: width * 0.3,
             child: Text(
               widget.label,
+              style: GoogleFonts.ptSans(
+                  fontSize: width < 700 ? width / 35 : width / 47,
+                  fontWeight: FontWeight.w400,
+                  color: GlobalColors.themeColor,
+                  letterSpacing: 0),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: height * 0.008),
+            padding: EdgeInsets.only(left: width * 0.055),
+            width: width * 0.1,
+            child: Text(
+              ":",
               style: GoogleFonts.ptSans(
                   fontSize: width < 700 ? width / 35 : width / 47,
                   fontWeight: FontWeight.w400,

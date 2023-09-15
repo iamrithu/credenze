@@ -39,12 +39,12 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
     final width = MediaQuery.of(context).size.width;
     return Container(
       width: width,
-      height: height * 0.4,
+      height: height * 0.7,
       child: Stack(
         children: [
           Container(
             width: width,
-            height: height * 0.4,
+            height: height * 0.7,
             child: Card(
               elevation: 10,
               child: Column(
@@ -53,7 +53,7 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                 children: [
                   Container(
                     width: width,
-                    height: height * 0.32,
+                    height: height * 0.62,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: ListView(
@@ -63,10 +63,10 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                               child: Text(
                                 "Comment not Found!",
                                 style: GoogleFonts.ptSans(
-                                    color: GlobalColors.themeColor,
+                                    color: GlobalColors.themeColor2,
                                     fontSize:
                                         width < 700 ? width / 30 : width / 45,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w500,
                                     letterSpacing: 0),
                               ),
                             ),
@@ -75,13 +75,13 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                               Card(
                                 child: Container(
                                   width: width,
-                                  height: height * 0.08,
+                                  height: height * 0.07,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Container(
-                                          width: width * 0.2,
+                                          width: width * 0.1,
                                           height: height * 0.06,
                                           child: CircleAvatar(
                                             radius: 50,
@@ -91,9 +91,9 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                                             ),
                                           )),
                                       Container(
-                                        width: width * 0.5,
+                                        width: width * 0.6,
                                         constraints: BoxConstraints(
-                                            minHeight: height * 0.06),
+                                            minHeight: height * 0.07),
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
@@ -101,7 +101,8 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "${getComents[i]["user"]["name"]}",
+                                              "${getComents[i]["user"]["name"]}"
+                                                  .trim(),
                                               style: GoogleFonts.ptSans(
                                                   color: GlobalColors.black,
                                                   fontSize: width < 700
@@ -110,21 +111,28 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                                                   fontWeight: FontWeight.w500,
                                                   letterSpacing: 0),
                                             ),
-                                            Wrap(
-                                              children: [
-                                                Text(
-                                                  "${getComents[i]["comment"]}",
-                                                  style: GoogleFonts.ptSans(
-                                                      color: GlobalColors
-                                                          .themeColor2,
-                                                      fontSize: width < 700
-                                                          ? width / 35
-                                                          : width / 55,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      letterSpacing: 0),
-                                                ),
-                                              ],
+                                            Expanded(
+                                              child: ListView(
+                                                children: [
+                                                  Wrap(
+                                                    children: [
+                                                      Text(
+                                                        "${getComents[i]["comment"]}",
+                                                        style: GoogleFonts.ptSans(
+                                                            color: GlobalColors
+                                                                .themeColor2,
+                                                            fontSize: width <
+                                                                    700
+                                                                ? width / 35
+                                                                : width / 55,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            letterSpacing: 0),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -173,7 +181,7 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                       height: height * 0.04,
                       child: Center(
                         child: ElevatedButton(
-                          child: Text("Add Command"),
+                          child: Text("Add Comment"),
                           onPressed: () {
                             setState(() {
                               openComment = true;
@@ -189,7 +197,7 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
           if (openComment)
             Container(
               width: width,
-              height: height * 0.4,
+              height: height * 0.7,
               color: Color.fromARGB(40, 40, 39, 39),
               alignment: Alignment.center,
               child: Container(
@@ -219,7 +227,12 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                           ],
                         ),
                         TextFormField(
-                          maxLines: 2,
+                          maxLines: 4,
+                          style: GoogleFonts.ptSans(
+                              color: GlobalColors.themeColor2,
+                              fontSize: width < 700 ? width / 30 : width / 45,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0),
                           decoration:
                               InputDecoration(border: OutlineInputBorder()),
                           onChanged: (value) {
@@ -263,27 +276,26 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                                           });
                                           setState(() {
                                             openComment = false;
-                                            cmd="";
+                                            cmd = "";
                                           });
                                         });
-                                      }else{
-                                         QuickAlert.show(
-                                            context: context,
-                                            type: QuickAlertType.info,
-                                            widget: Text(
-                                              "${value.data["error"]["message"]}",
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 30
-                                                      : width / 48,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      GlobalColors.themeColor2,
-                                                  letterSpacing: 0),
-                                            ),
-                                            autoCloseDuration:
-                                                Duration(seconds: 1),
-                                          );
+                                      } else {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.info,
+                                          widget: Text(
+                                            "${value.data["error"]["message"]}",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: width < 700
+                                                    ? width / 30
+                                                    : width / 48,
+                                                fontWeight: FontWeight.w400,
+                                                color: GlobalColors.themeColor2,
+                                                letterSpacing: 0),
+                                          ),
+                                          autoCloseDuration:
+                                              Duration(seconds: 1),
+                                        );
                                       }
                                     });
                                   },

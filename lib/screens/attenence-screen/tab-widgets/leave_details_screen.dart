@@ -44,21 +44,38 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
         }
       }
 
-      return data.isEmpty ? Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Data not found"),
-        ],
-      ) : Text("");
+      return data.isEmpty
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Text(
+                    "Not Available",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ptSans(
+                        color: GlobalColors.themeColor2,
+                        fontSize: width < 700 ? width / 34 : width / 45,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0),
+                  ),
+                ),
+              ],
+            )
+          : Text("");
     }
 
     return Scaffold(
       floatingActionButton: ElevatedButton.icon(
         onPressed: () {
           showModalBottomSheet<void>(
+            isScrollControlled: true,
             context: context,
             builder: (BuildContext context) {
-              return LeaveApplyScreen();
+              return Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: LeaveApplyScreen(),
+              );
             },
           );
         },
@@ -90,37 +107,39 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                RichText(
-                  text: TextSpan(
-                      text: DateFormat("MMMM").format(newDate),
-                      style: GoogleFonts.ptSans(
-                          fontSize: width < 700 ? width / 16 : width / 22,
-                          fontWeight: FontWeight.w400,
-                          color: GlobalColors.themeColor2,
-                          letterSpacing: 2),
-                      children: [
-                        TextSpan(
-                          text: " - " + newDate.year.toString(),
-                          style: GoogleFonts.ptSans(
-                            fontSize: width < 700 ? width / 22 : width / 45,
+                if (!allData)
+                  RichText(
+                    text: TextSpan(
+                        text: DateFormat("MMMM").format(newDate),
+                        style: GoogleFonts.ptSans(
+                            fontSize: width < 700 ? width / 16 : width / 22,
                             fontWeight: FontWeight.w400,
-                            color: GlobalColors.black,
-                            letterSpacing: 2,
+                            color: GlobalColors.themeColor2,
+                            letterSpacing: 2),
+                        children: [
+                          TextSpan(
+                            text: " - " + newDate.year.toString(),
+                            style: GoogleFonts.ptSans(
+                              fontSize: width < 700 ? width / 22 : width / 45,
+                              fontWeight: FontWeight.w400,
+                              color: GlobalColors.black,
+                              letterSpacing: 2,
+                            ),
                           ),
-                        ),
-                      ]),
-                ),
+                        ]),
+                  ),
                 if (!allData)
                   ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          newDate=DateTime.now();
-                          allData = true;
-                        });
-                      },
-                      child: Text("refresh")),
-                GestureDetector(
-                  onTap: () {
+                    onPressed: () {
+                      setState(() {
+                        newDate = DateTime.now();
+                        allData = true;
+                      });
+                    },
+                    child: Icon(Icons.refresh),
+                  ),
+                ElevatedButton(
+                  onPressed: () {
                     showMonthYearPicker(
                             context: context,
                             initialDate: DateTime.now(),
@@ -133,14 +152,30 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
                       });
                     });
                   },
-                  child: Text(
-                    "Pick Date",
-                    style: GoogleFonts.ptSans(
-                        fontSize: width < 700 ? width / 28 : width / 45,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0),
-                  ),
+                  child: Icon(Icons.calendar_month),
                 ),
+                // GestureDetector(
+                //   onTap: () {
+                //     showMonthYearPicker(
+                //             context: context,
+                //             initialDate: DateTime.now(),
+                //             firstDate: DateTime(2020),
+                //             lastDate: DateTime(2100))
+                //         .then((value) {
+                //       setState(() {
+                //         newDate = value!;
+                //         allData = false;
+                //       });
+                //     });
+                //   },
+                //   child: Text(
+                //     "Pick Month",
+                //     style: GoogleFonts.ptSans(
+                //         fontSize: width < 700 ? width / 28 : width / 45,
+                //         fontWeight: FontWeight.w400,
+                //         letterSpacing: 0),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -175,7 +210,7 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
                                       letterSpacing: 0),
                                 ),
                               ),
-                            getDetails(_data),
+                            if (!allData) getDetails(_data),
                             if (allData)
                               for (var i = 0; i < _data.length; i++)
                                 Card(
@@ -363,7 +398,7 @@ class _LeaveDetailsScreenState extends ConsumerState<LeaveDetailsScreen> {
                                   children: [
                                     Center(
                                       child: Text(
-                                        "Not Available $err",
+                                        "Not Available",
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.ptSans(
                                             color: GlobalColors.themeColor2,

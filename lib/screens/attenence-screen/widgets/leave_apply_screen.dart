@@ -120,6 +120,13 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
             autoCloseDuration: null);
       }
     }
+    if (reason == "") {
+      return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Enter reason",
+          autoCloseDuration: null);
+    }
 
     Api()
         .addLeave(
@@ -148,7 +155,6 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
             title: "${value.data["message"]}",
             autoCloseDuration: Duration(seconds: 2));
         return ref.refresh(leaveListModelProvider);
-
       } else {
         return QuickAlert.show(
             context: context,
@@ -173,7 +179,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
     final width = MediaQuery.of(context).size.width;
     return Container(
         width: width,
-        height: height,
+        height: height * 0.9,
         padding: EdgeInsets.only(right: 4, left: 8),
         decoration: BoxDecoration(
             border: Border(
@@ -281,7 +287,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                   ),
                   Container(
                     width: width * 0.49,
-                    height: singleday ? height * 0.06 : height * 0.2,
+                    height: singleday ? height * 0.06 : height * 0.1,
                     margin: EdgeInsets.all(2),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
@@ -413,9 +419,10 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                 ],
               ),
             ),
-            Expanded(
+            Container(
               child: Container(
                 width: width,
+                height: height * 0.1,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -423,7 +430,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                       width: width * 0.25,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Reason",
+                        "Reason *",
                         style: GoogleFonts.ptSans(
                           color: GlobalColors.black,
                           fontSize: width < 700 ? width / 25 : width / 44,
@@ -440,6 +447,9 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                             borderRadius: BorderRadius.circular(4)),
                         alignment: Alignment.centerLeft,
                         child: TextFormField(
+                          style: GoogleFonts.ptSans(
+                              color: GlobalColors.black,
+                              fontSize: width < 500 ? width / 35 : width / 35),
                           onChanged: (value) {
                             setState(() {
                               reason = value;
@@ -447,7 +457,7 @@ class _LeaveApplyScreenState extends ConsumerState<LeaveApplyScreen> {
                           },
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "Enter your reason.. ",
+                            hintText: "",
                           ),
                           maxLines: 10,
                         )),

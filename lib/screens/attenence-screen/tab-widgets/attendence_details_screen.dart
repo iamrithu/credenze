@@ -55,50 +55,47 @@ class _AttendenceDetailsScreenState
           elevation: 1,
           child: LayoutBuilder(builder: (context, constraints) {
             return CustomeAttendenceSchedulaer(
-              day: val,
-              newMonth: newDate,
-              type: "holiday",
-              data:null
-            );
+                day: val, newMonth: newDate, type: "holiday", data: null);
           }),
         );
       }
     }
 
     for (var i = 0; i < present.length; i++) {
-    
       if (val == DateTime.parse(present[i]["attendance_date"]).day) {
         return Card(
-          elevation: val==toDay.day?10: 1,
+          elevation: val == toDay.day ? 10 : 1,
           shape: RoundedRectangleBorder(
-            side: BorderSide(color:  val==toDay.day?GlobalColors.green:GlobalColors.white),
-            borderRadius: BorderRadius.circular(5)
-          ),
+              side: BorderSide(
+                  color: val == toDay.day
+                      ? GlobalColors.green
+                      : GlobalColors.white),
+              borderRadius: BorderRadius.circular(5)),
           child: LayoutBuilder(builder: (context, constraints) {
             return CustomeAttendenceSchedulaer(
               day: val,
               newMonth: newDate,
               type: "present",
-              data:present[i] ,
+              data: present[i],
             );
           }),
         );
       }
     }
 
-      return Card(
-          elevation: 1,
-          child: LayoutBuilder(builder: (context, constraints) {
-            return CustomeAttendenceSchedulaer(
-              day: val,
-              newMonth: newDate,
-              type: "leave",
-              data: null,
-            );
-          }),
+    return Card(
+      elevation: 1,
+      child: LayoutBuilder(builder: (context, constraints) {
+        return CustomeAttendenceSchedulaer(
+          day: val,
+          newMonth: newDate,
+          type: "leave",
+          data: null,
         );
-      
+      }),
+    );
   }
+
   fillterAfterDates(val) {
     for (var i = 0; i < holidays.length; i++) {
       if (val == DateTime.parse(holidays[i]["date"]).day) {
@@ -106,29 +103,23 @@ class _AttendenceDetailsScreenState
           elevation: 1,
           child: LayoutBuilder(builder: (context, constraints) {
             return CustomeAttendenceSchedulaer(
-              day: val,
-              newMonth: newDate,
-              type: "holiday",
-              data:null
-            );
+                day: val, newMonth: newDate, type: "holiday", data: null);
           }),
         );
       }
     }
 
-    
-      return Card(
-          elevation: 1,
-          child: LayoutBuilder(builder: (context, constraints) {
-            return CustomeAttendenceSchedulaer(
-              day: val,
-              newMonth: newDate,
-              type: "coming",
-              data: null,
-            );
-          }),
+    return Card(
+      elevation: 1,
+      child: LayoutBuilder(builder: (context, constraints) {
+        return CustomeAttendenceSchedulaer(
+          day: val,
+          newMonth: newDate,
+          type: "coming",
+          data: null,
         );
-      
+      }),
+    );
   }
 
   @override
@@ -177,8 +168,8 @@ class _AttendenceDetailsScreenState
                           ),
                         ]),
                   ),
-                  GestureDetector(
-                    onTap: () async {
+                  ElevatedButton(
+                    onPressed: () async {
                       final month = await showMonthYearPicker(
                         context: context,
                         initialDate: DateTime.now(),
@@ -194,14 +185,33 @@ class _AttendenceDetailsScreenState
                         getPresent();
                       }
                     },
-                    child: Text(
-                      "Pick Date",
-                      style: GoogleFonts.ptSans(
-                          fontSize: width < 700 ? width / 28 : width / 45,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0),
-                    ),
+                    child: Icon(Icons.calendar_month),
                   ),
+                  // GestureDetector(
+                  //   onTap: () async {
+                  //     final month = await showMonthYearPicker(
+                  //       context: context,
+                  //       initialDate: DateTime.now(),
+                  //       firstDate: DateTime(2020),
+                  //       lastDate: DateTime(2030),
+                  //     );
+
+                  //     if (month != null) {
+                  //       setState(() {
+                  //         newDate = month;
+                  //       });
+                  //       getHoliday();
+                  //       getPresent();
+                  //     }
+                  //   },
+                  //   child: Text(
+                  //     "Pick Date",
+                  //     style: GoogleFonts.ptSans(
+                  //         fontSize: width < 700 ? width / 28 : width / 45,
+                  //         fontWeight: FontWeight.w400,
+                  //         letterSpacing: 0),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -213,36 +223,35 @@ class _AttendenceDetailsScreenState
                   return GridView.count(
                     crossAxisCount: width < 500 ? 3 : 4,
                     children: [
-                
-  if(DateTime.now().month!=newDate.month)
-                      for (var i = 1;
-                          i <= DateTime(newDate.year, newDate.month + 1, 0).day;
-                          i++)
-                          
-                        fillterDates(i),
-                     if(DateTime.now().month==newDate.month)
-                      for (var i = 1;
-                          i <= DateTime(newDate.year, newDate.month + 1, 0).day;
-                          i++)
-                           if(i<=toDay.day)
-                        fillterDates(i),
-
-                     if(DateTime.now().month==newDate.month)
-                          for (var i = 1;
-                          i <= DateTime(newDate.year, newDate.month + 1, 0).day;
-                          i++)
-                          if(i>toDay.day)
-                        fillterAfterDates(i),
-                    
-                                SizedBox(),
-                                 SizedBox(),
-                                  SizedBox(),
+                      if (DateTime.now().month != newDate.month)
+                        for (var i = 1;
+                            i <=
+                                DateTime(newDate.year, newDate.month + 1, 0)
+                                    .day;
+                            i++)
+                          fillterDates(i),
+                      if (DateTime.now().month == newDate.month)
+                        for (var i = 1;
+                            i <=
+                                DateTime(newDate.year, newDate.month + 1, 0)
+                                    .day;
+                            i++)
+                          if (i <= toDay.day) fillterDates(i),
+                      if (DateTime.now().month == newDate.month)
+                        for (var i = 1;
+                            i <=
+                                DateTime(newDate.year, newDate.month + 1, 0)
+                                    .day;
+                            i++)
+                          if (i > toDay.day) fillterAfterDates(i),
+                      SizedBox(),
+                      SizedBox(),
+                      SizedBox(),
                     ],
                   );
                 },
               ),
             ),
-           
           ],
         ),
       ),

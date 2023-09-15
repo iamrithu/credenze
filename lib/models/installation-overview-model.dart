@@ -55,7 +55,7 @@ class InstallationOverViewModel {
   int? customerState;
   DateTime? startDate;
   DateTime? completionDate;
-  int? installationStatus;
+  String? installationStatus;
   dynamic addedBy;
   dynamic lastUpdatedBy;
   int? siteIncharge;

@@ -17,6 +17,7 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import '../../const/global_colors.dart';
 import 'commentScreen.dart';
 import 'expensScreen.dart';
+import 'overViewScreen.dart';
 
 class TaskDetailScreen extends ConsumerStatefulWidget {
   const TaskDetailScreen({Key? key}) : super(key: key);
@@ -65,14 +66,16 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
           activeTimerId = value.data["data"]["id"];
         });
         if (value.data["data"]["breaks"].length < 1) {
-          DateTime dt2 =
-              DateTime.parse(value.data["data"]["start_time"]).toLocal();
-      
           _stopWatchTimer.onStopTimer();
           _stopWatchTimer.clearPresetTime();
-          _stopWatchTimer.setPresetHoursTime(int.parse(value.data["data"]["timer"][0]+value.data["data"]["timer"][1]));
-          _stopWatchTimer.setPresetMinuteTime(int.parse(value.data["data"]["timer"][3]+value.data["data"]["timer"][4]));
-          _stopWatchTimer.setPresetSecondTime(int.parse(value.data["data"]["timer"][6]+value.data["data"]["timer"][7]));
+          _stopWatchTimer.onResetTimer();
+
+          _stopWatchTimer.setPresetHoursTime(int.parse(
+              value.data["data"]["timer"][0] + value.data["data"]["timer"][1]));
+          _stopWatchTimer.setPresetMinuteTime(int.parse(
+              value.data["data"]["timer"][3] + value.data["data"]["timer"][4]));
+          _stopWatchTimer.setPresetSecondTime(int.parse(
+              value.data["data"]["timer"][6] + value.data["data"]["timer"][7]));
           _stopWatchTimer.onStartTimer();
           setState(() {
             isTimerOn = false;
@@ -88,23 +91,36 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
               value.data["data"]["breaks"]
                       [value.data["data"]["breaks"].length - 1]["end_time"] !=
                   null) {
-        
-            _stopWatchTimer.onStopTimer();
             _stopWatchTimer.clearPresetTime();
-           _stopWatchTimer.setPresetHoursTime(int.parse(value.data["data"]["timer"][0]+value.data["data"]["timer"][1]));
-          _stopWatchTimer.setPresetMinuteTime(int.parse(value.data["data"]["timer"][3]+value.data["data"]["timer"][4]));
-          _stopWatchTimer.setPresetSecondTime(int.parse(value.data["data"]["timer"][6]+value.data["data"]["timer"][7]));
+            _stopWatchTimer.onResetTimer();
+
+            _stopWatchTimer.setPresetHoursTime(int.parse(value.data["data"]
+                    ["timer"][0] +
+                value.data["data"]["timer"][1]));
+            _stopWatchTimer.setPresetMinuteTime(int.parse(value.data["data"]
+                    ["timer"][3] +
+                value.data["data"]["timer"][4]));
+            _stopWatchTimer.setPresetSecondTime(int.parse(value.data["data"]
+                    ["timer"][6] +
+                value.data["data"]["timer"][7]));
             _stopWatchTimer.onStartTimer();
             setState(() {
               isTimerOn = false;
             });
           } else {
-                
             _stopWatchTimer.onStopTimer();
             _stopWatchTimer.clearPresetTime();
-          _stopWatchTimer.setPresetHoursTime(int.parse(value.data["data"]["timer"][0]+value.data["data"]["timer"][1]));
-          _stopWatchTimer.setPresetMinuteTime(int.parse(value.data["data"]["timer"][3]+value.data["data"]["timer"][4]));
-          _stopWatchTimer.setPresetSecondTime(int.parse(value.data["data"]["timer"][6]+value.data["data"]["timer"][7]));
+            _stopWatchTimer.onResetTimer();
+
+            _stopWatchTimer.setPresetHoursTime(int.parse(value.data["data"]
+                    ["timer"][0] +
+                value.data["data"]["timer"][1]));
+            _stopWatchTimer.setPresetMinuteTime(int.parse(value.data["data"]
+                    ["timer"][3] +
+                value.data["data"]["timer"][4]));
+            _stopWatchTimer.setPresetSecondTime(int.parse(value.data["data"]
+                    ["timer"][6] +
+                value.data["data"]["timer"][7]));
             setState(() {
               isTimerOn = false;
               isPaused = true;
@@ -117,11 +133,15 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
 
   startTimer() {
     Api().startTimer(ref.read(newToken)!, ref.read(publicTaskId)).then((value) {
+      print(value.toString());
       if (value.data["success"]) {
         setState(() {
           isTimerOn = false;
         });
+
         _stopWatchTimer.onStartTimer();
+
+        getActiveTimer();
       } else {
         QuickAlert.show(
             context: context,
@@ -153,12 +173,12 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
 
   pauseTimer() {
     Api().pauseTimer(ref.read(newToken)!, activeTimerId).then((value) {
-
       if (value.data["success"]) {
         setState(() {
           isPaused = true;
         });
-  
+
+        _stopWatchTimer.clearPresetTime();
         _stopWatchTimer.onStopTimer();
         getActiveTimer();
       } else {
@@ -175,10 +195,11 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
   resumeTimer() {
     Api().resumeTimer(ref.read(newToken)!, pauseTimerId).then((value) {
       if (value.data["success"]) {
+        _stopWatchTimer.onStartTimer();
         setState(() {
           isPaused = false;
         });
-         getActiveTimer();
+        getActiveTimer();
       } else {
         QuickAlert.show(
             context: context,
@@ -216,7 +237,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
 
     getActiveTimer();
 
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -242,344 +263,35 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
             height: height,
             child: Column(
               children: [
-                                   if(isCompleted)
-
                 Container(
                   width: width,
-                  height: height * 0.08,
-                  padding: EdgeInsets.all(4),
-                  child: Card(
-                    child: Row(
-                      children: [
-                        Container(
-                          width: isCompleted ? width * 0.27 : width * 0.35,
-                          height: height * 0.8,
-                          child: InkWell(
-                            onTap: () {
-                              if(isPaused==true){
-                                  QuickAlert.show(
-                                    context: context,
-                                    type: QuickAlertType.error,
-                                    title: "The timer is paused so can not complete the task",
-                                    autoCloseDuration: null);
-
-                                    return null;
-                              }
-                              if (isTimerOn == false) {
-                                QuickAlert.show(
-                                    context: context,
-                                    type: QuickAlertType.error,
-                                    title: "The timer is running so can not complete the task",
-                                    autoCloseDuration: null);
-
-                                    return null;
-                              }
-                              setState(() {
-                                isLoading = true;
-                              });
-                              Api()
-                                  .publicTaskStatus(
-                                      ref.read(newToken)!,
-                                      ref.read(publicTaskId),
-                                      object["status"] == "incomplete"
-                                          ? "completed"
-                                          : "incompleted")
-                                  .then((value) {
-                                Api()
-                                    .publicTaskView(ref.read(newToken)!,
-                                        ref.read(publicTaskId))
-                                    .then((value) {
-                                  setState(() {
-                                    object = value;
-                                  });
-
-                                  setState(() {
-                                    isLoading = false;
-                                    isCompleted =
-                                        object["status"] == "completed"
-                                            ? false
-                                            : true;
-                                  });
-                                });
-                              });
-                            },
-                            child: Card(
-                              color: isCompleted
-                                  ? GlobalColors.themeColor
-                                  : GlobalColors.themeColor2,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                  side: BorderSide(
-                                      color: GlobalColors.themeColor2)),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Icon(
-                                      isCompleted ? Icons.check : Icons.close,
-                                      color: GlobalColors.white,
-                                      size:
-                                          width < 700 ? width / 25 : width / 45,
-                                    ),
-                                    Text(
-                                      isCompleted
-                                          ? "Mark As Complete"
-                                          : "Mark As Incomplete",
-                                      style: GoogleFonts.ptSans(
-                                          color: GlobalColors.white,
-                                          fontSize: width < 700
-                                              ? width / 43
-                                              : width / 45,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (isCompleted)
-                          if (isTimerOn)
-                            Container(
-                              width: width * 0.3,
-                              height: height * 0.8,
-                              child: InkWell(
-                                onTap: () {
-                                  startTimer();
-                                },
-                                child: Card(
-                                  color: isTimerOn
-                                      ? GlobalColors.themeColor
-                                      : GlobalColors.themeColor2,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                      side: BorderSide(
-                                          color: GlobalColors.themeColor2)),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            isTimerOn
-                                                ? Icons.play_arrow
-                                                : Icons.pause,
-                                            color: GlobalColors.white,
-                                            size: width < 700
-                                                ? width / 25
-                                                : width / 45,
-                                          ),
-                                          Text(
-                                            isTimerOn
-                                                ? "Start Timer"
-                                                : "Stop Timer",
-                                            style: GoogleFonts.ptSans(
-                                                color: GlobalColors.white,
-                                                fontSize: width < 700
-                                                    ? width / 40
-                                                    : width / 45,
-                                                fontWeight: FontWeight.w600,
-                                                letterSpacing: 0),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        if (isPaused)
-                          Container(
-                            width: width * 0.3,
-                            height: height * 0.8,
-                            child: InkWell(
-                              onTap: () {
-                                resumeTimer();
-                              },
-                              child: Card(
-                                color: GlobalColors.themeColor2,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                    side: BorderSide(
-                                        color: GlobalColors.themeColor2)),
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.play_arrow,
-                                          color: GlobalColors.white,
-                                          size: width < 700
-                                              ? width / 25
-                                              : width / 45,
-                                        ),
-                                        Text(
-                                          "Resume Timer",
-                                          style: GoogleFonts.ptSans(
-                                              color: GlobalColors.white,
-                                              fontSize: width < 700
-                                                  ? width / 40
-                                                  : width / 45,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 0),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        if (!isPaused)
-                          if (!isTimerOn)
-                            Container(
-                              width: width * 0.22,
-                              height: height * 0.8,
-                              child: InkWell(
-                                onTap: () {
-                                  pauseTimer();
-                                },
-                                child: Card(
-                                  color: GlobalColors.themeColor2,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                      side: BorderSide(
-                                          color: GlobalColors.themeColor2)),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            isTimerOn
-                                                ? Icons.play_arrow
-                                                : Icons.pause,
-                                            color: GlobalColors.white,
-                                            size: width < 700
-                                                ? width / 25
-                                                : width / 45,
-                                          ),
-                                          Text(
-                                            "Pause Timer",
-                                            style: GoogleFonts.ptSans(
-                                                color: GlobalColors.white,
-                                                fontSize: width < 700
-                                                    ? width / 43
-                                                    : width / 45,
-                                                fontWeight: FontWeight.w600,
-                                                letterSpacing: 0),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        if (!isPaused)
-                          if (!isTimerOn)
-                            Container(
-                              width: width * 0.22,
-                              height: height * 0.8,
-                              child: InkWell(
-                                onTap: () {
-                                  stopTimer();
-                                },
-                                child: Card(
-                                  color: GlobalColors.themeColor2,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                      side: BorderSide(
-                                          color: GlobalColors.themeColor2)),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Icons.stop,
-                                            color: GlobalColors.white,
-                                            size: width < 700
-                                                ? width / 25
-                                                : width / 45,
-                                          ),
-                                          Text(
-                                            "Stop Timer",
-                                            style: GoogleFonts.ptSans(
-                                                color: GlobalColors.white,
-                                                fontSize: width < 700
-                                                    ? width / 40
-                                                    : width / 45,
-                                                fontWeight: FontWeight.w600,
-                                                letterSpacing: 0),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        if (!isTimerOn)
-                          Expanded(
-                            child: Card(
-                              color: Color.fromARGB(255, 245, 235, 235),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  side: BorderSide(
-                                      color: GlobalColors.themeColor)),
-                              child: Center(
-                                  child: StreamBuilder(
-                                stream: _stopWatchTimer.rawTime,
-                                initialData: _stopWatchTimer.rawTime.value,
-                                builder: ((context, snapshot) {
-                                  final value = snapshot.data;
-                                  final displayTimeWithoutSec =
-                                      StopWatchTimer.getDisplayTime(value!,
-                                          hours: true,
-                                          minute: true,
-                                          second: false,
-                                          milliSecond: false);
-                                  final displayTimeWithSec =
-                                      StopWatchTimer.getDisplayTime(value,
-                                          hours: false,
-                                          minute: false,
-                                          second: true,
-                                          milliSecond: false);
-                                  return Padding(
-                                    padding: EdgeInsets.all(width * 0.02),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: displayTimeWithoutSec.toString() +
-                                            ":" +
-                                            displayTimeWithSec.toString(),
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 35
-                                                : width / 24,
-                                            fontWeight: FontWeight.w400,
-                                            color: GlobalColors.themeColor,
-                                            letterSpacing: 2),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              )),
-                            ),
-                          ),
-                      ],
-                    ),
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 220, 220, 220),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Column(
+                    children: [
+                      TabBar(
+                        onTap: (int) {
+                          setState(() {
+                            tabPage = int;
+                          });
+                        },
+                        indicatorColor: GlobalColors.themeColor2,
+                        labelColor: GlobalColors.white,
+                        indicator: BoxDecoration(
+                            color: GlobalColors.themeColor2,
+                            borderRadius: BorderRadius.circular(5)),
+                        controller: tabController,
+                        unselectedLabelColor: GlobalColors.themeColor,
+                        tabs: [
+                          Tab(text: "Overview"),
+                          Tab(text: "Comment"),
+                          // Tab(text: "Time Logs"),
+                          Tab(text: "Expense"),
+                        ],
+                      )
+                    ],
                   ),
                 ),
                 Expanded(
@@ -587,368 +299,25 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                     children: object.isEmpty
                         ? []
                         : [
-                            Container(
-                              width: width,
-                              height: height * 0.2,
-                              margin: EdgeInsets.all(2),
-                              child: Card(
-                                elevation: 1,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: width * 0.3,
-                                            child: Text(
-                                              "Branch",
-                                              style: GoogleFonts.ptSans(
-                                                  color: GlobalColors.black,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                          Text(":"),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: width * 0.45,
-                                            child: Text(
-                                              "${object["branch"]["location"] ?? "--"}",
-                                              style: GoogleFonts.ptSans(
-                                                  color:
-                                                      GlobalColors.themeColor,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: width * 0.3,
-                                            child: Text(
-                                              "Category",
-                                              style: GoogleFonts.ptSans(
-                                                  color: GlobalColors.black,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                          Text(":"),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: width * 0.45,
-                                            child: Text(
-                                              "${object["category"]["category_name"] ?? "--"}",
-                                              style: GoogleFonts.ptSans(
-                                                  color:
-                                                      GlobalColors.themeColor,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: width * 0.3,
-                                            child: Text(
-                                              "Start Date",
-                                              style: GoogleFonts.ptSans(
-                                                  color: GlobalColors.black,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                          Text(":"),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: width * 0.45,
-                                            child: Text(
-                                              "${DateFormat("dd-MM-yyyy").format(DateTime.parse(object["start_date"]))}",
-                                              style: GoogleFonts.ptSans(
-                                                  color:
-                                                      GlobalColors.themeColor,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: width * 0.3,
-                                            child: Text(
-                                              "Due Date ",
-                                              style: GoogleFonts.ptSans(
-                                                  color: GlobalColors.black,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                          Text(":"),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: width * 0.45,
-                                            child: Text(
-                                              "${DateFormat("dd-MM-yyyy").format(DateTime.parse(object["due_date"]))}",
-                                              style: GoogleFonts.ptSans(
-                                                  color:
-                                                      GlobalColors.themeColor,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: width * 0.3,
-                                            child: Text(
-                                              "Status",
-                                              style: GoogleFonts.ptSans(
-                                                  color: GlobalColors.black,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                          Text(":"),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: width * 0.45,
-                                            child: Text(
-                                              "${object["status"] ?? "--"}",
-                                              style: GoogleFonts.ptSans(
-                                                  color:
-                                                      GlobalColors.themeColor,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: width * 0.3,
-                                            child: Text(
-                                              "Priority",
-                                              style: GoogleFonts.ptSans(
-                                                  color: GlobalColors.black,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                          Text(":"),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            width: width * 0.45,
-                                            child: Text(
-                                              "${object["priority"] ?? "--"}",
-                                              style: GoogleFonts.ptSans(
-                                                  color:
-                                                      GlobalColors.themeColor,
-                                                  fontSize: width < 700
-                                                      ? width / 35
-                                                      : width / 45,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (isCompleted)
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Expanded(
-                                    child: InkWell(
-                                      onTap: (){
-                                          setState(() {
-                                        reassignMember = true;
-                                      });
-                                      },
-                                      child: Container(
-                                        height: height*0.07,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            border: Border.all(
-                                                color: GlobalColors.themeColor)),
-                                                                       
-                                        alignment: Alignment.center,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Wrap(
-                                              alignment: WrapAlignment.center,
-                                              children: [
-                                                Text(
-                                                  getUsersName
-                                                      .toString()
-                                                      .replaceAll('[', "")
-                                                      .replaceAll(']', "")
-                                                      .replaceAll('"', ""),
-                                                  style: GoogleFonts.ptSans(
-                                                      color:
-                                                          GlobalColors.themeColor2,
-                                                      fontSize: width < 700
-                                                          ? width / 35
-                                                          : width / 45,
-                                                      fontWeight: FontWeight.w500,
-                                                      letterSpacing: 0),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  // InkWell(
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       reassignMember = true;
-                                  //     });
-                                  //   },
-                                  //   child: Container(
-                                  //     decoration: BoxDecoration(
-                                  //       color: GlobalColors.themeColor,
-                                  //       borderRadius: BorderRadius.circular(10),
-                                  //     ),
-                                  //     width: width * 0.3,
-                                  //     height: height * 0.06,
-                                  //     child: Center(
-                                  //       child: Text(
-                                  //         "Reassign",
-                                  //         style: GoogleFonts.ptSans(
-                                  //             color: GlobalColors.white,
-                                  //             fontSize: width < 700
-                                  //                 ? width / 35
-                                  //                 : width / 45,
-                                  //             fontWeight: FontWeight.w500,
-                                  //             letterSpacing: 0),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
-                            Container(
-                              width: width,
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 248, 232, 232),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Column(
-                                children: [
-                                  TabBar(
-                                    onTap: (int) {
-                                      setState(() {
-                                        tabPage = int;
-                                      });
-                                    },
-                                    indicatorColor: GlobalColors.white,
-                                    labelColor: GlobalColors.white,
-                                    indicator: BoxDecoration(
-                                        color: GlobalColors.themeColor,
-                                        borderRadius: BorderRadius.circular(5)),
-                                    controller: tabController,
-                                    unselectedLabelColor:
-                                        GlobalColors.themeColor,
-                                    tabs: [
-                                      Tab(text: "Comment"),
-                                      // Tab(text: "Time Logs"),
-                                      Tab(text: "Expense"),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 4,
-                            ),
                             if (tabPage == 0)
                               Container(
                                 width: width,
-                                height: height * 0.38,
+                                height: height * 7,
+                                child: OverViewScreen(),
+                              ),
+                            if (tabPage == 1)
+                              Container(
+                                width: width,
+                                height: height * 0.7,
                                 child: CommentScreen(
                                   isCompleted: isCompleted,
                                 ),
                               ),
-                            // if (tabPage == 1)
-                            //   Container(
-                            //       width: width,
-                            //       height: height * 0.38,
-                            //       child: TimeLogScreen()),
-
-                            if (tabPage == 1)
+                            if (tabPage == 2)
                               object["is_with_expense"] == null
                                   ? Container(
                                       width: width,
-                                      height: height * 0.38,
+                                      height: height * 0.7,
                                       child: Center(
                                         child: Text(
                                           "Its not Expense Task",
@@ -964,7 +333,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                     )
                                   : Container(
                                       width: width,
-                                      height: height * 0.38,
+                                      height: height * 0.7,
                                       child: MainExpenseScreen(
                                         isCompleted: isCompleted,
                                       ),
@@ -1098,7 +467,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen>
                                       setState(() {
                                         reassignMember = false;
                                       });
-                                       ref.read(pageIndex.notifier).update((state) => 3);
+
+                                      ref
+                                          .read(pageIndex.notifier)
+                                          .update((state) => 3);
                                     });
                                   },
                                   child: Container(

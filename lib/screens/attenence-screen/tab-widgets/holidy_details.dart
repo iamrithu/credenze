@@ -75,20 +75,19 @@ class _HolidayDetailsScreenState extends ConsumerState<HolidayDetailsScreen> {
                         ),
                       ]),
                 ),
-                GestureDetector(
-                  onTap: () async {
+                ElevatedButton(
+                  onPressed: () async {
                     final month = await showMonthYearPicker(
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2020),
                       lastDate: DateTime(2030),
                     ).then((value) {
-                      print(value.toString());
-                      if(value!=null){
-                           setState(() {
-                    newDate = value;
-                  });
-                   getHoliday();
+                      if (value != null) {
+                        setState(() {
+                          newDate = value;
+                        });
+                        getHoliday();
                       }
                     });
 
@@ -98,14 +97,39 @@ class _HolidayDetailsScreenState extends ConsumerState<HolidayDetailsScreen> {
                       });
                     }
                   },
-                  child: Text(
-                    "Pick Date",
-                    style: GoogleFonts.ptSans(
-                        fontSize: width < 700 ? width / 28 : width / 45,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0),
-                  ),
+                  child: Icon(Icons.calendar_month),
                 ),
+                // GestureDetector(
+                //   onTap: () async {
+                //     final month = await showMonthYearPicker(
+                //       context: context,
+                //       initialDate: DateTime.now(),
+                //       firstDate: DateTime(2020),
+                //       lastDate: DateTime(2030),
+                //     ).then((value) {
+                //       print(value.toString());
+                //       if(value!=null){
+                //            setState(() {
+                //     newDate = value;
+                //   });
+                //    getHoliday();
+                //       }
+                //     });
+
+                //     if (month != null) {
+                //       setState(() {
+                //         newDate = month;
+                //       });
+                //     }
+                //   },
+                //   child: Text(
+                //     "Pick Date",
+                //     style: GoogleFonts.ptSans(
+                //         fontSize: width < 700 ? width / 28 : width / 45,
+                //         fontWeight: FontWeight.w400,
+                //         letterSpacing: 0),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -123,17 +147,17 @@ class _HolidayDetailsScreenState extends ConsumerState<HolidayDetailsScreen> {
                 },
                 child: ListView(
                   children: [
-                    if(holidays.isEmpty)
-                    Center(
-                      child:  Text(
-                    "-- No holidays --",
-                    style: GoogleFonts.ptSans(
-                      color: GlobalColors.themeColor2,
-                        fontSize: width < 700 ? width / 28 : width / 45,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0),
-                  ),
-                    ),
+                    if (holidays.isEmpty)
+                      Center(
+                        child: Text(
+                          "-- No holidays --",
+                          style: GoogleFonts.ptSans(
+                              color: GlobalColors.themeColor2,
+                              fontSize: width < 700 ? width / 28 : width / 45,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0),
+                        ),
+                      ),
                     for (var i = 0; i < holidays.length; i++)
                       Card(
                         elevation: 1,

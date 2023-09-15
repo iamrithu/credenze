@@ -37,6 +37,7 @@ class _WorkUpdateDetailsScreenState
       setState(() {
         data = value.data["data"];
       });
+      print(data.toString());
     });
   }
 
@@ -366,7 +367,7 @@ class _WorkUpdateDetailsScreenState
                                 Container(
                                   width: width * 0.2,
                                   child: Text(
-                                    "Created By",
+                                    "Description",
                                     style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 40
@@ -392,7 +393,7 @@ class _WorkUpdateDetailsScreenState
                                 Container(
                                   width: width * 0.4,
                                   child: Text(
-                                    data["create_by"]["name"].toString(),
+                                    data["description"] ?? "--",
                                     style: GoogleFonts.ptSans(
                                         fontSize: width < 700
                                             ? width / 40
@@ -467,97 +468,166 @@ class _WorkUpdateDetailsScreenState
                                     ],
                                   ),
                                   for (var j = 0; j < data["items"].length; j++)
-                                    Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              width: width * 0.4,
-                                              padding: EdgeInsets.all(4),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                textAlign: TextAlign.center,
-                                                "${data["items"][j]["product"]["name"]}",
-                                                style: GoogleFonts.ptSans(
-                                                    fontSize: width < 700
-                                                        ? width / 40
-                                                        : width / 45,
-                                                    fontWeight: FontWeight.w800,
-                                                    color: GlobalColors.black,
-                                                    letterSpacing: 0),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: width * 0.2,
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.all(4),
-                                              child: Text(
-                                                "${data["items"][j]["unit"]["short_name"]}",
-                                                style: GoogleFonts.ptSans(
-                                                    fontSize: width < 700
-                                                        ? width / 40
-                                                        : width / 45,
-                                                    fontWeight: FontWeight.w800,
-                                                    color: GlobalColors.black,
-                                                    letterSpacing: 0),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: width * 0.3,
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.all(4),
-                                              child: Text(
-                                                "${data["items"][j]["quantity"]}",
-                                                style: GoogleFonts.ptSans(
-                                                    fontSize: width < 700
-                                                        ? width / 40
-                                                        : width / 45,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: GlobalColors.black,
-                                                    letterSpacing: 0),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        if (data["items"][j]
-                                                ["enable_barcode"] ==
-                                            1)
+                                    Container(
+                                      width: width,
+                                      child: Column(
+                                        children: [
                                           Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
-                                              for (var k = 0;
-                                                  k <
-                                                      data["items"][j]
-                                                              ["itemsbarcodes"]
-                                                          .length;
-                                                  k++)
-                                                Card(
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    alignment: Alignment.center,
-                                                    child: Text(
-                                                      "${data["items"][j]["itemsbarcodes"][k]["serial_nos"]}",
-                                                      style: GoogleFonts.ptSans(
-                                                          fontSize: width < 700
-                                                              ? width / 40
-                                                              : width / 45,
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                          color: GlobalColors
-                                                              .black,
-                                                          letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                )
+                                              Container(
+                                                width: width * 0.4,
+                                                padding: EdgeInsets.all(4),
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  textAlign: TextAlign.left,
+                                                  "${data["items"][j]["product"]["name"]}",
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: width < 700
+                                                          ? width / 40
+                                                          : width / 45,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      color: GlobalColors.black,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: width * 0.2,
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.all(4),
+                                                child: Text(
+                                                  "${data["items"][j]["unit"]["short_name"]}",
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: width < 700
+                                                          ? width / 40
+                                                          : width / 45,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      color: GlobalColors.black,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: width * 0.3,
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.all(4),
+                                                child: Text(
+                                                  "${data["items"][j]["quantity"]}",
+                                                  style: GoogleFonts.ptSans(
+                                                      fontSize: width < 700
+                                                          ? width / 40
+                                                          : width / 45,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: GlobalColors.black,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ),
                                             ],
                                           ),
-                                        Divider(
-                                          thickness: 2,
-                                        ),
-                                      ],
+                                          if (data["items"][j]
+                                                  ["enable_barcode"] ==
+                                              1)
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "S.NO",
+                                                    style: GoogleFonts.ptSans(
+                                                        fontSize: width < 700
+                                                            ? width / 40
+                                                            : width / 45,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: GlobalColors
+                                                            .themeColor,
+                                                        letterSpacing: 0),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          if (data["items"][j]
+                                                  ["enable_barcode"] ==
+                                              1)
+                                            Container(
+                                              width: width,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Wrap(
+                                                    children: [
+                                                      for (var k = 0;
+                                                          k <
+                                                              data["items"][j][
+                                                                      "itemsbarcodes"]
+                                                                  .length;
+                                                          k++)
+                                                        Card(
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              4),
+                                                                  side:
+                                                                      BorderSide(
+                                                                    color: GlobalColors
+                                                                        .themeColor2,
+                                                                  )),
+                                                          shadowColor:
+                                                              Color.fromARGB(
+                                                                  255, 0, 0, 0),
+                                                          elevation: 2,
+                                                          child: Container(
+                                                            width: width * 0.3,
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    10),
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Text(
+                                                              "${data["items"][j]["itemsbarcodes"][k]["serial_nos"]}",
+                                                              style: GoogleFonts.ptSans(
+                                                                  fontSize: width <
+                                                                          700
+                                                                      ? width /
+                                                                          40
+                                                                      : width /
+                                                                          45,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                  color:
+                                                                      GlobalColors
+                                                                          .black,
+                                                                  letterSpacing:
+                                                                      0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          Divider(
+                                            thickness: 2,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                 ],
                               ),

@@ -59,7 +59,7 @@ class HomeScreen extends ConsumerWidget {
       "Installations",
       "Service",
       "Task",
-      "Attendence",
+      "Attendance",
     ];
     List<Widget> pages = [
       DashboardScreen(),
@@ -160,81 +160,84 @@ class HomeScreen extends ConsumerWidget {
                 width: width,
                 height: height * 0.14,
                 child: user.when(
-                    data: (_data) {
-                      return InkWell(
-                        onTap: () {
-                          ref.read(pageIndex.notifier).update((state) => 9);
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.all(3),
-                                  width: 50,
-                                  child: CircleAvatar(
-                                    radius: 56,
-                                    backgroundColor: Colors.white,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(
-                                          2), // Border radius
-                                      child: ClipOval(
-                                        child: Image.network(
-                                          _data.imageUrl.toString(),
-                                        ),
+                  data: (_data) {
+                    return InkWell(
+                      onTap: () {
+                        ref.read(pageIndex.notifier).update((state) => 9);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.all(3),
+                                width: 50,
+                                child: CircleAvatar(
+                                  radius: 56,
+                                  backgroundColor: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(
+                                        2), // Border radius
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        _data.imageUrl.toString(),
                                       ),
                                     ),
                                   ),
                                 ),
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.all(3),
-                                      child: Text(
-                                        "${_data.name}",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 30
-                                                : width / 45,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0,
-                                            color: GlobalColors.themeColor2),
-                                      ),
+                              ),
+                              Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.all(3),
+                                    child: Text(
+                                      "${_data.name}",
+                                      style: GoogleFonts.ptSans(
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0,
+                                          color: GlobalColors.themeColor2),
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.all(3),
-                                      child: Text(
-                                        "${_data.employeeDetail!.designation!.name}",
-                                        style: GoogleFonts.ptSans(
-                                            fontSize: width < 700
-                                                ? width / 35
-                                                : width / 45,
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0,
-                                            color: GlobalColors.themeColor),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    error: (e, s) => Center(
-                          child: Text("${e}"),
-                        ),
-                    loading: () => Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        )),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(3),
+                                    child: _data.employeeDetail == null
+                                        ? Text("")
+                                        : Text(
+                                            "${_data.employeeDetail!.designation!.name}",
+                                            style: GoogleFonts.ptSans(
+                                                fontSize: width < 700
+                                                    ? width / 35
+                                                    : width / 45,
+                                                fontWeight: FontWeight.w400,
+                                                letterSpacing: 0,
+                                                color: GlobalColors.themeColor),
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  error: (e, s) => Center(
+                    child: Text("${e}"),
+                  ),
+                  loading: () => Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                ),
               ),
             ),
             Divider(
@@ -265,7 +268,30 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-            )
+            ),
+            Spacer(),
+            Divider(
+              color: GlobalColors.themeColor2,
+              thickness: 1,
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+              child: Container(
+                width: width,
+                height: height * 0.03,
+                child: Center(
+                  child: Text(
+                    "Version 1.0.0",
+                    style: GoogleFonts.ptSans(
+                        fontSize: width < 700 ? width / 35 : width / 45,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0,
+                        color: GlobalColors.black),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -281,6 +307,11 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
       ),
+      // body: Container(
+      //   child: Center(
+      //     child: Text("rithi"),
+      //   ),
+      // ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: width * 0.03),
         child: Card(
@@ -299,9 +330,8 @@ class HomeScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(10),
                 gradient: LinearGradient(
                   colors: [
-                   
                     Color.fromARGB(255, 247, 247, 247),
-                     Color.fromARGB(255, 252, 201, 199),
+                    Color.fromARGB(255, 252, 201, 199),
                   ],
                   stops: [0, 1],
                   begin: Alignment.topCenter,
@@ -314,9 +344,7 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   for (var i = 0; i < navigationIcon.length; i++)
                     Container(
-                      decoration: BoxDecoration(
-                       
-                      ),
+                      decoration: BoxDecoration(),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -325,6 +353,9 @@ class HomeScreen extends ConsumerWidget {
                             onPressed: () {
                               ref.read(pageIndex.notifier).update((state) => i);
                               ref.read(selectedDate.notifier).update((state) =>
+                                  DateFormat("dd-MM-yyyy")
+                                      .format(DateTime.now()));
+                              ref.read(servicedDate.notifier).update((state) =>
                                   DateFormat("dd-MM-yyyy")
                                       .format(DateTime.now()));
                             },

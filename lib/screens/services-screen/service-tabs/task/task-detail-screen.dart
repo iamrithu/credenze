@@ -1,6 +1,7 @@
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -162,7 +163,7 @@ class _ServiceTaskDetailsSCreenState
                             Container(
                               width: width * 0.2,
                               child: Text(
-                                "Details",
+                                "Description",
                                 style: GoogleFonts.ptSans(
                                     color: GlobalColors.black,
                                     fontSize:
@@ -176,14 +177,16 @@ class _ServiceTaskDetailsSCreenState
                               width: 4,
                             ),
                             Expanded(
-                              child: Text(
-                                "${_data.taskDescription ?? "--"}",
-                                style: GoogleFonts.ptSans(
-                                    color: GlobalColors.themeColor,
-                                    fontSize:
-                                        width < 700 ? width / 38 : width / 45,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0),
+                              child: Center(
+                                child: HtmlWidget(
+                                  _data.taskDescription ?? "--",
+                                  textStyle: GoogleFonts.ptSans(
+                                      fontSize:
+                                          width < 700 ? width / 38 : width / 45,
+                                      fontWeight: FontWeight.w800,
+                                      color: GlobalColors.themeColor,
+                                      letterSpacing: 0),
+                                ),
                               ),
                             ),
                           ],
@@ -217,7 +220,7 @@ class _ServiceTaskDetailsSCreenState
                                 ),
                               ),
                             ],
-                          )
+                          ),
                       ],
                     ),
                   ),
@@ -414,7 +417,66 @@ class _ServiceTaskDetailsSCreenState
                                             ),
                                           ],
                                         ),
-
+                                        SizedBox(height: 4),
+                                        if (_data.items![i].serialNo != null)
+                                          Container(
+                                            width: width,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Serial No:",
+                                                  style: GoogleFonts.ptSans(
+                                                      color: GlobalColors
+                                                          .themeColor,
+                                                      fontSize: width < 700
+                                                          ? width / 38
+                                                          : width / 45,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      letterSpacing: 0),
+                                                ),
+                                                Wrap(
+                                                  children: [
+                                                    Card(
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(4),
+                                                          side: BorderSide(
+                                                              color:
+                                                                  GlobalColors
+                                                                      .black)),
+                                                      elevation: 4,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Text(
+                                                          "${_data.items![i].serialNo}",
+                                                          style: GoogleFonts.ptSans(
+                                                              color:
+                                                                  GlobalColors
+                                                                      .black,
+                                                              fontSize: width <
+                                                                      700
+                                                                  ? width / 38
+                                                                  : width / 45,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              letterSpacing: 0),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         SizedBox(height: 4),
                                         _data.items![i].serialnos!.isEmpty
                                             ? Container(
@@ -443,7 +505,6 @@ class _ServiceTaskDetailsSCreenState
                                                     ),
                                                     Wrap(
                                                       children: [
-                                                     
                                                         for (var j = 0;
                                                             j <
                                                                 _data
@@ -451,7 +512,6 @@ class _ServiceTaskDetailsSCreenState
                                                                     .serialnos!
                                                                     .length;
                                                             j++)
-                                                          
                                                           Card(
                                                             shape: RoundedRectangleBorder(
                                                                 borderRadius:

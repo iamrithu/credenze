@@ -52,12 +52,12 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
     final width = MediaQuery.of(context).size.width;
     return Container(
       width: width,
-      height: height * 0.4,
+      height: height * 0.7,
       child: Stack(
         children: [
           Container(
             width: width,
-            height: height * 0.4,
+            height: height * 0.7,
             child: Card(
               elevation: 10,
               child: Column(
@@ -66,7 +66,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                 children: [
                   Container(
                     width: width,
-                    height: height * 0.32,
+                    height: height * 0.62,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListView(
@@ -76,10 +76,10 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                               child: Text(
                                 "Expense not found!",
                                 style: GoogleFonts.ptSans(
-                                    color: GlobalColors.themeColor,
+                                    color: GlobalColors.themeColor2,
                                     fontSize:
                                         width < 700 ? width / 30 : width / 45,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w500,
                                     letterSpacing: 0),
                               ),
                             ),
@@ -274,7 +274,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
               child: Container(
                 color: Colors.white,
                 width: width,
-                height: height * 0.5,
+                height: height * 0.7,
                 child: Stack(
                   children: [
                     Container(
@@ -282,8 +282,10 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                       height: height * 0.7,
                       padding: const EdgeInsets.all(4.0),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
+                          SizedBox(
+                            height: 4,
+                          ),
                           Row(
                             children: [
                               Text(
@@ -297,9 +299,12 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                               ),
                             ],
                           ),
+                          SizedBox(
+                            height: 4,
+                          ),
                           Container(
                             width: width,
-                            height: height * 0.04,
+                            height: height * 0.06,
                             child: Row(children: [
                               Container(
                                 alignment: Alignment.centerLeft,
@@ -341,7 +346,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                               ? width / 30
                                               : width / 48,
                                           fontWeight: FontWeight.w400,
-                                          color: GlobalColors.themeColor,
+                                          color: GlobalColors.themeColor2,
                                           letterSpacing: 0),
                                     ),
                                   ),
@@ -349,10 +354,12 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                               ),
                             ]),
                           ),
+                          SizedBox(
+                            height: 4,
+                          ),
                           if (cat == "Food")
                             Container(
                               width: width,
-                              height: height * 0.06,
                               child: Row(children: [
                                 Container(
                                   alignment: Alignment.centerLeft,
@@ -377,8 +384,14 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     width: width * 0.5,
-                                    height: height * 0.05,
                                     child: TextFormField(
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.themeColor2,
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0),
                                       keyboardType: TextInputType.number,
                                       onChanged: (value) {
                                         setState(() {
@@ -395,7 +408,6 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                           if (cat == "Petrol")
                             Container(
                               width: width,
-                              height: height * 0.06,
                               child: Row(children: [
                                 Container(
                                   alignment: Alignment.centerLeft,
@@ -420,8 +432,16 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     width: width * 0.5,
-                                    height: height * 0.05,
                                     child: TextFormField(
+                                      maxLines: 1,
+                                      minLines: 1,
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.themeColor2,
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0),
                                       keyboardType: TextInputType.number,
                                       onChanged: (value) {
                                         setState(() {
@@ -435,6 +455,9 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                 ),
                               ]),
                             ),
+                          SizedBox(
+                            height: 4,
+                          ),
                           Container(
                             width: width,
                             height: height * 0.06,
@@ -476,7 +499,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                     alignment: Alignment.centerLeft,
                                     child: newFile == null
                                         ? Text(
-                                            "Choose File ",
+                                            "",
                                             style: GoogleFonts.ptSans(
                                               color: GlobalColors.themeColor2,
                                               fontSize: width < 700
@@ -488,7 +511,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                           )
                                         : Text(
                                             newFile == null
-                                                ? "Choose File "
+                                                ? ""
                                                 : "${newFile!.path.split('/').last}",
                                             style: GoogleFonts.ptSans(
                                               color: GlobalColors.themeColor2,
@@ -534,7 +557,6 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                           ),
                           Container(
                             width: width,
-                            height: height * 0.06,
                             child: Row(children: [
                               Container(
                                 alignment: Alignment.centerLeft,
@@ -558,8 +580,16 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   width: width * 0.5,
-                                  height: height * 0.05,
                                   child: TextFormField(
+                                    minLines: 4,
+                                    maxLines: 10,
+                                    style: GoogleFonts.ptSans(
+                                        color: GlobalColors.themeColor2,
+                                        fontSize: width < 700
+                                            ? width / 30
+                                            : width / 45,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0),
                                     onChanged: (value) {
                                       setState(() {
                                         note = value;
@@ -571,6 +601,9 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                 ),
                               ),
                             ]),
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           Container(
                             width: width,
@@ -591,8 +624,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                 ),
                                 ElevatedButton(
                                     onPressed: () {
-                                      if (distance.trim().isEmpty) {
-                                      }
+                                      if (distance.trim().isEmpty) {}
                                       Map<String, dynamic> data = {
                                         "category_id": cat == "Petrol" ? 1 : 2,
                                         "expense_km":
@@ -608,8 +640,6 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                               ref.watch(publicTaskId),
                                               data)
                                           .then((value) {
-                                        print(value.statusCode.toString());
-
                                         if (value.statusCode == 422) {
                                           QuickAlert.show(
                                             context: context,
@@ -622,6 +652,13 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                           );
                                         } else {
                                           if (value.data["success"]) {
+                                            setState(() {
+                                              openForm = false;
+                                              amt = "";
+                                              distance = "";
+                                              note = "";
+                                            });
+
                                             Api()
                                                 .publickGetExpense(
                                                     ref.read(newToken)!,
@@ -630,11 +667,6 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                               setState(() {
                                                 getExpenses = value;
                                               });
-                                            });
-                                            setState(() {
-                                              openForm = false;
-                                              amt = "";
-                                              distance = "";
                                             });
 
                                             QuickAlert.show(
@@ -678,6 +710,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                                               openForm = false;
                                               amt = "";
                                               distance = "";
+                                              note = "";
                                             });
                                           }
                                         }
@@ -705,9 +738,9 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Card(
+                    color: Color.fromARGB(0, 255, 255, 255),
                     child: Container(
                       width: width,
-                      color: Colors.white,
                       height: height * 0.2,
                       padding: EdgeInsets.all(20),
                       child: Column(
@@ -721,7 +754,7 @@ class _MainExpenseScreenState extends ConsumerState<MainExpenseScreen> {
                               });
                             },
                             child: Card(
-                              elevation: 10,
+                              elevation: 1,
                               child: Container(
                                 alignment: Alignment.centerLeft,
                                 width: width,

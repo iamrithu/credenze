@@ -43,7 +43,7 @@ class ServiceListModel {
   int? customerState;
   DateTime? startDate;
   dynamic completionDate;
-  int? serviceStatus;
+  String? serviceStatus;
   dynamic installationId;
   dynamic addedBy;
   dynamic lastUpdatedBy;

@@ -84,15 +84,16 @@ class _OverAllExpenseState extends ConsumerState<OverAllExpense> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    "${DateFormat("dd-MM-yyyy").format(selectedDate)}",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ptSans(
-                        color: GlobalColors.themeColor2,
-                        fontSize: width < 700 ? width / 34 : width / 45,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0),
-                  ),
+                  if (isFillterEnable)
+                    Text(
+                      "${DateFormat("dd-MM-yyyy").format(selectedDate)}",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ptSans(
+                          color: GlobalColors.themeColor2,
+                          fontSize: width < 700 ? width / 34 : width / 45,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0),
+                    ),
                   Row(
                     children: [
                       if (isFillterEnable)
@@ -105,12 +106,12 @@ class _OverAllExpenseState extends ConsumerState<OverAllExpense> {
                                 });
                               });
                             },
-                            child: Text("Refresh")),
+                            child: Icon(Icons.refresh)),
                       SizedBox(
                         width: 10,
                       ),
-                      GestureDetector(
-                        onTap: () {
+                      ElevatedButton(
+                        onPressed: () {
                           showModalBottomSheet<void>(
                             context: context,
                             builder: (BuildContext context) {
@@ -143,8 +144,7 @@ class _OverAllExpenseState extends ConsumerState<OverAllExpense> {
                                   onSubmit: (value) {
                                     // getAllExpenses();
                                     if (value == null) {
-                                                                          Navigator.pop(context);
-
+                                      Navigator.pop(context);
                                     } else {
                                       setState(() {
                                         isFillterEnable = true;
@@ -163,14 +163,69 @@ class _OverAllExpenseState extends ConsumerState<OverAllExpense> {
                             },
                           );
                         },
-                        child: Text(
-                          "Pick Date",
-                          style: GoogleFonts.ptSans(
-                              fontSize: width < 700 ? width / 28 : width / 45,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0),
-                        ),
+                        child: Icon(Icons.calendar_month),
                       ),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     showModalBottomSheet<void>(
+                      //       context: context,
+                      //       builder: (BuildContext context) {
+                      //         return Container(
+                      //           width: width,
+                      //           height: height * 0.4,
+                      //           decoration: BoxDecoration(
+                      //               border: Border(
+                      //                   top: BorderSide(
+                      //                       color: GlobalColors.themeColor,
+                      //                       width: 3))),
+                      //           child: SfDateRangePicker(
+                      //             initialSelectedDate: selectedDate,
+                      //             view: DateRangePickerView.month,
+                      //             toggleDaySelection: true,
+                      //             navigationDirection:
+                      //                 DateRangePickerNavigationDirection
+                      //                     .vertical,
+                      //             selectionShape:
+                      //                 DateRangePickerSelectionShape.rectangle,
+                      //             selectionMode:
+                      //                 DateRangePickerSelectionMode.single,
+
+                      //             monthViewSettings:
+                      //                 DateRangePickerMonthViewSettings(
+                      //                     firstDayOfWeek: 7),
+                      //             // onSelectionChanged: onSelectedDates,
+                      //             showActionButtons: true,
+
+                      //             onSubmit: (value) {
+                      //               // getAllExpenses();
+                      //               if (value == null) {
+                      //                 Navigator.pop(context);
+                      //               } else {
+                      //                 setState(() {
+                      //                   isFillterEnable = true;
+                      //                 });
+                      //                 onSelectedDates(context, value);
+                      //               }
+                      //             },
+                      //             onCancel: () {
+                      //               setState(() {
+                      //                 expensesList = allExpenseList;
+                      //               });
+                      //               Navigator.pop(context);
+                      //             },
+                      //           ),
+                      //         );
+                      //       },
+                      //     );
+                      //   },
+                      //   child: Text(
+                      //     "Pick Date",
+                      //     style: GoogleFonts.ptSans(
+                      //         fontSize: width < 700 ? width / 28 : width / 45,
+                      //         fontWeight: FontWeight.w400,
+                      //         letterSpacing: 0),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
@@ -233,7 +288,12 @@ class _OverAllExpenseState extends ConsumerState<OverAllExpense> {
                                       TextRowWidget(
                                         width: width,
                                         lable: "Category",
-                                        value: "${expensesList[i]["category"]}",
+                                        value: expensesList[i]["category"]
+                                                .toString()[0]
+                                                .toUpperCase() +
+                                            expensesList[i]["category"]
+                                                .toString()
+                                                .substring(1),
                                       ),
                                       if (expensesList[i]["category"] ==
                                           "Petrol")

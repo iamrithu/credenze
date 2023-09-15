@@ -19,7 +19,7 @@ class _LeadCustomlabelState extends State<LeadCustomlabel> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Container(
-      width: width * 0.3,
+      width: width * 0.29,
       margin: EdgeInsets.symmetric(horizontal: width * 0.01),
       child: RichText(
         text: TextSpan(
@@ -35,7 +35,7 @@ class _LeadCustomlabelState extends State<LeadCustomlabel> {
                 style: GoogleFonts.ptSans(
                     fontSize: width < 700 ? width / 35 : width / 45,
                     fontWeight: FontWeight.w400,
-                    color: GlobalColors.themeColor,
+                    color: GlobalColors.black,
                     letterSpacing: 0),
               ),
             ]),

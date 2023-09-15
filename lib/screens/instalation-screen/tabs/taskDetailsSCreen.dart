@@ -1,6 +1,7 @@
 import 'package:credenze/river-pod/riverpod_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -158,7 +159,7 @@ class _TaskDetailsSCreenState extends ConsumerState<TaskDetailsSCreen> {
                             Container(
                               width: width * 0.2,
                               child: Text(
-                                "Details      ",
+                                "Description      ",
                                 style: GoogleFonts.ptSans(
                                     color: GlobalColors.black,
                                     fontSize:
@@ -213,7 +214,8 @@ class _TaskDetailsSCreenState extends ConsumerState<TaskDetailsSCreen> {
                                 ),
                               ),
                             ],
-                          )
+                          ),
+                        SizedBox(height: 4),
                       ],
                     ),
                   ),
@@ -245,250 +247,254 @@ class _TaskDetailsSCreenState extends ConsumerState<TaskDetailsSCreen> {
                       ),
                     ],
                   ),
-                Expanded(
-                  child: Card(
-                    elevation: 10,
-                    child: Container(
-                      width: width,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Card(
-                              child: Container(
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 225, 223, 223),
-                                          border: Border.all(
-                                              color: Color.fromARGB(
-                                                  255, 92, 90, 90),
-                                              width: 0.5),
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 8),
-                                        child: Text(
-                                          "Product Name",
-                                          style: GoogleFonts.ptSans(
-                                              color: Color.fromARGB(
-                                                  255, 104, 100, 100),
-                                              fontSize: width < 700
-                                                  ? width / 38
-                                                  : width / 45,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 0),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 225, 223, 223),
-                                          border: Border.all(
-                                              color: Color.fromARGB(
-                                                  255, 92, 90, 90),
-                                              width: 0.5),
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 8),
-                                        child: Text(
-                                          "Unit",
-                                          style: GoogleFonts.ptSans(
-                                              color: Color.fromARGB(
-                                                  255, 104, 100, 100),
-                                              fontSize: width < 700
-                                                  ? width / 38
-                                                  : width / 45,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 0),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 225, 223, 223),
-                                          border: Border.all(
-                                              color: Color.fromARGB(
-                                                  255, 92, 90, 90),
-                                              width: 0.5),
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 8),
-                                        child: Text(
-                                          "Quantity",
-                                          style: GoogleFonts.ptSans(
-                                              color: Color.fromARGB(
-                                                  255, 104, 100, 100),
-                                              fontSize: width < 700
-                                                  ? width / 38
-                                                  : width / 45,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 0),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            for (var i = 0; i < _data.items!.length; i++)
+                if (_data.isRemovable == 0)
+                  Expanded(
+                    child: Card(
+                      elevation: 10,
+                      child: Container(
+                        width: width,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
                               Card(
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(2),
-                                    side: BorderSide(
-                                        color: GlobalColors.themeColor2)),
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 4),
-                                  child: Column(
+                                  child: Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: Container(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                "${_data.items![i].product!.name}",
-                                                style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.black,
-                                                    fontSize: width < 700
-                                                        ? width / 38
-                                                        : width / 45,
-                                                    fontWeight: FontWeight.w600,
-                                                    letterSpacing: 0),
-                                              ),
-                                            ),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 225, 223, 223),
+                                            border: Border.all(
+                                                color: Color.fromARGB(
+                                                    255, 92, 90, 90),
+                                                width: 0.5),
                                           ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                "${_data.items![i].unit!.shortName}",
-                                                style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.black,
-                                                    fontSize: width < 700
-                                                        ? width / 38
-                                                        : width / 45,
-                                                    fontWeight: FontWeight.w600,
-                                                    letterSpacing: 0),
-                                              ),
-                                            ),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 4, horizontal: 8),
+                                          child: Text(
+                                            "Product Name",
+                                            style: GoogleFonts.ptSans(
+                                                color: Color.fromARGB(
+                                                    255, 104, 100, 100),
+                                                fontSize: width < 700
+                                                    ? width / 38
+                                                    : width / 45,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0),
                                           ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                "${_data.items![i].quantity}",
-                                                style: GoogleFonts.ptSans(
-                                                    color: GlobalColors.black,
-                                                    fontSize: width < 700
-                                                        ? width / 38
-                                                        : width / 45,
-                                                    fontWeight: FontWeight.w600,
-                                                    letterSpacing: 0),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                      SizedBox(height: 4),
-                                      _data.items![i].serialnos!.isEmpty
-                                          ? Container(
-                                              alignment: Alignment.center,
-                                              child: Text(""),
-                                            )
-                                          : Container(
-                                              width: width,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Serial No:",
-                                                    style: GoogleFonts.ptSans(
-                                                        color: GlobalColors
-                                                            .themeColor,
-                                                        fontSize: width < 700
-                                                            ? width / 38
-                                                            : width / 45,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        letterSpacing: 0),
-                                                  ),
-                                                  Wrap(
-                                                    children: [
-                                                      for (var j = 0;
-                                                          j <
-                                                              _data
-                                                                  .items![i]
-                                                                  .serialnos!
-                                                                  .length;
-                                                          j++)
-                                                        Card(
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          4),
-                                                              side: BorderSide(
-                                                                  color: GlobalColors
-                                                                      .black)),
-                                                          elevation: 4,
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Text(
-                                                              "${_data.items![i].serialnos![j].serialno}",
-                                                              style: GoogleFonts.ptSans(
-                                                                  color: GlobalColors
-                                                                      .black,
-                                                                  fontSize: width <
-                                                                          700
-                                                                      ? width /
-                                                                          38
-                                                                      : width /
-                                                                          45,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  letterSpacing:
-                                                                      0),
-                                                            ),
-                                                          ),
-                                                        )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 225, 223, 223),
+                                            border: Border.all(
+                                                color: Color.fromARGB(
+                                                    255, 92, 90, 90),
+                                                width: 0.5),
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 4, horizontal: 8),
+                                          child: Text(
+                                            "Unit",
+                                            style: GoogleFonts.ptSans(
+                                                color: Color.fromARGB(
+                                                    255, 104, 100, 100),
+                                                fontSize: width < 700
+                                                    ? width / 38
+                                                    : width / 45,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 225, 223, 223),
+                                            border: Border.all(
+                                                color: Color.fromARGB(
+                                                    255, 92, 90, 90),
+                                                width: 0.5),
+                                          ),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 4, horizontal: 8),
+                                          child: Text(
+                                            "Quantity",
+                                            style: GoogleFonts.ptSans(
+                                                color: Color.fromARGB(
+                                                    255, 104, 100, 100),
+                                                fontSize: width < 700
+                                                    ? width / 38
+                                                    : width / 45,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0),
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
                               ),
-                          ],
+                              for (var i = 0; i < _data.items!.length; i++)
+                                Card(
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(2),
+                                      side: BorderSide(
+                                          color: GlobalColors.themeColor2)),
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 4, vertical: 4),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: Container(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  "${_data.items![i].product!.name}",
+                                                  style: GoogleFonts.ptSans(
+                                                      color: GlobalColors.black,
+                                                      fontSize: width < 700
+                                                          ? width / 38
+                                                          : width / 45,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  "${_data.items![i].unit!.shortName}",
+                                                  style: GoogleFonts.ptSans(
+                                                      color: GlobalColors.black,
+                                                      fontSize: width < 700
+                                                          ? width / 38
+                                                          : width / 45,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  "${_data.items![i].quantity}",
+                                                  style: GoogleFonts.ptSans(
+                                                      color: GlobalColors.black,
+                                                      fontSize: width < 700
+                                                          ? width / 38
+                                                          : width / 45,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      letterSpacing: 0),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4),
+                                        _data.items![i].serialnos!.isEmpty
+                                            ? Container(
+                                                alignment: Alignment.center,
+                                                child: Text(""),
+                                              )
+                                            : Container(
+                                                width: width,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Serial No:",
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .themeColor,
+                                                          fontSize: width < 700
+                                                              ? width / 38
+                                                              : width / 45,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          letterSpacing: 0),
+                                                    ),
+                                                    Wrap(
+                                                      children: [
+                                                        for (var j = 0;
+                                                            j <
+                                                                _data
+                                                                    .items![i]
+                                                                    .serialnos!
+                                                                    .length;
+                                                            j++)
+                                                          Card(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            4),
+                                                                side: BorderSide(
+                                                                    color: GlobalColors
+                                                                        .black)),
+                                                            elevation: 4,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                "${_data.items![i].serialnos![j].serialno}",
+                                                                style: GoogleFonts.ptSans(
+                                                                    color: GlobalColors
+                                                                        .black,
+                                                                    fontSize: width <
+                                                                            700
+                                                                        ? width /
+                                                                            38
+                                                                        : width /
+                                                                            45,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    letterSpacing:
+                                                                        0),
+                                                              ),
+                                                            ),
+                                                          )
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           );

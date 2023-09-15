@@ -19,7 +19,6 @@ import '../models/file-model.dart';
 import '../models/instalation-task-details-model.dart';
 import '../models/instalation-task-model.dart';
 import '../models/installation-employee-model.dart';
-import '../models/installation-work-taskList-model.dart';
 import '../models/installation-work-updatedList-model.dart';
 import '../models/leaveListModel.dart';
 import '../models/permoissionListModel.dart';
@@ -45,7 +44,7 @@ class Api {
     try {
       var params = {"email": email, "password": password};
       Response response = await dio.post(
-        "http://dev.credenze.in/api/login",
+        "login",
         data: jsonEncode(params),
       );
       print(response.toString());
@@ -66,6 +65,7 @@ class Api {
 
       return response;
     } on DioError catch (e) {
+      print("d" + e.toString());
       return e.response;
     }
   }
@@ -104,24 +104,31 @@ class Api {
     required int? id,
     required String? latitude,
     required String? longitude,
-    required File photo,
+    required File? photo,
   }) async {
     dio.options.headers["Authorization"] = "Bearer $token";
-    final bytes = photo.readAsBytesSync();
-    String base64Image = "data:image/png;base64," + base64Encode(bytes);
-    var params = {
+
+    String fileName = photo == null ? "" : photo.path.split('/').last;
+
+    FormData newData = FormData.fromMap({
+      "photo": await MultipartFile.fromFile(
+        photo!.path,
+        filename: fileName,
+      ),
       "latitude": latitude!,
       "longitude": longitude!,
-      "photo": base64Image,
-    };
+    });
+
     try {
       Response response = await dio.post(
         "installation/$id/dayin",
-        data: jsonEncode(params),
+        data: newData,
       );
+      print(response.toString());
 
       return response.toString();
     } on DioError catch (e) {
+      print(e.response.toString());
       return e.response.toString();
     }
   }
@@ -226,7 +233,6 @@ class Api {
       "longitude": longitude!,
     });
 
-    print("xx${newData.files}");
     try {
       Response response = await dio.post(
         "service/${id}/dayin",
@@ -246,9 +252,6 @@ class Api {
   }) async {
     dio.options.headers["Authorization"] = "Bearer $token";
     var params = {"latitude": latitude, "longitude": longitude};
-    print("ww" + id.toString());
-    print("ww" + latitude.toString());
-    print("ww" + longitude.toString());
 
     try {
       Response response = await dio.post(
@@ -350,21 +353,23 @@ class Api {
   Future<String> AddFile({
     required String? token,
     required int? id,
-    required File file,
+    required List<File> file,
   }) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
-      String fileName = file.path.split('/').last;
+      FormData data = FormData();
 
-      FormData data = FormData.fromMap({
-        "file[]": await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-        ),
-      });
+      for (var i = 0; i < file.length; i++) {
+        String fileName = file[i].path.split('/').last;
 
-      print("l" + data.fields.toString());
+        data.files.add(MapEntry(
+            "file[]",
+            await MultipartFile.fromFile(
+              file[i].path,
+              filename: fileName,
+            )));
+      }
 
       Response response = await dio.post(
         "installation/$id/files/add",
@@ -433,6 +438,7 @@ class Api {
         "to_place": data["to_place"],
         "distance": data["distance"],
         "amount": data["amount"],
+        "notes": data["notes"],
       });
 
       Response response = await dio.post(
@@ -441,7 +447,7 @@ class Api {
       );
       return response;
     } on DioError catch (e) {
-      return e.response.toString();
+      return e.response;
     }
   }
 
@@ -469,6 +475,7 @@ class Api {
         "to_place": data["to_place"],
         "distance": data["distance"],
         "amount": data["amount"],
+        "notes": data["notes"]
       });
 
       Response response = await dio.post(
@@ -477,7 +484,7 @@ class Api {
       );
       return response;
     } on DioError catch (e) {
-      return e.response.toString();
+      return e.response;
     }
   }
 
@@ -508,8 +515,8 @@ class Api {
         "distance": data["distance"],
         "amount": data["amount"],
         "status": data["status"],
+        "notes": data["notes"]
       });
-
 
       Response response = await dio.post(
         "installation/${id}/expenses/update/${expenseId}",
@@ -517,7 +524,6 @@ class Api {
       );
       return response;
     } on DioError catch (e) {
-
       return e.response;
     }
   }
@@ -549,6 +555,7 @@ class Api {
         "distance": data["distance"],
         "amount": data["amount"],
         "status": data["status"],
+        "notes": data["notes"],
       });
 
       print("z" + newData.toString());
@@ -559,7 +566,6 @@ class Api {
       );
       return response;
     } on DioError catch (e) {
-
       return e.response;
     }
   }
@@ -881,6 +887,7 @@ class Api {
           MapEntry("participants_id[${i}]", participants[i].userid.toString()));
     }
 
+    print(productList);
     if (productList.isNotEmpty) {
       for (var i = 0; i < productList.length; i++) {
         formData.fields.add(MapEntry(
@@ -903,8 +910,7 @@ class Api {
             productList[i]["sp_product"].toString()));
         formData.fields.add(MapEntry(
             "item[${productList[i]["item_id"]}][serial_no]",
-           
-                 productList[i]["serial_no"].toString()));
+            productList[i]["serial_no"].toString()));
         formData.fields.add(MapEntry(
             "item[${productList[i]["item_id"]}][task_item_id]",
             productList[i]["task_item_id"].toString() == "null"
@@ -912,9 +918,8 @@ class Api {
                 : productList[i]["task_item_id"].toString()));
 
         if (productList[i]["enable_serial_no"].toString() == "1") {
-          formData.fields.add(MapEntry(
-              "item[${productList[i]["item_id"]}][quantity]",
-              productList[i]["used_serialNos"].length.toString()));
+          formData.fields.add(
+              MapEntry("item[${productList[i]["item_id"]}][quantity]", "1"));
         } else {
           formData.fields.add(MapEntry(
               "item[${productList[i]["item_id"]}][quantity]",
@@ -930,7 +935,6 @@ class Api {
         }
       }
     }
-    print(formData.fields.toString());
     dio.options.headers["Authorization"] = "Bearer $token";
     try {
       var response = await dio.post("service/${service_id}/workupdates/save",
@@ -1161,21 +1165,21 @@ class Api {
     int id,
     List<int> data,
   ) async {
-    dio.options.headers["Authorization"] = "Bearer $token";
-    final formData = FormData.fromMap({});
+    try {
+      dio.options.headers["Authorization"] = "Bearer $token";
+      final formData = FormData.fromMap({});
 
-    for (var i = 0; i < data.length; i++)
-      formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
+      for (var i = 0; i < data.length; i++)
+        formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
 
-    Response response = await dio.post(
-      "tasks/${id}/reassigntask",
-      data: formData,
-    );
+      Response response = await dio.post(
+        "tasks/${id}/reassigntask",
+        data: formData,
+      );
 
-    if (response.statusCode == 200) {
-      return response.data["data"];
-    } else {
-      throw Exception(response.statusMessage);
+      return response;
+    } on DioError catch (e) {
+      return e.response;
     }
   }
 
@@ -1202,15 +1206,15 @@ class Api {
     for (var i = 0; i < data.length; i++)
       formData.fields.add(MapEntry("user_id[${i}]", data[i].toString()));
 
+    print(formData.files.toString());
+
     try {
       Response response = await dio.post(
         "tasks/${id}/submitexpenses",
         data: formData,
       );
-      print("${response}");
       return response;
     } on DioError catch (e) {
-      print("demoxx" + e.response.toString());
       return e.response;
     }
   }
@@ -1456,7 +1460,7 @@ class Api {
     }
   }
 
-Future getPresentDays(String token, String year, String month) async {
+  Future getPresentDays(String token, String year, String month) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     try {
@@ -1633,11 +1637,12 @@ class ProviderApi {
     }
   }
 
-  Future<List<ServiceListModel>> ServiceModelList(String? token) async {
+  Future<List<ServiceListModel>> ServiceModelList(
+      String? token, String date) async {
     dio.options.headers["Authorization"] = "Bearer $token";
 
     Response response = await dio.get(
-      "service/list",
+      "service/list?search_date=${date}",
     );
 
     print(response.toString());

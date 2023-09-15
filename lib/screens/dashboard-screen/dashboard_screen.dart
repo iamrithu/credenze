@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:credenze/const/global_colors.dart';
 import 'package:credenze/river-pod/riverpod_provider.dart';
-import 'package:credenze/screens/dashboard-screen/widget/alertDialog.dart';
 import 'package:credenze/screens/dashboard-screen/widget/dashboardContainer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +20,7 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import '../../apis/api.dart';
 import '../../custom-widget/custom_alertbox.dart';
 import '../../maps&location/map-location.dart';
+import '../instalation-screen/tabs/widget/text-row-widget.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -57,7 +57,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String _action = "DayIn";
   String? _dayIn;
   String? _dayOut;
-  bool _dayCompleted = false;
   late Duration _loggedInHr;
 
   checkLocationActivity() async {
@@ -110,41 +109,47 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           _dayIn = null;
           _dayOut = null;
         });
+        print("demo1");
       } else {
         for (var i = 0; i < value.data["message"]["attendance"].length; i++) {
           setState(() {
             if (value.data["message"]["attendance"][i]["clock_out_time"] ==
                 null) {
               _dayIn = DateFormat("hh:mm:ss").format(DateTime.parse(
-                      value.data["message"]["attendance"][i]["clock_in_time"])
+                      value.data["message"]["attendance"][0]["clock_in_time"])
                   .toLocal());
               _dayOut =
                   value.data["message"]["attendance"][i]["clock_out_time"];
               _action = "DayOut";
               DateTime dt2 = DateTime.parse(
-                      value.data["message"]["attendance"][i]["clock_in_time"])
+                      value.data["message"]["attendance"][0]["clock_in_time"])
                   .toLocal();
 
               DateTime dt1 = DateTime.now();
               Duration diff = dt1.difference(dt2);
               _loggedInHr = diff;
 
-              _stopWatchTimer.onStopTimer();
+              print(DateTime.now().toString());
+              print(_dayIn);
 
+              print(dt2.toString());
+              _stopWatchTimer.onStopTimer();
               _stopWatchTimer.clearPresetTime();
+              // _stopWatchTimer.onResetTimer();
+
               _stopWatchTimer.setPresetHoursTime(diff.inHours % 24.abs());
               _stopWatchTimer.setPresetMinuteTime(diff.inMinutes % 60.abs());
               _stopWatchTimer.setPresetSecondTime(diff.inSeconds % 60.abs());
               _stopWatchTimer.onStartTimer();
             } else {
-              _dayIn="--/--";
-              _dayOut="--/--";
-              // _dayIn = DateFormat("hh:mm:ss").format(DateTime.parse(
-              //         value.data["message"]["attendance"][i]["clock_in_time"])
-              //     .toLocal());
-              // _dayOut = DateFormat("hh:mm:ss").format(DateTime.parse(
-              //         value.data["message"]["attendance"][i]["clock_out_time"])
-              //     .toLocal());
+              _dayIn = "--/--";
+              _dayOut = "--/--";
+              _dayIn = DateFormat("hh:mm:ss").format(DateTime.parse(
+                      value.data["message"]["attendance"][0]["clock_in_time"])
+                  .toLocal());
+              _dayOut = DateFormat("hh:mm:ss").format(DateTime.parse(
+                      value.data["message"]["attendance"][i]["clock_out_time"])
+                  .toLocal());
               // _action = "DayIn";
               // DateTime dt2 = DateTime.parse(
               //         value.data["message"]["attendance"][i]["clock_in_time"])
@@ -194,14 +199,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final width = MediaQuery.of(context).size.width;
 
     dayIn() async {
-       setState(() {
+      checkLocationActivity();
+      if (!isLocationEnable) {
+        return QuickAlert.show(
+          context: context,
+          type: QuickAlertType.info,
+          title: "Location service disabled",
+          confirmBtnText: "Ok",
+          autoCloseDuration: null,
+        );
+      }
+      setState(() {
         isLoading = true;
       });
       Position? pos = await MapsAndLocation().locationPermisson();
 
       final prefs = await SharedPreferences.getInstance();
       String? token = await prefs.getString('token');
-     
+
       Api()
           .DayIn(token!, pos.toJson()["latitude"].toString(),
               pos.toJson()["longitude"].toString())
@@ -217,7 +232,34 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           });
           attendenceDetails();
 
-          _stopWatchTimer.clearPresetTime();
+          Api().todayLogin(token).then((value) {
+            if (value.data["message"]["attendance"].length > 0) {
+              DateTime dt2 = DateTime.parse(
+                      value.data["message"]["attendance"][0]["clock_in_time"])
+                  .toLocal();
+
+              DateTime dt1 = DateTime.now();
+              Duration diff = dt1.difference(dt2);
+              _loggedInHr = diff;
+
+              _stopWatchTimer.onStopTimer();
+              _stopWatchTimer.clearPresetTime();
+              // _stopWatchTimer.onResetTimer();
+
+              _stopWatchTimer.setPresetHoursTime(diff.inHours % 24.abs());
+              _stopWatchTimer.setPresetMinuteTime(diff.inMinutes % 60.abs());
+              _stopWatchTimer.setPresetSecondTime(diff.inSeconds % 60.abs());
+              _stopWatchTimer.onStartTimer();
+            }
+          });
+          setState(() {
+            _action = "DayOut";
+            visible = true;
+            success = value.data["success"];
+            msg = value.data["data"];
+            _dayOut = null;
+            isLoading = false;
+          });
 
           if (visible) {
             setState(() {
@@ -316,9 +358,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     msg = value.data["data"];
                   });
                   attendenceDetails();
+
                   setState(() {
-                    _dayIn="--/--";
-                    _dayOut="--/--";
+                    _dayIn = "--/--";
+                    _dayOut = "--/--";
                   });
                   if (visible) {
                     setState(() {
@@ -361,7 +404,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             .then((value) async {
           if (value.data["success"]) {
             setState(() {
-                            _action = "DayIn";
+              _action = "DayIn";
 
               visible = true;
               success = value.data["success"];
@@ -369,12 +412,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               isLoading = false;
             });
             attendenceDetails();
-             setState(() {
-                    _dayIn="--/--";
-                    _dayOut="--/--";
-                  });
+            // setState(() {
+            //   _dayIn = "--/--";
+            //   _dayOut = "--/--";
+            // });
             if (visible) {
-
               Timer(const Duration(milliseconds: 1500), () {
                 setState(() {
                   visible = false;
@@ -630,7 +672,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "Day In ",
+                                            "Day In",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
                                                     ? width / 25
@@ -658,7 +700,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "Day Out ",
+                                            "Day Out",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
                                                     ? width / 28
@@ -749,109 +791,109 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ],
                         ),
-                        if(_action == "DayOut")
-                        Card(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: width * 0.025,
-                              vertical: height * 0.02),
-                          elevation: 10,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(width * 0.5),
-                            // side: BorderSide(
-                            //     color: GlobalColors.themeColor, width: 2),
-                          ),
-                          child: Container(
-                            width: width < 500 ? width * 0.35 : width * 0.3,
-                            height: width < 500 ? width * 0.35 : width * 0.3,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(width * 0.5),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(255, 247, 247, 247),
-                                    Color.fromARGB(255, 252, 227, 226),
-                                  ],
-                                  stops: [0, 1],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                )),
-                            child: Center(
-                                child: StreamBuilder(
-                              stream: _stopWatchTimer.rawTime,
-                              initialData: _stopWatchTimer.rawTime.value,
-                              builder: ((context, snapshot) {
-                                final value = snapshot.data;
-                                final displayTimeWithoutSec =
-                                    StopWatchTimer.getDisplayTime(value!,
-                                        hours: true,
-                                        minute: true,
-                                        second: false,
-                                        milliSecond: false);
-                                final displayTimeWithSec =
-                                    StopWatchTimer.getDisplayTime(value,
-                                        hours: false,
-                                        minute: false,
-                                        second: true,
-                                        milliSecond: false);
-                                return Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      "Logged In Time",
-                                      style: GoogleFonts.ptSans(
-                                          fontSize: width < 700
-                                              ? width / 35
-                                              : width / 48,
-                                          fontWeight: FontWeight.w600,
-                                          color: GlobalColors.themeColor,
-                                          letterSpacing: 0),
-                                    ),
-                                    Card(
-                                      elevation: 10,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(width * 0.1),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(width * 0.01),
-                                        child: RichText(
-                                          text: TextSpan(
-                                              text: displayTimeWithoutSec
-                                                  .toString(),
-                                              style: GoogleFonts.ptSans(
-                                                  fontSize: width < 700
-                                                      ? width / 25
-                                                      : width / 24,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      GlobalColors.themeColor2,
-                                                  letterSpacing: 2),
-                                              children: [
-                                                TextSpan(
-                                                  text: " " +
-                                                      displayTimeWithSec
-                                                          .toString(),
-                                                  style: GoogleFonts.ptSans(
-                                                      fontSize: width < 700
-                                                          ? width / 20
-                                                          : width / 21,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: GlobalColors
-                                                          .themeColor,
-                                                      letterSpacing: 2),
-                                                ),
-                                              ]),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }),
-                            )),
-                          ),
-                        ),
+                        // if (_action == "DayOut")
+                        //   Card(
+                        //     margin: EdgeInsets.symmetric(
+                        //         horizontal: width * 0.025,
+                        //         vertical: height * 0.02),
+                        //     elevation: 10,
+                        //     shape: RoundedRectangleBorder(
+                        //       borderRadius: BorderRadius.circular(width * 0.5),
+                        //       // side: BorderSide(
+                        //       //     color: GlobalColors.themeColor, width: 2),
+                        //     ),
+                        //     child: Container(
+                        //       width: width < 500 ? width * 0.35 : width * 0.3,
+                        //       height: width < 500 ? width * 0.35 : width * 0.3,
+                        //       decoration: BoxDecoration(
+                        //           borderRadius:
+                        //               BorderRadius.circular(width * 0.5),
+                        //           gradient: LinearGradient(
+                        //             colors: [
+                        //               Color.fromARGB(255, 247, 247, 247),
+                        //               Color.fromARGB(255, 252, 227, 226),
+                        //             ],
+                        //             stops: [0, 1],
+                        //             begin: Alignment.topCenter,
+                        //             end: Alignment.bottomCenter,
+                        //           )),
+                        //       child: Center(
+                        //           child: StreamBuilder(
+                        //         stream: _stopWatchTimer.rawTime,
+                        //         initialData: _stopWatchTimer.rawTime.value,
+                        //         builder: ((context, snapshot) {
+                        //           final value = snapshot.data;
+                        //           final displayTimeWithoutSec =
+                        //               StopWatchTimer.getDisplayTime(value!,
+                        //                   hours: true,
+                        //                   minute: true,
+                        //                   second: false,
+                        //                   milliSecond: false);
+                        //           final displayTimeWithSec =
+                        //               StopWatchTimer.getDisplayTime(value,
+                        //                   hours: false,
+                        //                   minute: false,
+                        //                   second: true,
+                        //                   milliSecond: false);
+                        //           return Column(
+                        //             mainAxisAlignment:
+                        //                 MainAxisAlignment.spaceEvenly,
+                        //             children: [
+                        //               Text(
+                        //                 "Logged In Time",
+                        //                 style: GoogleFonts.ptSans(
+                        //                     fontSize: width < 700
+                        //                         ? width / 35
+                        //                         : width / 48,
+                        //                     fontWeight: FontWeight.w600,
+                        //                     color: GlobalColors.themeColor,
+                        //                     letterSpacing: 0),
+                        //               ),
+                        //               Card(
+                        //                 elevation: 10,
+                        //                 shape: RoundedRectangleBorder(
+                        //                   borderRadius: BorderRadius.circular(
+                        //                       width * 0.1),
+                        //                 ),
+                        //                 child: Padding(
+                        //                   padding: EdgeInsets.all(width * 0.01),
+                        //                   child: RichText(
+                        //                     text: TextSpan(
+                        //                         text: displayTimeWithoutSec
+                        //                             .toString(),
+                        //                         style: GoogleFonts.ptSans(
+                        //                             fontSize: width < 700
+                        //                                 ? width / 25
+                        //                                 : width / 24,
+                        //                             fontWeight: FontWeight.w400,
+                        //                             color: GlobalColors
+                        //                                 .themeColor2,
+                        //                             letterSpacing: 2),
+                        //                         children: [
+                        //                           TextSpan(
+                        //                             text: " " +
+                        //                                 displayTimeWithSec
+                        //                                     .toString(),
+                        //                             style: GoogleFonts.ptSans(
+                        //                                 fontSize: width < 700
+                        //                                     ? width / 20
+                        //                                     : width / 21,
+                        //                                 fontWeight:
+                        //                                     FontWeight.w400,
+                        //                                 color: GlobalColors
+                        //                                     .themeColor,
+                        //                                 letterSpacing: 2),
+                        //                           ),
+                        //                         ]),
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           );
+                        //         }),
+                        //       )),
+                        //     ),
+                        //   ),
                         if (!isLocationEnable)
                           Padding(
                               padding: EdgeInsets.symmetric(
@@ -890,13 +932,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       Container(
                                         alignment: Alignment.centerRight,
                                         width: width * 0.2,
-                                        
                                         child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(100)
-                                            )
-                                          ),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100))),
                                           onPressed: () {
                                             Geolocator.openLocationSettings();
                                           },
@@ -967,12 +1008,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             ? width / 28
                                             : width / 42,
                                         fontWeight: FontWeight.w400,
-                                        color: GlobalColors.themeColor,
+                                        color: GlobalColors.black,
                                         letterSpacing: 0),
                                   ),
                                   borderRadius: 100,
                                   outerColor: GlobalColors.white,
-                                  innerColor: GlobalColors.themeColor,
+                                  innerColor: _action == "DayIn"
+                                      ? Colors.green
+                                      : GlobalColors.themeColor,
                                   elevation: 1,
                                   key: _key,
                                   onSubmit: () {
@@ -1070,71 +1113,74 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         child: ListView(children: [
                           if (expenseList.isNotEmpty)
                             for (var i = 0; i < expenseList.length; i++)
-                              Card(
-                                elevation: 10,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    side: BorderSide(
-                                        color: GlobalColors.themeColor2)),
-                                child: Container(
-                                  margin: EdgeInsets.all(8),
-                                  width: width,
-                                  height: height * 0.1,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                              Stack(
+                                children: [
+                                  Card(
+                                      color: GlobalColors.themeColor,
+                                      elevation: 10,
+                                      child: Container(
+                                        margin: EdgeInsets.all(8),
+                                        width: width * 0.9,
+                                        height: height * 0.05,
+                                      )),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: width * 0.4,
-                                            child:
-                                                Center(child: Text("Category")),
+                                      Card(
+                                        elevation: 10,
+                                        child: Container(
+                                          margin: EdgeInsets.all(8),
+                                          width: width * 0.86,
+                                          height: height * 0.05,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 6.0),
+                                                child: TextRowWidget(
+                                                  width: width,
+                                                  lable: "Category",
+                                                  value:
+                                                      "${expenseList[i]["category_id"] == 1 ? "Petrol" : "Food"}",
+                                                ),
+                                              ),
+                                              if (expenseList[i]
+                                                      ["category_id"] ==
+                                                  1)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 6.0),
+                                                  child: TextRowWidget(
+                                                    width: width,
+                                                    lable: "Distance",
+                                                    value:
+                                                        "${expenseList[i]["distance"]} Km",
+                                                  ),
+                                                ),
+                                              if (expenseList[i]
+                                                      ["category_id"] !=
+                                                  1)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 6.0),
+                                                  child: TextRowWidget(
+                                                    width: width,
+                                                    lable: "Amount",
+                                                    value:
+                                                        "${expenseList[i]["amount"]}",
+                                                  ),
+                                                ),
+                                            ],
                                           ),
-                                          Container(
-                                            width: width * 0.4,
-                                            child: Center(
-                                                child: Text(
-                                                    "${expenseList[i]["category_id"] == 1 ? "Petrol" : "Food"}")),
-                                          )
-                                        ],
+                                        ),
                                       ),
-                                      Divider(),
-                                      if (expenseList[i]["category_id"] == 1)
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: width * 0.4,
-                                              child: Center(
-                                                  child: Text("Distance")),
-                                            ),
-                                            Container(
-                                              width: width * 0.4,
-                                              child: Center(
-                                                  child: Text(
-                                                      "${expenseList[i]["distance"]} Km")),
-                                            )
-                                          ],
-                                        ),
-                                      if (expenseList[i]["category_id"] != 1)
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: width * 0.4,
-                                              child:
-                                                  Center(child: Text("Amount")),
-                                            ),
-                                            Container(
-                                              width: width * 0.4,
-                                              child: Center(
-                                                  child: Text(
-                                                      "${expenseList[i]["amount"]}")),
-                                            )
-                                          ],
-                                        ),
                                     ],
                                   ),
-                                ),
+                                ],
                               )
                         ]),
                       ),
@@ -1262,13 +1308,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   children: [
                                     Container(
                                       width: width,
+                                      color: GlobalColors.themeColor,
+                                      child: Center(
+                                        child: Text(
+                                          "Add Expenses",
+                                          style: GoogleFonts.ptSans(
+                                              color: GlobalColors.white,
+                                              fontSize: width < 700
+                                                  ? width / 28
+                                                  : width / 45,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 0),
+                                        ),
+                                      ),
+                                      height: 40,
+                                    ),
+                                    Container(
+                                      width: width,
                                       height: height * 0.06,
                                       child: Row(children: [
                                         Container(
                                           alignment: Alignment.centerLeft,
                                           width: width * 0.25,
                                           child: Text(
-                                            "Category",
+                                            "Category *",
                                             style: GoogleFonts.ptSans(
                                                 fontSize: width < 700
                                                     ? width / 30
@@ -1330,7 +1393,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             alignment: Alignment.centerLeft,
                                             width: width * 0.25,
                                             child: Text(
-                                              "From Place",
+                                              "From Place *",
                                               style: GoogleFonts.ptSans(
                                                   fontSize: width < 700
                                                       ? width / 30
@@ -1392,7 +1455,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             alignment: Alignment.centerLeft,
                                             width: width * 0.25,
                                             child: Text(
-                                              "To Place",
+                                              "To Place *",
                                               style: GoogleFonts.ptSans(
                                                   fontSize: width < 700
                                                       ? width / 30
@@ -1435,8 +1498,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                                             : width / 48,
                                                         fontWeight:
                                                             FontWeight.w400,
-                                                        color:
-                                                            GlobalColors.black,
+                                                        color: GlobalColors
+                                                            .themeColor2,
                                                         letterSpacing: 0),
                                                   ),
                                                 ),
@@ -1451,13 +1514,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     if (cat != "Food")
                                       Container(
                                         width: width,
-                                        height: height * 0.06,
                                         child: Row(children: [
                                           Container(
                                             alignment: Alignment.centerLeft,
                                             width: width * 0.25,
                                             child: Text(
-                                              "Distance",
+                                              "Distance *",
                                               style: GoogleFonts.ptSans(
                                                   fontSize: width < 700
                                                       ? width / 30
@@ -1476,8 +1538,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             child: Container(
                                               alignment: Alignment.centerLeft,
                                               width: width * 0.5,
-                                              height: height * 0.5,
                                               child: TextFormField(
+                                                style: GoogleFonts.ptSans(
+                                                    color: GlobalColors
+                                                        .themeColor2,
+                                                    fontSize: width < 700
+                                                        ? width / 30
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w400,
+                                                    letterSpacing: 0),
                                                 keyboardType:
                                                     TextInputType.number,
                                                 decoration: InputDecoration(
@@ -1493,19 +1562,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           ),
                                         ]),
                                       ),
-                                    SizedBox(
-                                      height: 4,
-                                    ),
                                     if (cat == "Food")
                                       Container(
                                         width: width,
-                                        height: height * 0.06,
                                         child: Row(children: [
                                           Container(
                                             alignment: Alignment.centerLeft,
                                             width: width * 0.25,
                                             child: Text(
-                                              "Amount",
+                                              "Amount *",
                                               style: GoogleFonts.ptSans(
                                                   fontSize: width < 700
                                                       ? width / 30
@@ -1524,8 +1589,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                             child: Container(
                                               alignment: Alignment.centerLeft,
                                               width: width * 0.5,
-                                              height: height * 0.5,
                                               child: TextFormField(
+                                                style: GoogleFonts.ptSans(
+                                                    color: GlobalColors
+                                                        .themeColor2,
+                                                    fontSize: width < 700
+                                                        ? width / 30
+                                                        : width / 45,
+                                                    fontWeight: FontWeight.w400,
+                                                    letterSpacing: 0),
                                                 keyboardType:
                                                     TextInputType.number,
                                                 decoration: InputDecoration(
@@ -1547,13 +1619,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       child: Row(
                                         children: [
                                           Container(
-                                              width: width * 0.28,
+                                              width: width * 0.23,
                                               height: height * 0.05,
                                               alignment: Alignment.centerLeft,
                                               margin: EdgeInsets.only(
                                                   left: width * 0.01),
                                               child: Text(
                                                 "File ",
+                                                style: GoogleFonts.ptSans(
+                                                  color: GlobalColors.black,
+                                                  fontSize: width < 700
+                                                      ? width / 35
+                                                      : width / 44,
+                                                  fontWeight: FontWeight.w400,
+                                                  letterSpacing: 0,
+                                                ),
+                                              )),
+                                          Container(
+                                              width: width * 0.05,
+                                              height: height * 0.05,
+                                              alignment: Alignment.centerLeft,
+                                              margin: EdgeInsets.only(
+                                                  left: width * 0.01),
+                                              child: Text(
+                                                ":",
                                                 style: GoogleFonts.ptSans(
                                                   color: GlobalColors.black,
                                                   fontSize: width < 700
@@ -1581,7 +1670,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                               alignment: Alignment.centerLeft,
                                               child: newFile == null
                                                   ? Text(
-                                                      "Choose File ",
+                                                      "",
                                                       style: GoogleFonts.ptSans(
                                                         color: GlobalColors
                                                             .themeColor2,
@@ -1594,7 +1683,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                                       ),
                                                     )
                                                   : Text(newFile == null
-                                                      ? "Choose File "
+                                                      ? ""
                                                       : "${newFile!.path.split('/').last}"),
                                             ),
                                           ),
@@ -1613,7 +1702,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                               }
                                             },
                                             child: Container(
-                                                width: width * 0.15,
+                                                width: width * 0.17,
                                                 height: height * 0.05,
                                                 margin: EdgeInsets.symmetric(
                                                     vertical: 2),
@@ -1670,6 +1759,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           ),
                                           InkWell(
                                             onTap: () {
+                                              if (cat != "Petrol" &&
+                                                  amt.trim().isEmpty) {
+                                                QuickAlert.show(
+                                                    context: context,
+                                                    type: QuickAlertType.error,
+                                                    title: "Enter Amount",
+                                                    autoCloseDuration: null);
+                                                return null;
+                                              }
+                                              if (cat == "Petrol" &&
+                                                  mileage.trim().isEmpty) {
+                                                QuickAlert.show(
+                                                    context: context,
+                                                    type: QuickAlertType.error,
+                                                    title: "Enter Distance",
+                                                    autoCloseDuration: null);
+                                                return null;
+                                              }
                                               Map<String, dynamic> datas = {
                                                 "id": expenseList.length + 1,
                                                 "category_id":
@@ -1693,6 +1800,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                               setState(() {
                                                 expenseList.add(datas);
                                                 isOpenExpenseScreen = false;
+
+                                                amt = "";
+                                                mileage = "";
                                               });
                                               // print(OBJ.toString());
 

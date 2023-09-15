@@ -29,6 +29,8 @@ import '../models/work-update-model.dart';
 final newToken = StateProvider<String?>((ref) => "");
 final selectedDate = StateProvider<String?>(
     (ref) => DateFormat("dd-MM-yyyy").format(DateTime.now()));
+final servicedDate = StateProvider<String?>(
+    (ref) => DateFormat("dd-MM-yyyy").format(DateTime.now()));
 final workSelectedDate = StateProvider<String?>((ref) => "select date");
 final demo = StateProvider<String?>((ref) => "demo");
 
@@ -69,7 +71,8 @@ final userInstallationListProvider =
 });
 final userServiceListProvider = FutureProvider<List<ServiceListModel>>((ref) {
   String? token = ref.watch(newToken);
-  return ref.watch(provider).ServiceModelList(token);
+  String? date = ref.watch(servicedDate);
+  return ref.watch(provider).ServiceModelList(token, date!);
 });
 
 final InsttalationOverVIewProvider =
@@ -202,8 +205,7 @@ final serviceWrokupdateListProvider =
         id,
       );
 });
-final leaveListModelProvider =
-    FutureProvider<List<LeaveListModel>>((ref) {
+final leaveListModelProvider = FutureProvider<List<LeaveListModel>>((ref) {
   String? token = ref.watch(newToken);
 
   return ref.watch(provider).leaveList(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../const/global_colors.dart';
@@ -42,14 +43,35 @@ class TextRowWidget extends StatelessWidget {
           ),
           Container(
             width: width * 0.45,
-            child: Text(
-              value!,
-              style: GoogleFonts.ptSans(
-                  fontSize: width < 700 ? width / 40 : width / 45,
-                  fontWeight: FontWeight.w600,
-                  color:value=="Approved"||value=="Casual"? GlobalColors.green:value=="Pending"?Color.fromRGBO(252,190,1,1):value=="Rejected"||value=="Sick"?Colors.red:value=="Earned"?Color.fromRGBO(176,120,197,1):GlobalColors.black,
-                  letterSpacing: 0),
-            ),
+            child: value == ""
+                ? Text("--")
+                : value!.contains("<")
+                    ? Center(
+                        child: HtmlWidget(
+                          value!,
+                          textStyle: GoogleFonts.ptSans(
+                              fontSize: width < 700 ? width / 38 : width / 45,
+                              fontWeight: FontWeight.w800,
+                              color: GlobalColors.black,
+                              letterSpacing: 0),
+                        ),
+                      )
+                    : Text(
+                        value!,
+                        style: GoogleFonts.ptSans(
+                            fontSize: width < 700 ? width / 40 : width / 45,
+                            fontWeight: FontWeight.w600,
+                            color: value == "Approved" || value == "Casual"
+                                ? GlobalColors.green
+                                : value == "Pending"
+                                    ? Color.fromRGBO(252, 190, 1, 1)
+                                    : value == "Rejected" || value == "Sick"
+                                        ? Colors.red
+                                        : value == "Earned"
+                                            ? Color.fromRGBO(176, 120, 197, 1)
+                                            : GlobalColors.black,
+                            letterSpacing: 0),
+                      ),
           ),
         ],
       ),

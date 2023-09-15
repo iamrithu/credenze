@@ -24,6 +24,7 @@ class AddWorkUpdate extends ConsumerStatefulWidget {
 
 class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
   final TextEditingController _controller = TextEditingController();
+  final List<TextEditingController> textEditingControllers = [];
 
   DateTime workUpdateDate = DateTime.now();
   List<InstallationEmployeeModel> selectedEmployee = [];
@@ -102,7 +103,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
 
     return Container(
       width: width,
-      height: height * 0.9,
+      height: height * 0.95,
       decoration: BoxDecoration(border: Border.all(color: GlobalColors.black)),
       child: Column(
         children: [
@@ -121,9 +122,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
             ),
             height: 40,
           ),
-          Container(
-            width: width,
-            height: height * 0.75,
+          Expanded(
             child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: ListView(
@@ -531,91 +530,131 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                     ),
                   ),
                   if (is_removable_task == 1)
-                    Container(
-                      margin: EdgeInsets.only(bottom: 3),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  color: Color.fromARGB(255, 200, 196, 196),
-                                  width: 0.5))),
-                      constraints: BoxConstraints(
-                          minWidth: width, minHeight: height * 0.05),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              flex: 3,
-                              child: Container(
-                                child: Text(
-                                  "Removeable Count",
-                                  style: GoogleFonts.ptSans(
-                                      color: GlobalColors.black,
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 45,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0),
+                    Column(
+                      children: [
+                        Divider(
+                          thickness: 2,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 3),
+                          constraints: BoxConstraints(
+                              minWidth: width, minHeight: height * 0.05),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    child: Text(
+                                      "Removeable Count",
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.black,
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0),
+                                    ),
+                                  )),
+                              Card(
+                                elevation: 10,
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Center(
+                                    child: Text(
+                                      "${product["removable_pending"]}",
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.black,
+                                          fontSize: width < 700
+                                              ? width / 30
+                                              : width / 45,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 0),
+                                    ),
+                                  ),
                                 ),
-                              )),
-                          Expanded(
-                              child: Container(
-                            child: Text(
-                              "${product["removable_pending"]}",
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.black,
-                                  fontSize:
-                                      width < 700 ? width / 30 : width / 45,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0),
-                            ),
-                          )),
-                          Expanded(
-                              flex: 2,
-                              child: Container(
-                                child: Text(
-                                  "Used Count",
-                                  style: GoogleFonts.ptSans(
-                                      color: GlobalColors.black,
-                                      fontSize:
-                                          width < 700 ? width / 30 : width / 45,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0),
+                              ),
+                              Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    child: Center(
+                                      child: Text(
+                                        "Used Count",
+                                        style: GoogleFonts.ptSans(
+                                            color: GlobalColors.black,
+                                            fontSize: width < 700
+                                                ? width / 30
+                                                : width / 45,
+                                            fontWeight: FontWeight.w400,
+                                            letterSpacing: 0),
+                                      ),
+                                    ),
+                                  )),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: TextField(
+                                      controller: _controller,
+                                      keyboardType: TextInputType.number,
+                                      style: GoogleFonts.ptSans(
+                                          color: GlobalColors.black,
+                                          fontSize: width < 500
+                                              ? width / 35
+                                              : width / 35),
+                                      decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.all(15),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4))),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          removal_qty = int.parse(value);
+                                        });
+                                      }),
                                 ),
-                              )),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: TextField(
-                                  controller: _controller,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.all(15),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4))),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      removal_qty = int.parse(value);
-                                    });
-                                  }),
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
+                  if (productList.isNotEmpty)
+                    Column(
+                      children: [
+                        Divider(
+                          thickness: 2,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(left: 1),
+                              child: Card(
+                                elevation: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Products",
+                                    style: GoogleFonts.ptSans(
+                                        color: GlobalColors.themeColor,
+                                        fontSize: width < 500
+                                            ? width / 30
+                                            : width / 45),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   for (var i = 0; i < productList.length; i++)
                     Card(
-                      elevation: 5,
+                      elevation: 1,
                       child: Column(
                         children: [
-                          if (productList.isNotEmpty)
-                            Text(
-                              "Products",
-                              style: GoogleFonts.ptSans(
-                                  color: GlobalColors.black,
-                                  fontSize:
-                                      width < 500 ? width / 25 : width / 35),
-                            ),
                           Card(
-                            elevation: 3,
+                            elevation: 1,
                             child: Container(
                               child: Column(
                                 children: [
@@ -633,11 +672,24 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                 .contains(productList[i]),
                                             onChanged: (bool? value) {
                                               if (value!) {
+                                                var data = productList[i];
+
                                                 setState(() {
-                                                  selectedCheckbox
-                                                      .add(productList[i]);
+                                                  selectedCheckbox.add(data);
                                                 });
                                               } else {
+                                                var data = selectedCheckbox
+                                                    .firstWhere(
+                                                        (element) =>
+                                                            element[
+                                                                "item_id"] ==
+                                                            productList[i]
+                                                                ["item_id"],
+                                                        orElse: () {
+                                                  return null;
+                                                });
+                                                data["used_quantity"] = "";
+
                                                 setState(() {
                                                   selectedCheckbox
                                                       .remove(productList[i]);
@@ -651,7 +703,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                         flex: 4,
                                         child: Container(
                                           child: Text(
-                                            "${productList[i]["item_name"]}",
+                                            "${productList[i]["item_name"]} ",
                                             style: GoogleFonts.ptSans(
                                                 color: GlobalColors.black,
                                                 fontSize: width < 500
@@ -732,83 +784,115 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                             ]
                                                           });
                                                         });
-                                                      }
-                                                      var data = serialnosList
-                                                          .firstWhere(
-                                                              (element) =>
-                                                                  element[
-                                                                      "productId"] ==
-                                                                  productList[i]
-                                                                      [
-                                                                      "item_id"],
-                                                              orElse: () {
-                                                        return null;
-                                                      });
-                                                      if (data == null) {
-                                                        setState(() {
-                                                          serialnosList.add({
-                                                            "productId":
+                                                        selectedCheckbox.firstWhere(
+                                                            (element) =>
+                                                                element[
+                                                                    "item_id"] ==
                                                                 productList[i]
                                                                     ["item_id"],
-                                                            "sNo": [
-                                                              productList[i][
-                                                                  "serialnos"][s]
-                                                            ]
-                                                          });
-                                                        });
+                                                            orElse: () {
+                                                          return null;
+                                                        })["used_serialNos"] = [
+                                                          productList[i]
+                                                              ["serialnos"][s]
+                                                        ];
                                                       } else {
-                                                        if (data["sNo"].contains(
-                                                            productList[i][
-                                                                    "serialnos"]
-                                                                [s])) {
-                                                          data["sNo"].remove(
-                                                              productList[i][
-                                                                      "serialnos"]
-                                                                  [s]);
-                                                        } else {
-                                                          data["sNo"].add(
-                                                              productList[i][
-                                                                      "serialnos"]
-                                                                  [s]);
-                                                        }
-
-                                                        if (data["sNo"].length <
-                                                            1) {
-                                                          serialnosList.remove({
-                                                            "productId":
-                                                                productList[i]
-                                                                    ["item_id"],
-                                                            "sNo": []
-                                                          });
-                                                        }
-                                                        var getData = selectedCheckbox
+                                                        var data = serialnosList
                                                             .firstWhere(
                                                                 (element) =>
                                                                     element[
-                                                                        "item_id"] ==
+                                                                        "productId"] ==
                                                                     productList[
                                                                             i][
                                                                         "item_id"],
                                                                 orElse: () {
                                                           return null;
                                                         });
-                                                        getData["used_serialNos"] =
-                                                            data["sNo"];
-
-                                                        getColors(
-                                                            productList[i][
-                                                                "serialnos"][s],
+                                                        if (data == null) {
+                                                          setState(() {
+                                                            serialnosList.add({
+                                                              "productId":
+                                                                  productList[i]
+                                                                      [
+                                                                      "item_id"],
+                                                              "sNo": [
+                                                                productList[i][
+                                                                    "serialnos"][s]
+                                                              ]
+                                                            });
+                                                          });
+                                                          selectedCheckbox.firstWhere(
+                                                              (element) =>
+                                                                  element[
+                                                                      "item_id"] ==
+                                                                  productList[i]
+                                                                      [
+                                                                      "item_id"],
+                                                              orElse: () {
+                                                            return null;
+                                                          })["used_serialNos"] = [
                                                             productList[i]
-                                                                ["item_id"]);
+                                                                ["serialnos"][s]
+                                                          ];
+                                                        } else {
+                                                          if (data["sNo"].contains(
+                                                              productList[i][
+                                                                      "serialnos"]
+                                                                  [s])) {
+                                                            data["sNo"].remove(
+                                                                productList[i][
+                                                                        "serialnos"]
+                                                                    [s]);
+                                                          } else {
+                                                            data["sNo"].add(
+                                                                productList[i][
+                                                                        "serialnos"]
+                                                                    [s]);
+                                                          }
 
-                                                        setState(() {
-                                                          serialVisible =
-                                                              !serialVisible;
-                                                        });
-                                                        setState(() {
-                                                          serialVisible =
-                                                              !serialVisible;
-                                                        });
+                                                          if (data["sNo"]
+                                                                  .length <
+                                                              1) {
+                                                            serialnosList
+                                                                .remove({
+                                                              "productId":
+                                                                  productList[i]
+                                                                      [
+                                                                      "item_id"],
+                                                              "sNo": []
+                                                            });
+                                                          }
+                                                          var getData = selectedCheckbox
+                                                              .firstWhere(
+                                                                  (element) =>
+                                                                      element[
+                                                                          "item_id"] ==
+                                                                      productList[
+                                                                              i]
+                                                                          [
+                                                                          "item_id"],
+                                                                  orElse: () {
+                                                            return null;
+                                                          });
+                                                          getData["used_serialNos"] =
+                                                              data["sNo"];
+
+                                                          getColors(
+                                                              productList[i][
+                                                                      "serialnos"]
+                                                                  [s],
+                                                              productList[i]
+                                                                  ["item_id"]);
+
+                                                          setState(() {
+                                                            serialVisible =
+                                                                !serialVisible;
+                                                          });
+                                                          setState(() {
+                                                            serialVisible =
+                                                                !serialVisible;
+                                                          });
+                                                        }
                                                       }
                                                     },
                                                     child: Visibility(
@@ -843,7 +927,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            flex: 4,
+                                            flex: 2,
                                             child: Text(""),
                                           ),
                                           Expanded(
@@ -865,7 +949,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                 ? Container(
                                                     constraints: BoxConstraints(
                                                         minHeight: 50,
-                                                        minWidth: 50),
+                                                        minWidth: 100),
                                                     decoration: BoxDecoration(
                                                         borderRadius:
                                                             BorderRadius
@@ -876,15 +960,44 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                             width: 2)),
                                                     child: Center(
                                                         child: Text(
+                                                            style: GoogleFonts.ptSans(
+                                                                color:
+                                                                    GlobalColors
+                                                                        .black,
+                                                                fontSize: width <
+                                                                        500
+                                                                    ? width / 35
+                                                                    : width /
+                                                                        35),
                                                             getUsedserialNo(
                                                                     productList[
                                                                             i][
                                                                         "item_id"])
                                                                 .toString())),
                                                   )
-                                                : TextField(
+                                                : TextFormField(
+                                                    // controller:
+                                                    //     textEditingControllers[
+                                                    //         i],
+                                                    initialValue:
+                                                        selectedCheckbox
+                                                            .firstWhere(
+                                                                (element) {
+                                                      return element[
+                                                              "item_id"] ==
+                                                          productList[i]
+                                                              ["item_id"];
+                                                    }, orElse: () {
+                                                      return null;
+                                                    })["used_quantity"],
                                                     keyboardType:
                                                         TextInputType.number,
+                                                    style: GoogleFonts.ptSans(
+                                                        color:
+                                                            GlobalColors.black,
+                                                        fontSize: width < 500
+                                                            ? width / 35
+                                                            : width / 35),
                                                     decoration: InputDecoration(
                                                         contentPadding:
                                                             const EdgeInsets
@@ -925,20 +1038,42 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                       ),
                     ),
                   if (OtherProductList.isNotEmpty)
+                    Column(
+                      children: [
+                        Divider(
+                          thickness: 2,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(left: 1),
+                              child: Card(
+                                elevation: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Other Products",
+                                    style: GoogleFonts.ptSans(
+                                        color: GlobalColors.themeColor,
+                                        fontSize: width < 500
+                                            ? width / 30
+                                            : width / 45),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  if (OtherProductList.isNotEmpty)
                     Card(
-                      elevation: 10,
+                      elevation: 1,
                       child: Column(
                         children: [
-                          Text(
-                            "Other Products",
-                            style: GoogleFonts.ptSans(
-                                color: GlobalColors.black,
-                                fontSize:
-                                    width < 500 ? width / 25 : width / 35),
-                          ),
                           for (var i = 0; i < OtherProductList.length; i++)
                             Card(
-                              elevation: 3,
+                              elevation: 1,
                               child: Container(
                                 child: Column(
                                   children: [
@@ -961,6 +1096,17 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                         OtherProductList[i]);
                                                   });
                                                 } else {
+                                                  var data = selectedCheckbox
+                                                      .firstWhere(
+                                                          (element) =>
+                                                              element[
+                                                                  "item_id"] ==
+                                                              OtherProductList[
+                                                                  i]["item_id"],
+                                                          orElse: () {
+                                                    return null;
+                                                  });
+                                                  data["used_quantity"] = "";
                                                   setState(() {
                                                     selectedCheckbox.remove(
                                                         OtherProductList[i]);
@@ -1059,94 +1205,123 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                               ]
                                                             });
                                                           });
-                                                        }
-                                                        var data = serialnosList
-                                                            .firstWhere(
-                                                                (element) =>
-                                                                    element[
-                                                                        "productId"] ==
-                                                                    OtherProductList[
-                                                                            i]
-                                                                        [
-                                                                        "item_id"],
-                                                                orElse: () {
-                                                          return null;
-                                                        });
-                                                        if (data == null) {
-                                                          setState(() {
-                                                            serialnosList.add({
-                                                              "productId":
-                                                                  OtherProductList[
-                                                                          i][
-                                                                      "item_id"],
-                                                              "sNo": [
-                                                                OtherProductList[
-                                                                        i][
-                                                                    "serialnos"][s]
-                                                              ]
-                                                            });
-                                                          });
-                                                        } else {
-                                                          if (data["sNo"].contains(
-                                                              OtherProductList[
-                                                                          i][
-                                                                      "serialnos"]
-                                                                  [s])) {
-                                                            data["sNo"].remove(
-                                                                OtherProductList[
-                                                                            i][
-                                                                        "serialnos"]
-                                                                    [s]);
-                                                          } else {
-                                                            data["sNo"].add(
-                                                                OtherProductList[
-                                                                            i][
-                                                                        "serialnos"]
-                                                                    [s]);
-                                                          }
-
-                                                          if (data["sNo"]
-                                                                  .length <
-                                                              1) {
-                                                            serialnosList
-                                                                .remove({
-                                                              "productId":
-                                                                  OtherProductList[
-                                                                          i][
-                                                                      "item_id"],
-                                                              "sNo": []
-                                                            });
-                                                          }
-                                                          var getData = selectedCheckbox.firstWhere(
+                                                          selectedCheckbox.firstWhere(
                                                               (element) =>
                                                                   element[
                                                                       "item_id"] ==
+                                                                  productList[i]
+                                                                      [
+                                                                      "item_id"],
+                                                              orElse: () {
+                                                            return null;
+                                                          })["used_serialNos"] = [
+                                                            OtherProductList[i]
+                                                                ["serialnos"][s]
+                                                          ];
+                                                        } else {
+                                                          var data = serialnosList.firstWhere(
+                                                              (element) =>
+                                                                  element[
+                                                                      "productId"] ==
                                                                   OtherProductList[
                                                                           i][
                                                                       "item_id"],
                                                               orElse: () {
                                                             return null;
                                                           });
-                                                          getData["used_serialNos"] =
-                                                              data["sNo"];
-
-                                                          getColors(
-                                                              OtherProductList[
+                                                          if (data == null) {
+                                                            setState(() {
+                                                              serialnosList
+                                                                  .add({
+                                                                "productId":
+                                                                    OtherProductList[
+                                                                            i][
+                                                                        "item_id"],
+                                                                "sNo": [
+                                                                  OtherProductList[
                                                                           i][
-                                                                      "serialnos"]
-                                                                  [s],
+                                                                      "serialnos"][s]
+                                                                ]
+                                                              });
+                                                            });
+                                                            selectedCheckbox.firstWhere(
+                                                                (element) =>
+                                                                    element[
+                                                                        "item_id"] ==
+                                                                    productList[
+                                                                            i][
+                                                                        "item_id"],
+                                                                orElse: () {
+                                                              return null;
+                                                            })["used_serialNos"] = [
                                                               OtherProductList[
-                                                                      i]
-                                                                  ["item_id"]);
+                                                                      i][
+                                                                  "serialnos"][s]
+                                                            ];
+                                                          } else {
+                                                            if (data["sNo"].contains(
+                                                                OtherProductList[
+                                                                            i][
+                                                                        "serialnos"]
+                                                                    [s])) {
+                                                              data["sNo"].remove(
+                                                                  OtherProductList[
+                                                                              i]
+                                                                          [
+                                                                          "serialnos"]
+                                                                      [s]);
+                                                            } else {
+                                                              data["sNo"].add(
+                                                                  OtherProductList[
+                                                                              i]
+                                                                          [
+                                                                          "serialnos"]
+                                                                      [s]);
+                                                            }
 
-                                                          setState(() {
-                                                            serialVisible =
-                                                                !serialVisible;
-                                                          });
-                                                          setState(() {
-                                                            serialVisible =
-                                                                !serialVisible;
-                                                          });
+                                                            if (data["sNo"]
+                                                                    .length <
+                                                                1) {
+                                                              serialnosList
+                                                                  .remove({
+                                                                "productId":
+                                                                    OtherProductList[
+                                                                            i][
+                                                                        "item_id"],
+                                                                "sNo": []
+                                                              });
+                                                            }
+                                                            var getData = selectedCheckbox.firstWhere(
+                                                                (element) =>
+                                                                    element[
+                                                                        "item_id"] ==
+                                                                    OtherProductList[
+                                                                            i][
+                                                                        "item_id"],
+                                                                orElse: () {
+                                                              return null;
+                                                            });
+                                                            getData["used_serialNos"] =
+                                                                data["sNo"];
+
+                                                            getColors(
+                                                                OtherProductList[
+                                                                            i][
+                                                                        "serialnos"]
+                                                                    [s],
+                                                                OtherProductList[
+                                                                        i][
+                                                                    "item_id"]);
+
+                                                            setState(() {
+                                                              serialVisible =
+                                                                  !serialVisible;
+                                                            });
+                                                            setState(() {
+                                                              serialVisible =
+                                                                  !serialVisible;
+                                                            });
+                                                          }
                                                         }
                                                       },
                                                       child: Visibility(
@@ -1186,7 +1361,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                         child: Row(
                                           children: [
                                             Expanded(
-                                              flex: 4,
+                                              flex: 2,
                                               child: Text(""),
                                             ),
                                             Expanded(
@@ -1209,7 +1384,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                       constraints:
                                                           BoxConstraints(
                                                               minHeight: 50,
-                                                              minWidth: 50),
+                                                              minWidth: 200),
                                                       decoration: BoxDecoration(
                                                           borderRadius:
                                                               BorderRadius
@@ -1219,15 +1394,44 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                                   .themeColor,
                                                               width: 2)),
                                                       child: Center(
-                                                          child: Text(getUsedserialNo(
+                                                          child: Text(
+                                                              style: GoogleFonts.ptSans(
+                                                                  color:
+                                                                      GlobalColors
+                                                                          .black,
+                                                                  fontSize: width <
+                                                                          500
+                                                                      ? width /
+                                                                          35
+                                                                      : width /
+                                                                          35),
+                                                              getUsedserialNo(
+                                                                      OtherProductList[
+                                                                              i]
+                                                                          [
+                                                                          "item_id"])
+                                                                  .toString())),
+                                                    )
+                                                  : TextFormField(
+                                                      initialValue: selectedCheckbox
+                                                          .firstWhere(
+                                                              (element) =>
+                                                                  element[
+                                                                      "item_id"] ==
                                                                   OtherProductList[
                                                                           i][
-                                                                      "item_id"])
-                                                              .toString())),
-                                                    )
-                                                  : TextField(
+                                                                      "item_id"],
+                                                              orElse: () {
+                                                        return null;
+                                                      })["used_quantity"],
                                                       keyboardType:
                                                           TextInputType.number,
+                                                      style: GoogleFonts.ptSans(
+                                                          color: GlobalColors
+                                                              .black,
+                                                          fontSize: width < 500
+                                                              ? width / 35
+                                                              : width / 35),
                                                       decoration: InputDecoration(
                                                           contentPadding:
                                                               const EdgeInsets
@@ -1252,8 +1456,6 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                                                         });
                                                         data["used_quantity"] =
                                                             value;
-
-                                                        print(data.toString());
                                                         // do something
                                                       },
                                                     ),
@@ -1304,6 +1506,12 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                           child: Container(
                             alignment: Alignment.center,
                             child: TextField(
+                                minLines: 2,
+                                maxLines: 4,
+                                style: GoogleFonts.ptSans(
+                                    color: GlobalColors.black,
+                                    fontSize:
+                                        width < 500 ? width / 35 : width / 35),
                                 decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(15),
                                     border: OutlineInputBorder(
@@ -1407,18 +1615,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                         }
                       }
                     }
-                    // if (is_removable_task.toString() == "1") {
-                    //   if (removal_qty == 0) {
-                    //     QuickAlert.show(
-                    //         context: context,
-                    //         type: QuickAlertType.error,
-                    //         title:
-                    //             "Completed Quantity is not exceeds the pending Quantity",
-                    //         autoCloseDuration: null);
 
-                    //     return null;
-                    //   }
-                    // }
                     Api()
                         .WorkUpdateAdd(
                             ref.watch(newToken),
@@ -1439,8 +1636,7 @@ class _AddWorkUpdateState extends ConsumerState<AddWorkUpdate> {
                             context: context,
                             type: QuickAlertType.success,
                             title: "${value.data["message"]}",
-                            autoCloseDuration: Duration(seconds: 2)
-                          );
+                            autoCloseDuration: Duration(seconds: 2));
                       } else {
                         if (value.statusCode.toString() == "422" ||
                             value.statusCode.toString() == "500") {
